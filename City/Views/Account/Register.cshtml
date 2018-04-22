@@ -1,0 +1,45 @@
+﻿@model City.Models.RegisterModel
+
+<div class="register-page">
+    <form class="register-form asp-action="Register" asp-controller="Account" asp-anti-forgery="true">
+
+        <h2 style="text-align: center">Регистрация</h2>
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div>
+                <label asp-for="FirstName">Введите Имя</label><br />
+                <input class="form-control" type="text" asp-for="FirstName" />
+                <span asp-validation-for="FirstName" />
+            </div>
+            <div>
+                <label asp-for="LastName">Введите Фамилию</label><br />
+                <input class="form-control" type="text" asp-for="LastName" />
+                <span asp-validation-for="LastName" />
+            </div>
+            <div>
+                <label asp-for="Login">Введите Login</label><br />
+                <input class="form-control" type="text" asp-for="Login" />
+                <span asp-validation-for="Login" />
+            </div>
+            <div>
+                <label asp-for="Subject">Укажите тип охраняемого объекта</label><br />
+                <select class="form-control" asp-for="Subject" asp-items="Html.GetEnumSelectList<Subject>()"></select>
+                <span asp-validation-for="Subject" />
+            </div>
+            <div>
+                <label asp-for="Password">Введите пароль</label><br />
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password" />
+            </div>
+            <div>
+                <label asp-for="ConfirmPassword">Повторите пароль</label><br />
+                <input class="form-control" asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword" />
+            </div>
+            <div class="bottom-panel form-group" style="margin-top: 10px;">
+                <a asp-area="" asp-controller="Account" asp-action="Login">Войти</a>
+                <input class="btn btn-default " type="submit" value="Регистрация" />
+            </div>
+        </div>
+    </form>
+</div>

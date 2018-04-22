@@ -1,0 +1,24 @@
+﻿@model City.Models.LoginModel
+
+<div class="login-page">
+    <form class="login-form" asp-action="Login" asp-controller="Account" asp-anti-forgery="true">
+        <h2 style="text-align: center">Вход</h2>
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div class="form-group">
+                <label asp-for="Login">Введите Логин</label>
+                <input type="text" asp-for="Login" class="form-control" />
+                <span asp-validation-for="Login" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Введите пароль</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" />
+            </div>
+            <div class="bottom-panel form-group">
+                <a asp-area="" asp-controller="Account" asp-action="Register" style="float: left">Зарегистрироваться</a>
+                <input type="submit" value="Войти" class="btn btn-default" style="float: right;" />
+            </div>
+        </div>
+    </form>
+</div>
