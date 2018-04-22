@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using City.Models;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace City.Controllers
 {
@@ -18,6 +14,11 @@ namespace City.Controllers
                 return Redirect("/Account/Login");
             }
 
+            if (User.IsInRole("Admin"))
+            {
+                return Redirect("/Account/Admin");
+            }
+
             return View();
         }
 
@@ -25,5 +26,6 @@ namespace City.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

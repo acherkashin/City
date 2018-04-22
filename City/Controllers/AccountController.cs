@@ -1,6 +1,7 @@
 ﻿using City.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,7 +30,7 @@ namespace City.Controllers
                 string adminPassword = "123456";
 
                 // добавляем администратора
-                _context.Users.Add(new User { Login = adminEmail, Password = adminPassword, Role = Subject.Admin });
+                _context.Users.Add(new User { Login = adminEmail, Password = adminPassword, Subject = Subject.Admin });
 
                 _context.SaveChanges();
             }
@@ -37,6 +38,11 @@ namespace City.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -49,13 +55,12 @@ namespace City.Controllers
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Login == model.Login);
                 if (user == null)
                 {
-                    // добавляем пользователя в бд
-                    user = new User { Login = model.Login, Password = model.Password };
+                    user = new User { Login = model.Login, Password = model.Password, FirstName = model.FirstName, LastName = model.LastName, Subject = model.Subject };
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
 
-                    await Authenticate(user); // аутентификация
+                    await Authenticate(user);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -69,6 +74,11 @@ namespace City.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -90,6 +100,16 @@ namespace City.Controllers
             }
             return View(model);
         }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Admin()
+        {
+            return View(new AdminViewModel
+            {
+                Users = _context.Users.Where(user => user.Subject != Subject.Admin).ToList(),
+            });
+        }
+
         private async Task Authenticate(User user)
         {
             var claims = new List<Claim>

@@ -1,0 +1,32 @@
+﻿@model City.Models.AdminViewModel
+@using City.Utils
+
+@{
+    ViewData["Title"] = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Логин</th>
+                <th>Объект</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (User user in Model.Users)
+            {
+                <tr>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Login</td>
+                    <td>@user.Subject.GetDisplayName()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

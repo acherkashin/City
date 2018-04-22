@@ -17,6 +17,5 @@ namespace City.Models
         public Subject Subject { get; set; }
 
         public string Password { get; set; }
-        public Subject Role { get; internal set; }
     }
 }
