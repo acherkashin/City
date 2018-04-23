@@ -6,6 +6,7 @@ using City.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,12 +34,25 @@ namespace City
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
 
+            services.AddSignalR();
+            services.AddCors(o =>
+            {
+                o.AddPolicy("Everything", p =>
+                {
+                    p.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                });
+            });
             services.AddMvc();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors("Everything");
+
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -54,6 +68,11 @@ namespace City
             app.UseAuthentication();
 
             app.UseStaticFiles();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NetHub>("/net");
+            });
 
             app.UseMvc(routes =>
             {

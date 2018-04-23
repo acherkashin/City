@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace City.Controllers
     public class AccountController : Controller
     {
         private ApplicationContext _context;
-        public AccountController(ApplicationContext context)
+
+        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext)
         {
             _context = context;
             DatabaseInitialize(); // добавляем пользователя и роли в бд

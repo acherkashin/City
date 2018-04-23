@@ -18,6 +18,38 @@ namespace City.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
 
+            modelBuilder.Entity("City.Models.Package", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("From");
+
+                    b.Property<string>("Method");
+
+                    b.Property<string>("Params");
+
+                    b.Property<int>("To");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Packages");
+                });
+
+            modelBuilder.Entity("City.Models.SubjectState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("State");
+
+                    b.Property<int>("Subject");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("States");
+                });
+
             modelBuilder.Entity("City.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -30,8 +62,6 @@ namespace City.Migrations
                     b.Property<string>("Login");
 
                     b.Property<string>("Password");
-
-                    b.Property<int>("Role");
 
                     b.Property<int>("Subject");
 
