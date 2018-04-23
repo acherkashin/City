@@ -14,7 +14,7 @@
             }
         }
 
-        var hubUrl = @Context.Request.Host;
+        var hubUrl = 'http://@Context.Request.Host/net';
         var httpConnection = new signalR.HttpConnection(hubUrl);
         var hubConnection = new signalR.HubConnection(httpConnection);
 
