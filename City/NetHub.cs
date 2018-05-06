@@ -1,21 +1,26 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR;
-using System.Linq;
+﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using City.Models;
 
 namespace City
 {
-    public class NetHub : Hub
+    public interface INetHub
     {
-        public async Task Send(string message)
+        Task Send(Package package);
+
+        Task Register(Subject subject);
+    }
+
+    public class NetHub : Hub<INetHub>
+    {
+        public async Task Send(Package package)
         {
-            await Clients.All.SendAsync(nameof(Send), message);
+            await Clients.All.Send(package);
         }
 
         public async Task Register(Subject subject)
         {
-            await Clients.All.SendAsync(nameof(Register), subject);
+            await Clients.All.Register(subject);
         }
     }
 }

@@ -10,10 +10,10 @@ namespace City.Controllers
 {
     public class NetworkController : Controller
     {
-        private static IHubContext<NetHub> _hubcontext;
+        private static IHubContext<NetHub, INetHub> _hubcontext;
         private ApplicationContext _context;
 
-        public NetworkController(ApplicationContext context, IHubContext<NetHub> hubcontext)
+        public NetworkController(ApplicationContext context, IHubContext<NetHub, INetHub> hubcontext)
         {
             _context = context;
             _hubcontext = hubcontext;
@@ -23,7 +23,7 @@ namespace City.Controllers
         {
             _context.Add(package);
             _context.SaveChanges();
-            _hubcontext.Clients.All.SendAsync("Send", package);
+            _hubcontext.Clients.All.Send(package);
         }
     }
 }

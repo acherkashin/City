@@ -71,7 +71,7 @@ namespace City
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<NetHub>("/net");
+                routes.MapHub<NetHub>("net");
             });
 
             app.UseMvc(routes =>
