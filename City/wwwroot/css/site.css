@@ -38,3 +38,33 @@ body {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+
+.online-users {
+}
+
+.online-user {
+}
+
+.online-user__status {
+    width: 40px;
+}
+
+.online-user__status::after {
+    margin: auto;
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: gray;
+}
+
+.online-user__status--online::after {
+    background-color: green;
+    content: "";
+}
+
+.online-user__status--offline::after {
+    background-color: red;
+    content: "";
+}

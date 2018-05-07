@@ -11,6 +11,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 
 namespace City
 {
@@ -44,7 +45,9 @@ namespace City
                         .AllowAnyOrigin();
                 });
             });
+
             services.AddMvc();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
