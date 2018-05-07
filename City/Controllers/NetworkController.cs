@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace City.Controllers
 {
+    [Route("api/[controller]")]
     public class NetworkController : Controller
     {
         private static IHubContext<NetHub, INetHub> _hubcontext;
@@ -17,13 +18,6 @@ namespace City.Controllers
         {
             _context = context;
             _hubcontext = hubcontext;
-        }
-
-        public void Send(Package package)
-        {
-            _context.Add(package);
-            _context.SaveChanges();
-            _hubcontext.Clients.All.Send(package);
         }
     }
 }

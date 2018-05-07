@@ -117,7 +117,8 @@ namespace City.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Subject.ToString())
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Subject.ToString()),
+                new Claim("ID", user.Id.ToString()),
             };
 
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,

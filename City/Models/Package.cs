@@ -15,5 +15,14 @@ namespace City.Models
         /// JSON объект
         /// </summary>
         public string Params { get; set; }
+
+        public Package CreateEncreted()
+        {
+            var clone = MemberwiseClone();
+
+            //TODO: Добавить шифрование
+
+            return clone as Package;
+        }
     }
 }

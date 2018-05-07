@@ -35,6 +35,9 @@ namespace City.Models
         Factory,
 
         [Display(Name = "Дорожная служба")]
-        RoadService
+        RoadService,
+
+        [Display(Name = "Хакер")]
+        Hacker,
     }
 }

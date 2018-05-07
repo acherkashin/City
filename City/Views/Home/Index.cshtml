@@ -4,39 +4,18 @@
 
 <div class="row">
     <div id="log"></div>
-    <script>
-        function subjectToString(subject) {
-            switch (subject) {
-                case 1: return "Почтамп";
-                case 2: return "Муниципалитет";
-                case 3: return "Банк";
-                case 4: return "Аэропорт";
-            }
-        }
-
-        var hubUrl = 'http://@Context.Request.Host/net';
-        var httpConnection = new signalR.HttpConnection(hubUrl);
-        var hubConnection = new signalR.HubConnection(httpConnection);
-
-        hubConnection.on("Send", function (packate) {
-            var message = "Cообщение от " + subjectToString(packate.from) + " к " + subjectToString(packate.to) + " : " + packate.data;
-            var elem = document.createElement("p");
-            elem.appendChild(document.createTextNode(message));
-
-            var firstElem = document.getElementById("log").firstChild;
-            document.getElementById("log").insertBefore(elem, firstElem);
-        });
-
-        hubConnection.on("Register", function (model) {
-            var message = "Зарегистрирован объект: " + subjectToString(model.subject) + ". Адрес: " + model.url;
-
-            var elem = document.createElement("p");
-            elem.appendChild(document.createTextNode(message));
-
-            var firstElem = document.getElementById("log").firstChild;
-            document.getElementById("log").insertBefore(elem, firstElem);
-        });
-
-        hubConnection.start();
-    </script>
 </div>
+
+<script>
+    $(document).ready(() => {
+        new NetClient({
+            hubUrl: 'http://@Context.Request.Host/net',
+            onRecieve: (packate) => {
+
+            },
+            onUpdateOnlineList: (users) => {
+
+            }
+        })
+    })
+</script>
