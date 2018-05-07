@@ -16,30 +16,8 @@
 
 
 <div id="admin-page">
-    @*<table class="online-users table table-striped">
-        <thead>
-            <tr>
-                <th>Статус</th>
-                <th>Имя</th>
-                <th>Фамилия</th>
-                <th>Логин</th>
-                <th>Объект</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (User user in Model.Users)
-            {
-                <tr class="online-user">
-                    <td class="online-user__status online-user__status--@Html.Raw(user.IsOnline ? "online" : "offline")" title="@Html.Raw(user.IsOnline ? "online" : "offline")"></td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Login</td>
-                    <td>@user.Subject.GetDisplayName()</td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
 </div>
+
 <script>
     $(document).ready(() => {
         const users = @Html.Raw(strUsers);

@@ -5,6 +5,7 @@ using City.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System;
+using City.Models.ReactorModel;
 
 namespace City
 {
@@ -24,9 +25,12 @@ namespace City
 
         private ApplicationContext _context;
 
+        private ReactorRunner _reactor;
+
         public NetHub(ApplicationContext context)
         {
             _context = context;
+            _reactor = new ReactorRunner(context);
         }
 
         public async override Task OnConnectedAsync()
@@ -44,6 +48,11 @@ namespace City
             }
             else
             {
+                if (IsNuclearPowerPlant(user))
+                {
+                    _reactor.StartReactor();
+                }
+
                 await Groups.AddAsync(Context.ConnectionId, CityObjectRole);
             }
 
@@ -90,6 +99,15 @@ namespace City
         {
             var userId = int.Parse(principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "ID")?.Value);
             return userId;
+        }
+
+        /// <summary>
+        /// Пользователь этомная станция?
+        /// </summary>
+        private bool IsNuclearPowerPlant(ClaimsPrincipal principal)
+        {
+            var subjectType = principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
+            return subjectType == Subject.NuclearPowerPlant.ToString();
         }
     }
 }
