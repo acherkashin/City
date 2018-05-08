@@ -8,39 +8,67 @@ namespace City.Models.Reactor
 {
     public class Turbine
     {
-        // TODO: из названия не понятно назначение переменной
-        public bool FlagForStation { get; set; } = false;
+        /// <summary>
+        /// Переменная, которая передается на объект Подстанция для включение сирены
+        /// </summary>
+        public bool FlagSiren { get; set; } = false;
+        /// <summary>
+        /// Состояние турбины
+        /// </summary>
         public bool StateOfTurbine { get; set; } = false;
+        /// <summary>
+        /// Текущие обороты турбины
+        /// </summary>
         public double currentRPM { get; set; }
-        private int maxRPM = 3000;
+        /// <summary>
+        /// Значение, при котором происходит увеличение вибрации турбины
+        /// </summary>
+        private int maxRPM = 3200;
         public int MaxRPM
         {
             get { return maxRPM; }
         }
+        /// <summary>
+        /// Значение, после которого энергия начинает вырабатываться на 100 процентов
+        /// </summary>
         private int minRPM = 2500;
         public int MinRPM
         {
             get { return minRPM; }
         }
+        /// <summary>
+        /// Текущяя вибрация турбины
+        /// </summary>
         public double currentVibration { get; set; }
+        /// <summary>
+        /// Значение после которого происходит поломка турбины на 150 секунд
+        /// </summary>
         private int maxVibration = 300;
         public int MaxVibration
         {
             get { return maxVibration; }
         }
+        /// <summary>
+        /// Состояние поломки: поломана турбина или нет
+        /// </summary>
         private bool stateOfBroken = false;
         public bool StateOfBroken
         {
             get { return stateOfBroken; }
             set { stateOfBroken = value; }
         }
-
+        /// <summary>
+        /// Запуск турбины
+        /// </summary>
         public void Start()
         {
             stateOfBroken = false;
             StateOfTurbine = true;
-            FlagForStation = false;
+            FlagSiren = false;
         }
+        /// <summary>
+        /// Остановка турбины
+        /// </summary>
         public void Stop()
         {
             TimerOfBroken();
@@ -48,8 +76,11 @@ namespace City.Models.Reactor
             StateOfBroken = true;
             currentRPM = 0;
             currentVibration = 0;
-            FlagForStation = true;
+            FlagSiren = true;
         }
+        /// <summary>
+        /// Таймер, отвечающий за остановку турбины на 150 секунд при поломке
+        /// </summary>
         public void TimerOfBroken()
         {
             TimerCallback tm = new TimerCallback(RepareTurbine);
