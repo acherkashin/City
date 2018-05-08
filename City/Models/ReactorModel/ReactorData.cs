@@ -23,11 +23,17 @@ namespace City.Models.ReactorModel
         /// Текущая энергия реактора
         /// </summary>
         public double Energy { get; set; }
-
+        /// <summary>
+        /// Состояние реактора
+        /// </summary>
         public bool StReactor { get; set; }
-
+        /// <summary>
+        /// Состояние урановых стержней
+        /// </summary>
         public bool StRod { get; set; }
-
+        /// <summary>
+        /// Состояние турбины
+        /// </summary>
         public bool StTurbine { get; set; }
 
         /// <summary>
