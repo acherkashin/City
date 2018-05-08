@@ -16,7 +16,7 @@ namespace City.Models.ReactorModel
         /// </summary>
         public bool stateOfReactor { get; set; }
         /// <summary>
-        /// Состояние ядерного взрыва:произошел он или нет
+        /// Состояние ядерного взрыва: произошел он или нет
         /// </summary>
         private bool nuclearBlast = false;
         public bool NuclearBlast
