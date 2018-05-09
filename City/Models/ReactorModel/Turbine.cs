@@ -86,6 +86,9 @@ namespace City.Models.Reactor
             TimerCallback tm = new TimerCallback(RepareTurbine);
             Timer timer = new Timer(tm, null, 150000, -1);
         }
+        /// <summary>
+        /// Запуск турбины после починки
+        /// </summary>
         private void RepareTurbine(object obj)
         {
             Start();
