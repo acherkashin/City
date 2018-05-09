@@ -9,7 +9,7 @@ namespace City.Models.Reactor
     public class Turbine
     {
         /// <summary>
-        /// Переменная, которая передается на объект Подстанция для включение сирены
+        /// Переменная, которая передается на объект Подстанция для включения сирены
         /// </summary>
         public bool FlagSiren { get; set; } = false;
         /// <summary>
