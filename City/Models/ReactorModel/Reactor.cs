@@ -95,6 +95,16 @@ namespace City.Models.ReactorModel
         {
             nuclearBlast = true;
             FlagVoid = true;
+            UseVoid();
+        }
+        /// <summary>
+        /// Включение дыма
+        /// </summary>
+        public void UseVoid()
+        {
+            /// <summary>
+            /// TODO: Тут необходимо отправлять переменную FlagVoid на Arduino для включения дыма
+            /// </summary>
         }
     }
 }
