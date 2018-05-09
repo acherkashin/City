@@ -23,15 +23,12 @@ namespace City.Models.ReactorModel
         /// т.е. при нажатии на кнопок на html-странице происходит изменение переменной FLAG, а после к ней обращается метод StartReactor и работает уже с ней
         /// </summary>
         bool FLAG = false;
-
         private Object thisLock = new Object();
-
         Reactor r1 = new Reactor();
         Turbine t1 = new Turbine();
 
         public void StartReactor()
         {
-
             lock (thisLock)
             {
                 r1.stateOfReactor = true;
@@ -120,6 +117,7 @@ namespace City.Models.ReactorModel
                 r1.stateOfReactor = false;
                 t1.StateOfTurbine = false;
                 t1.Stop();
+                OnSiren();
                 r1.BlastReactor();
             }
             else
@@ -219,6 +217,7 @@ namespace City.Models.ReactorModel
             if (t1.currentVibration > t1.MaxVibration)
             {
                 t1.Stop();
+                OnSiren();
                 r1.energy = 0;
             }
         }
@@ -244,6 +243,15 @@ namespace City.Models.ReactorModel
                 t1.currentVibration = 0;
             }
 
+        }
+        /// <summary>
+        /// Включение сирены
+        /// </summary>
+        private void OnSiren()
+        {
+            /// <summary>
+            /// TODO: Тут необходимо через хаб обращаться к Подстанции и передавать переменную FlagSiren для влючения сирены
+            /// </summary>
         }
     }
 }
