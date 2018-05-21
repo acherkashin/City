@@ -1,4 +1,4 @@
-﻿namespace City.Models.WeatherStantion
+﻿namespace CyberCity.Models.WeatherStantion
 {
     /// <summary>
     /// Результат запроса. 

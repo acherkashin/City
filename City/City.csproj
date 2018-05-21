@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>CyberCity</AssemblyName>
+    <RootNamespace>CyberCity</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

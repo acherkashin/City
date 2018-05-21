@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace City.Models.WeatherStantion
+namespace CyberCity.Models.WeatherStantion
 {
     /// <summary>
     /// Отображение погодных условий. 

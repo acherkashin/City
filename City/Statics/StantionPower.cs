@@ -1,4 +1,4 @@
-﻿namespace City.Statics
+﻿namespace CyberCity.Statics
 {
     /// <summary>
     /// Включена ли станция.

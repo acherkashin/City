@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace City.Models.WeatherStantion
+namespace CyberCity.Models.WeatherStantion
 {
     /// <summary>
     /// Город.

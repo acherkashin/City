@@ -1,11 +1,11 @@
-﻿using City.Utils;
+﻿using CyberCity.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Models
+namespace CyberCity.Models
 {
     public class User
     {

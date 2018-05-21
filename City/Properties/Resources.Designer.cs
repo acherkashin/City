@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace City.Properties {
+namespace CyberCity.Properties {
     using System;
     
     

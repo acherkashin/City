@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using City.Models.WeatherStantion;
-using City.Statics;
+using CyberCity.Models.WeatherStantion;
+using CyberCity.Statics;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace City.Controllers
+namespace CyberCity.Controllers
 {
     public class WeatherController : Controller
     {       

@@ -1,21 +1,25 @@
-﻿@{
+﻿@using  Microsoft.AspNetCore.Mvc.Rendering;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+
 <div class="row">
+    @if (User.IsInRole(Subject.ElectricalSubstation.ToString()))
+    {
+        @Html.Partial("~/Views/Substation/Index.cshtml")
+    }
+    else if (User.IsInRole(Subject.WeatherStation.ToString()))
+    {
+        @Html.Partial("~/View/Weather/Index.cshtml")
+    }
+    else
+    {
+        <div>
+            Страница для объекта не найдена
+        </div>
+    }
     <div id="log"></div>
 </div>
 
-<script>
-    $(document).ready(() => {
-        new NetClient({
-            hubUrl: 'http://@Context.Request.Host/net',
-            onRecieve: (packate) => {
-
-            },
-            onUpdateOnlineList: (users) => {
-
-            }
-        })
-    })
-</script>

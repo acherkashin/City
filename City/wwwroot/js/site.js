@@ -14,12 +14,16 @@
     configureMethods() {
         this.hubConnection.on("onRecieve", (packate) => {
             console.dir(packate);
-            this.options.onRecieve(packate);
+            this.options.onRecieve && this.options.onRecieve(packate);
         });
 
         this.hubConnection.on("onUpdateOnlineList", (users) => {
             console.dir(users);
-            this.options.onUpdateOnlineList(users);
+            this.options.onUpdateOnlineList && this.options.onUpdateOnlineList(users);
+        });
+
+        this.hubConnection.on("onStateChanged", (state) => {
+            this.options.onStateChanged && this.options.onStateChanged(state);
         });
     }
 }

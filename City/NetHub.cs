@@ -1,36 +1,36 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using System.Linq;
-using City.Models;
+using CyberCity.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System;
-using City.Models.ReactorModel;
+using CyberCity.Models.ReactorModel;
 
-namespace City
+namespace CyberCity
 {
     public interface INetHub
     {
         Task onRecieve(Package package);
         Task onUpdateOnlineList(IEnumerable<User> users);
+        void onStateChanged(object state);
     }
 
     public class NetHub : Hub<INetHub>
     {
-        public static string AdminRole => Subject.Admin.ToString();
-        public static string HackerRole => Subject.Hacker.ToString();
-        public static string CityObjectRole => nameof(CityObjectRole);
-
         public static List<int> OnlineUsersIds = new List<int>();
 
         private ApplicationContext _context;
 
-        private ReactorRunner _reactor;
+        private City _city;
+
+        //private ReactorRunner _reactor;
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _reactor = new ReactorRunner(context);
+            _city = City.Create(this);
+            //_reactor = new ReactorRunner(context);
         }
 
         public async override Task OnConnectedAsync()
@@ -38,23 +38,7 @@ namespace City
             var user = Context.User;
             var userId = GetId(user);
 
-            if (user.IsInRole(AdminRole))
-            {
-                await Groups.AddAsync(Context.ConnectionId, AdminRole);
-            }
-            else if (user.IsInRole(HackerRole))
-            {
-                await Groups.AddAsync(Context.ConnectionId, HackerRole);
-            }
-            else
-            {
-                if (IsNuclearPowerPlant(user))
-                {
-                    _reactor.StartReactor();
-                }
-
-                await Groups.AddAsync(Context.ConnectionId, CityObjectRole);
-            }
+            await Groups.AddAsync(Context.ConnectionId, GetRole(user));
 
             if (!OnlineUsersIds.Any(id => id == userId))
             {
@@ -63,6 +47,17 @@ namespace City
 
             await UpdateOnlineUserList();
             await base.OnConnectedAsync();
+        }
+
+        public void SendStateChanged(Subject subject, object state)
+        {
+            try
+            {
+                Clients.Group(subject.ToString()).onStateChanged(state);
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
@@ -77,22 +72,16 @@ namespace City
             _context.Add(package);
             _context.SaveChanges();
 
-            if (Context.User.IsInRole(HackerRole))
-            {
-                var encrepted = package.CreateEncreted();
-                await Clients.Group(HackerRole).onRecieve(package);
-            }
-            else
-            {
-                await Clients.Group(AdminRole).onRecieve(package);
-                await Clients.Group(CityObjectRole).onRecieve(package);
-            }
+            var encrepted = package.CreateEncreted();
+            await Clients.Group(Subject.Hacker.ToString()).onRecieve(package);
+
+            await Clients.Group(package.To.ToString()).onRecieve(package);
         }
 
         private async Task UpdateOnlineUserList()
         {
             var onlineUsers = _context.Users.Where(u => OnlineUsersIds.Contains(u.Id) && u.Subject != Subject.Admin).ToList();
-            await Clients.Group(AdminRole).onUpdateOnlineList(onlineUsers);
+            await Clients.Group(Subject.Admin.ToString()).onUpdateOnlineList(onlineUsers);
         }
 
         private int GetId(ClaimsPrincipal principal)
@@ -101,13 +90,9 @@ namespace City
             return userId;
         }
 
-        /// <summary>
-        /// Пользователь этомная станция?
-        /// </summary>
-        private bool IsNuclearPowerPlant(ClaimsPrincipal principal)
+        private string GetRole(ClaimsPrincipal principal)
         {
-            var subjectType = principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
-            return subjectType == Subject.NuclearPowerPlant.ToString();
+            return principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
         }
     }
 }
