@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Models.ReactorModel
+namespace CyberCity.Models.ReactorModel
 {
     public class ReactorData
     {

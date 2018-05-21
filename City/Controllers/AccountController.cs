@@ -1,4 +1,4 @@
-﻿using City.Models;
+﻿using CyberCity.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace City.Controllers
+namespace CyberCity.Controllers
 {
     public class AccountController : Controller
     {

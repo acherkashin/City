@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace City.Models.Reactor
+namespace CyberCity.Models.Reactor
 {
     public class Turbine
     {

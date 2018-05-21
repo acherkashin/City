@@ -1,4 +1,4 @@
-﻿using City.Models;
+﻿using CyberCity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Controllers
+namespace CyberCity.Controllers
 {
     [Route("api/[controller]")]
     public class NetworkController : Controller

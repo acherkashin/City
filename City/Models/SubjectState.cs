@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Models
+namespace CyberCity.Models
 {
     public class SubjectState
     {

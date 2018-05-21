@@ -1,6 +1,6 @@
 using System;
 
-namespace City.Models
+namespace CyberCity.Models
 {
     public class ErrorViewModel
     {

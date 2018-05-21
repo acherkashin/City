@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Подстанция";
+}
+<h2>@ViewBag.Title.</h2>
+
+
+<div id="reactor-page">
+    <div class="Use_Reactor">
+        <p>Управление Подстанцией:</p>
+        <label>Состояние реле: {{labelReleState}}</label>
+        <br />
+        <label>Сирена: {{labelSirenState}} </label>
+        <br />
+        <label>Мощность: {{power}} </label>
+        <br />
+        <button class="btn glyphicon glyphicon-arrow-down" v-on:click="OnRele">Включить реле</button>
+        <button class="btn glyphicon glyphicon-arrow-up" v-on:click="OffRele">Выключить реле</button>
+    </div>
+    <br />
+    <div>
+        <button v-on:click="UpdateData">Обновить данные</button>
+    </div>
+</div>
+
+<script>
+    var v = new Vue({
+        el: '#reactor-page',
+        data: {
+            power: 0,
+            stateRele: false,
+            stateSiren: false
+        },
+        computed: {
+            labelReleState: {
+                get: function () {
+                    return this.stateRele ? "Реле включено" : "Реле выключено";
+                }
+            },
+            labelSirenState: {
+                get: function () {
+                    return this.stateSiren ? "Сирена ключена" : "Сирена выключена";
+                }
+            }
+        },
+        methods: {
+            UpdateData: () => {
+                axios.get("/api/substation/state")
+                    .then(response => {
+                        const value = response.data;
+
+                        this.power = value.Power;
+                        this.stateRele = value.stRele;
+                        this.stateSiren = value.stSiren;
+                    });
+            },
+            OnRele: () => {
+                var flag = true;
+                axios.put("/api/substation/rele?flag=" + flag)
+                    .then(response => {
+                        console.log("Реле включено. Состояние:" + flag)
+                    })
+            },
+            OffRele: () => {
+                var flag = false;
+                axios.put("/api/substation/rele?flag=" + flag)
+                    .then(response => {
+                        console.log("Реле выключено. Состояние:" + flag)
+                    })
+            }
+        }
+    })
+</script>
+<script>
+    $(document).ready(() => {
+        new NetClient({
+            hubUrl: 'http://@Context.Request.Host/net',
+            onRecieve: (packate) => {
+            },
+            onUpdateOnlineList: (users) => {
+
+            },
+            onStateChanged: (state) => {
+                console.log(state);
+                v.power = state.power;
+                v.stateRele = state.stRele;
+                v.stateSiren = state.stSiren;
+            }
+        })
+    })
+</script>

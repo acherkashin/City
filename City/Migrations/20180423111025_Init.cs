@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace City.Migrations
+namespace CyberCity.Migrations
 {
     public partial class Init : Migration
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Models.ReactorModel
+namespace CyberCity.Models.ReactorModel
 {
     public class Reactor
     {
@@ -15,24 +15,9 @@ namespace City.Models.ReactorModel
         /// Состояние реактора
         /// </summary>
         public bool stateOfReactor { get; set; }
-        /// <summary>
-        /// Состояние ядерного взрыва: произошел он или нет
-        /// </summary>
-        private bool nuclearBlast = false;
-        public bool NuclearBlast
-        {
-            get { return nuclearBlast; }
-            set { nuclearBlast = value; }
-        }
-        /// <summary>
-        /// Состояние урановых стержней
-        /// </summary>
-        private bool stateOfRod = false;
-        public bool StateOfRod
-        {
-            get { return stateOfRod; }
-            set { stateOfRod = value; }
-        }
+        public bool NuclearBlast { get; set; } = false;
+        public bool StateOfRod { get; set; } = false;
+
         /// <summary>
         /// Текущая энергия
         /// </summary>
@@ -49,27 +34,21 @@ namespace City.Models.ReactorModel
         /// Температура, при которой включаются турбины
         /// </summary>
         public int MinTemperature = 180;
-        /// <summary>
-        /// Температура, при которой происходит взрыв реактора
-        /// </summary>
-        private int blastTemperature = 3000;
-        public int BlastTemperature
-        {
-            get { return blastTemperature; }
-        }
+        public int BlastTemperature { get; } = 3000;
+
         /// <summary>
         /// Опускание урановых стержней
         /// </summary>
         public void DownRod()
         {
-            stateOfRod = true;
+            StateOfRod = true;
         }
         /// <summary>
         /// Поднятие урановых стежней
         /// </summary>
         public void UpRod()
         {
-            stateOfRod = false;
+            StateOfRod = false;
         }
         /// <summary>
         /// Изменение числа, на которое изменяется температура
@@ -78,7 +57,7 @@ namespace City.Models.ReactorModel
         /// </summary>
         public void ChangeDlt(int percent)
         {
-            if (stateOfRod == true)
+            if (StateOfRod == true)
             {
                 dlt = 5 + 0.01 * percent * currentTemperature * 0.1;
             }
@@ -93,7 +72,7 @@ namespace City.Models.ReactorModel
         /// </summary>
         public void BlastReactor()
         {
-            nuclearBlast = true;
+            NuclearBlast = true;
             FlagVoid = true;
             UseVoid();
         }

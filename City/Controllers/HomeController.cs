@@ -1,9 +1,9 @@
-﻿using City.Models;
+﻿using CyberCity.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace City.Controllers
+namespace CyberCity.Controllers
 {
     public class HomeController : Controller
     { 
