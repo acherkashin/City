@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace City.Models.HouseModels
 {
-    public interface IHouseRepository
-    {
-        void Update(House house);
-        IEnumerable<House> GetAll();
-        void Add(House house);
-        House Find(int Id);
-    }
+    //public interface IHouseRepository
+    //{
+    //    void Update(House house);
+    //    IEnumerable<House> GetAll();
+    //    void Add(House house);
+    //    House Find(int Id);
+    //}
 }
