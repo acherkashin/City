@@ -66,6 +66,10 @@ namespace CyberCity.Models.ReactorModel
                     /// Эти переменные были нужны для вывода данных на html-страницу. Они конкатенировались и передавались во вьюшку
                     /// А там они выводились в консоль и в соответствующие поля
                     /// </summary>
+                    ///<summary>
+                    ///Отправка Энергии(Energy) на объект "Электрическая подстанция"
+                    ///</summary>
+                    SendEnergy();
                     var currentE = r1.energy;
                     var currentR = t1.currentRPM;
                     var currentV = t1.currentVibration;
@@ -253,5 +257,16 @@ namespace CyberCity.Models.ReactorModel
             /// TODO: Тут необходимо через хаб обращаться к Подстанции и передавать переменную FlagSiren для влючения сирены
             /// </summary>
         }
+        ///<summary>
+        ///Отправка Энергии(Energy) на объект "Электрическая подстанция"
+        ///</summary>
+        private void SendEnergy()
+        {
+            var result = r1.energy;
+            ///<summary>
+            ///TODO: Отправка переменной Energy через хаб на подстанцию
+            ///</summary>
+        }
+
     }
 }
