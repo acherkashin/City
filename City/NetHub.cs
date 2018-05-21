@@ -22,14 +22,14 @@ namespace CyberCity
 
         private ApplicationContext _context;
 
-        private City _city;
+        private Models.City _city;
 
         //private ReactorRunner _reactor;
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _city = City.Create(this);
+            _city = CyberCity.Models.City.Create(this);
             //_reactor = new ReactorRunner(context);
         }
 

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using City.Models;
 using City.Models.HouseModels;
+using CyberCity.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
