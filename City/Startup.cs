@@ -50,6 +50,7 @@ namespace City
             services.AddMvc();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddScoped<IHouseRepository, HouseRepository>();
         }
 

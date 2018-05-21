@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using City.Models;
 using City.Models.HouseModels;
@@ -12,12 +13,11 @@ namespace City.Controllers
     public class HouseController : Controller
     {
         private IHouseRepository _houseRepository;
-
+        //todo почему-то при каждом обновлении страницы вызывается конструктор
         public HouseController(IHouseRepository houseRepository)
         {
             _houseRepository = houseRepository;
         }
-
 
         public IActionResult Index()
         {
@@ -27,6 +27,21 @@ namespace City.Controllers
             }
             return View();
         }
+
+        /// <summary>
+        /// Обновления данных о состоянии жилых домов
+        /// </summary>
+        public ActionResult UpadateData()
+        {
+           var houses = _houseRepository.GetAll();
+            foreach (var house in houses)
+            {
+                house.UpdateMeters();
+            }
+
+            return StatusCode(200);
+        }
+
         /// <summary>
         /// Получение всех домов
         /// </summary>
@@ -94,11 +109,13 @@ namespace City.Controllers
                 Params = ""
             };
 
+            //todo доделать прием данных от муниципалитета
+
             return new JsonResult(package);
         }
 
         /// <summary>
-        /// Формирования пакета запроса данных о можности 
+        /// Формирования пакета запроса данных о мощности 
         /// </summary>
         /// <returns></returns>
         public JsonResult GetPowerPackage()
@@ -111,20 +128,90 @@ namespace City.Controllers
                 Params = ""
             };
 
+            //todo доделать прием данных от подстанции
+
+            var houses = _houseRepository.GetAll();
+
+            int power = Generator.GenerateValue(0, 100);
+
+            //пришло слишком много мощности, поэтому отрубаем свет во всех домах
+            if (power > 100)
+            {
+                foreach (var house in houses)
+                {
+                    house.IsOnLight = false;
+                }
+            }
+            else if (power <= 100 && power >= 75)
+            {
+                foreach (var house in houses)
+                {
+                    house.IsOnLight = true;
+                }
+            }
+            else if (power < 75 && power >= 50)
+            {
+                _houseRepository.Find(1).IsOnLight = false;
+
+                _houseRepository.Find(2).IsOnLight = true;
+                _houseRepository.Find(3).IsOnLight = true;
+                _houseRepository.Find(4).IsOnLight = true;
+
+            }
+            else if (power < 50 && power >= 25)
+            {
+                _houseRepository.Find(1).IsOnLight = false;
+                _houseRepository.Find(2).IsOnLight = false;
+
+                _houseRepository.Find(3).IsOnLight = true;
+                _houseRepository.Find(4).IsOnLight = true;
+            }
+            else if (power < 25 && power >= 10)
+            {
+                _houseRepository.Find(1).IsOnLight = false;
+                _houseRepository.Find(2).IsOnLight = false;
+                _houseRepository.Find(3).IsOnLight = false;
+
+                _houseRepository.Find(4).IsOnLight = true;
+            }
+            //пришло слишком мало мощности, поэтому отрубаем свет во всех домах
+            else if (power < 10 )
+            {
+                foreach (var house in houses)
+                {
+                    house.IsOnLight = false;
+                }
+            }
+
             return new JsonResult(package);
         }
 
-        public JsonResult SwitchLight(int countHouses)
-        {
-            var package = new Package()
-            {
-                From = Subject.Houses,
-                To = Subject.ElectricalSubstation,
-                Method = "SwitchLight",
-                Params = ""
-            };
-            return new JsonResult(package);
 
+        public void SwitchLightOnArduino()
+        {
+            var homes = _houseRepository.GetAll();
+
+            string urlToArduino = "http://192.168.0.0/switchLight?";
+
+            foreach (var home in homes)
+            {
+               WebRequest request = WebRequest.Create(urlToArduino + $"id=${home.Id}&${home.IsOnLight}");
+               request.Method = "GET";
+               WebResponse response = request.GetResponse();
+            }
+
+        }
+
+
+        [HttpPost]
+        public void HandleSwitchLight(int id, bool isOnLight)
+        {
+            var house = _houseRepository.Find(id);
+
+            if (house != null)
+            {
+                house.IsOnLight = isOnLight;
+            }
         }
     }
 }

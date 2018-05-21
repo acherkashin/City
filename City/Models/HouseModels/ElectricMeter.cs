@@ -29,6 +29,17 @@ namespace City.Models.HouseModels
         /// </summary>
         public int Tarif { get; set; }
 
+        public void UpdateMeters(int electricPower)
+        {
+            if (electricPower != 0)
+            {
+                CurrentPower = electricPower;
+            }
+
+            SpentPower += CurrentPower;
+        }
+
+
     }
    
 }

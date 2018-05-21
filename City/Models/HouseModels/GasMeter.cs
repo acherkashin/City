@@ -21,5 +21,10 @@ namespace City.Models.HouseModels
         /// Тарифный коэффициент, обозначающий сколько стоит 1 куб м воды в рублях
         /// </summary>
         public int Tarif { get; set; }
+
+        public void UpdateMeters()
+        {
+            CurrentVolume = Generator.GenerateValue(CurrentVolume, CurrentVolume + 10);
+        }
     }
 }

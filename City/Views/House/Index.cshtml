@@ -122,7 +122,7 @@
 </svg>
 
     </div>      
-    <button class="btn btn-primary">Обновить</button>
+    <button id="updateData" class="btn btn-primary">Обновить</button>
    
 </div>
 
@@ -133,6 +133,7 @@
             type: 'GET',
             contentType: "application/json",
             success: function (homes) {
+                $("table tbody").empty();
                 var rows = "";
                 $.each(homes,
                     function (index, home) {
@@ -142,6 +143,7 @@
             }
         });
     }
+
     function getRow(home) {
         return "<tr data-rowid='" + home.id + "'>"
             + "<td>" + home.id + "</td>"
@@ -154,6 +156,31 @@
 
     getHomes();
 
+    $(document).ready(function () {
+        $("#updateData").on("click",
+                function () {
+                    $.ajax({
+                        url: 'http://@Context.Request.Host/House/UpadateData',
+                        type: 'GET',
+                        contentType: "application/json",
+                        success: function () {
+                            getHomes();
+                        }
+                });
+            });
+
+        $("body").on("change",".switch-light",
+            function () {
+                console.log("dffg")
+                var id = $(this).data("id");
+                var isOnLight = $(this).is(":checked");
+                $.ajax({
+                    method: "POST",
+                    data: { id: id, isOnLight: isOnLight },
+                    url: 'http://@Context.Request.Host/House/HandleSwitchLight'
+                });
+            });
+    });
 
 </script>
 
