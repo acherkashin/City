@@ -21,6 +21,11 @@
         public double Wind { get; set; }
 
         /// <summary>
+        /// Влажность.
+        /// </summary>
+        public double Humidity { get; set; }
+
+        /// <summary>
         /// Картинка. 
         /// </summary>
         public string Icon { get; set; }

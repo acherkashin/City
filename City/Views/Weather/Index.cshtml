@@ -51,6 +51,14 @@
                     {{weather.windSpeed}} м/с
                 </td>
             </tr>
+            <tr>
+                <th>
+                    Влажность
+                </th>
+                <td>
+                    {{weather.humidity}} 
+                </td>
+            </tr>
         </table>
 
         <div v-if="day">
@@ -85,7 +93,8 @@
             weather: {
                 tempreture: 0,
                 pressure: 0,
-                windSpeed: 0
+                windSpeed: 0, 
+                humidity: 0
             },
             dataReceived: false,
             day: false,
@@ -120,6 +129,7 @@
                         vm.weather.tempreture = response.data.tempreture;
                         vm.weather.pressure = response.data.pressure;
                         vm.weather.windSpeed = response.data.wind;
+                        vm.weather.humidity = response.data.humidity;
 
                         var icon = response.data.icon.substr(0, 2);
                         var day = response.data.icon.substr(2, 1)
