@@ -1,0 +1,211 @@
+﻿
+@{
+    ViewBag.Title = "Метеостанция";
+}
+
+<h2>   @ViewBag.Title</h2>
+
+<div id="app" class="col-lg-12">
+    <div class="row">
+        <div v-if="admin">
+            <input type="checkbox" v-on:click="changePowerMode" v-model:value="power" />Включена
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label> Выберите город </label>
+        <select v-model="selectedCity" class="form-control glyphicon-search">
+            <option v-for="city in cities" :value="city.key"> {{city.name}}</option>
+        </select>
+    </div>
+    <br />
+    <div class="row">
+        <button class="col-md-2 btn btn-primary" style="margin-left:auto" v-on:click="getData">Получить данные</button>
+    </div>
+
+    <br />
+
+    <div v-if="dataReceived">
+
+        <table>
+            <tr>
+                <th>
+                    Температура:
+                </th>
+                <td>
+                    {{weather.tempreture}} C°
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Давление:
+                </th>
+                <td>
+                    {{weather.pressure}} ммРт
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Скорость ветра:
+                </th>
+                <td>
+                    {{weather.windSpeed}} м/с
+                </td>
+            </tr>
+        </table>
+
+        <div v-if="day">
+            <img v-if="sun" src="~/images/01d.png" />
+            <img v-if="sunCloud" src="~/images/02d.png" />
+            <img v-if="cloud" src="~/images/03d.png" />
+            <img v-if="darkCloud" src="~/images/04d.png" />
+            <img v-if="rain" src="~/images/09d.png" />
+            <img v-if="rainSun" src="~/images/10d.png" />
+            <img v-if="thund" src="~/images/11d.png" />
+            <img v-if="snow" src="~/images/13d.png" />
+            <img v-if="wind" src="~/images/50d.png" />
+        </div>
+        <div v-else="day">
+            <img v-if="sun" src="~/images/01n.png" />
+            <img v-if="sunCloud" src="~/images/02n.png" />
+            <img v-if="cloud" src="~/images/03n.png" />
+            <img v-if="darkCloud" src="~/images/04n.png" />
+            <img v-if="rain" src="~/images/09n.png" />
+            <img v-if="rainSun" src="~/images/10n.png" />
+            <img v-if="thund" src="~/images/11n.png" />
+            <img v-if="snow" src="~/images/13n.png" />
+            <img v-if="wind" src="~/images/50n.png" />
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/vue.min.js"></script>
+<script src="~/lib/axios.min.js"></script>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data: {
+            weather: {
+                tempreture: 0,
+                pressure: 0,
+                windSpeed: 0
+            },
+            dataReceived: false,
+            day: false,
+            sun: false,
+            sunCloud: false,
+            rain: false,
+            cloud: false,
+            darkCloud: false,
+            rain: false,
+            rainSun: false,
+            thund: false,
+            snow: false,
+            wind: false,
+            selectedCity: '',
+            cities: [],
+            admin: @ViewBag.Mode,
+            power: true
+        },
+        methods: {
+            getData: function () {
+                var vm = this;
+
+                axios.get('/Weather/GetWeather?city=' + vm.selectedCity, {
+                    dataType: 'json',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(function (response) {
+                        vm.dataReceived = true;
+                        vm.weather.tempreture = response.data.tempreture;
+                        vm.weather.pressure = response.data.pressure;
+                        vm.weather.windSpeed = response.data.wind;
+
+                        var icon = response.data.icon.substr(0, 2);
+                        var day = response.data.icon.substr(2, 1)
+                        vm.setDefaultIcons();
+
+                        if (day == "d")
+                        {
+                            vm.day = true;
+                        }
+                        else
+                        {
+                            vm.day = false;
+                        }
+
+                        switch (icon) {
+                            case '01':
+                                vm.sun = true;
+                                break;
+                            case '02':
+                                vm.sunCloud = true;
+                                break;
+                            case '03':
+                                vm.cloud = true;
+                                break;
+                            case '04':
+                                vm.darkCloud = true;
+                                break;
+                            case '09':
+                                vm.rain = true;
+                                break;
+                            case '10':
+                                vm.rainSun = true;
+                                break;
+                            case '11':
+                                vm.thund = true;
+                                break;
+                            case '13':
+                                vm.snow = true;
+                                break;
+                            case '50':
+                                vm.wind = true;
+                                break;
+                        }
+                    }
+                );
+            },
+            setDefaultIcons: function () {
+                this.day = false;
+                this.sun = false;
+                this.sunCloud = false;
+                this.rain = false;
+                this.cloud = false;
+                this.darkCloud = false;
+                this.rain = false;
+                this.rainSun = false;
+                this.thund = false;
+                this.snow = false;
+                this.wind = false;
+            },
+            changePowerMode: function () {
+                axios.get('/Weather/ChangePowerMode', {
+                    dataType: 'json',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(function (response) {
+                        this.power = response.data;
+                    });
+            }
+        },
+        created() {
+            var app = this;
+            axios.get("/Town/GetCities", {
+                dataType: 'json',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(function (response) {
+                    app.cities = response.data;
+                });
+        }
+    })
+</script>

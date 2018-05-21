@@ -1,5 +1,7 @@
-﻿using System;
+﻿using City.Utils;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace City.Models
     public class User
     {
         public int Id { get; set; }
+
         public string LastName { get; set; }
 
         public string FirstName { get; set; }
@@ -17,5 +20,12 @@ namespace City.Models
         public Subject Subject { get; set; }
 
         public string Password { get; set; }
+
+        [NotMapped]
+        public bool IsOnline => NetHub.OnlineUsersIds.Contains(Id);
+
+        [NotMapped]
+        
+        public string SubjectName => Subject.GetDisplayName();
     }
 }

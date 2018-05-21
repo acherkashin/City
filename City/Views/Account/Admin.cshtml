@@ -1,46 +1,39 @@
 ﻿@model City.Models.AdminViewModel
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @using City.Utils
 
 @{
     ViewData["Title"] = "Admin";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    var strUsers = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Users, new JsonSerializerSettings
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    });
 }
 
 
-<div>
-    <table class="online-users table table-striped">
-        <thead>
-            <tr>
-                <th>Статус</th>
-                <th>Имя</th>
-                <th>Фамилия</th>
-                <th>Логин</th>
-                <th>Объект</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (User user in Model.Users)
-            {
-                <tr class="online-user">
-                    <td class="online-user__status"></td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Login</td>
-                    <td>@user.Subject.GetDisplayName()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div id="admin-page">
 </div>
+
 <script>
     $(document).ready(() => {
-        new NetClient({
+        const users = @Html.Raw(strUsers);
+
+        const onlineList = new OnlineList({
+            users,
+            host: $('#admin-page'),
+        })
+
+        const client = new NetClient({
             hubUrl: 'http://@Context.Request.Host/net',
             onRecieve: (packate) => {
 
             },
             onUpdateOnlineList: (users) => {
-
+                onlineList.updateUsers(users);
             }
         })
     })

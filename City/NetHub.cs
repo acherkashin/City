@@ -5,6 +5,7 @@ using City.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System;
+using City.Models.ReactorModel;
 
 namespace City
 {
@@ -20,13 +21,16 @@ namespace City
         public static string HackerRole => Subject.Hacker.ToString();
         public static string CityObjectRole => nameof(CityObjectRole);
 
-        static List<int> _userIds = new List<int>();
+        public static List<int> OnlineUsersIds = new List<int>();
 
         private ApplicationContext _context;
+
+        private ReactorRunner _reactor;
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
+            _reactor = new ReactorRunner(context);
         }
 
         public async override Task OnConnectedAsync()
@@ -44,12 +48,17 @@ namespace City
             }
             else
             {
+                if (IsNuclearPowerPlant(user))
+                {
+                    _reactor.StartReactor();
+                }
+
                 await Groups.AddAsync(Context.ConnectionId, CityObjectRole);
             }
 
-            if (!_userIds.Any(id => id == userId))
+            if (!OnlineUsersIds.Any(id => id == userId))
             {
-                _userIds.Add(userId);
+                OnlineUsersIds.Add(userId);
             }
 
             await UpdateOnlineUserList();
@@ -58,7 +67,7 @@ namespace City
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _userIds.Remove(GetId(Context.User));
+            OnlineUsersIds.Remove(GetId(Context.User));
             await UpdateOnlineUserList();
             await base.OnDisconnectedAsync(exception);
         }
@@ -82,7 +91,7 @@ namespace City
 
         private async Task UpdateOnlineUserList()
         {
-            var onlineUsers = _context.Users.Where(u => _userIds.Contains(u.Id)).ToList();
+            var onlineUsers = _context.Users.Where(u => OnlineUsersIds.Contains(u.Id) && u.Subject != Subject.Admin).ToList();
             await Clients.Group(AdminRole).onUpdateOnlineList(onlineUsers);
         }
 
@@ -90,6 +99,15 @@ namespace City
         {
             var userId = int.Parse(principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "ID")?.Value);
             return userId;
+        }
+
+        /// <summary>
+        /// Пользователь этомная станция?
+        /// </summary>
+        private bool IsNuclearPowerPlant(ClaimsPrincipal principal)
+        {
+            var subjectType = principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
+            return subjectType == Subject.NuclearPowerPlant.ToString();
         }
     }
 }
