@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Rewrite.Internal
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -43,11 +44,12 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar">  </span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">City</a>
+                <a asp-area="" asp-controller="House" asp-action="Index" class="navbar-brand">Жилые дома</a>
             </div>
         </div>
     </nav>
