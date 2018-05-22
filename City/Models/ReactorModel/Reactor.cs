@@ -10,13 +10,13 @@ namespace CyberCity.Models.ReactorModel
         /// <summary>
         /// Переменная, которая передается на Arduino для включения дыма
         /// </summary>
-        public bool FlagVoid { get; set; } = false;
+        public bool IsOnVoid { get; set; } = false;
         /// <summary>
         /// Состояние реактора
         /// </summary>
-        public bool stateOfReactor { get; set; }
+        public bool IsOnReactor { get; set; }
         public bool NuclearBlast { get; set; } = false;
-        public bool StateOfRod { get; set; } = false;
+        public bool IsUpRod { get; set; } = false;
 
         /// <summary>
         /// Текущая энергия
@@ -41,14 +41,14 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         public void DownRod()
         {
-            StateOfRod = true;
+            IsUpRod = true;
         }
         /// <summary>
         /// Поднятие урановых стежней
         /// </summary>
         public void UpRod()
         {
-            StateOfRod = false;
+            IsUpRod = false;
         }
         /// <summary>
         /// Изменение числа, на которое изменяется температура
@@ -57,7 +57,7 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         public void ChangeDlt(int percent)
         {
-            if (StateOfRod == true)
+            if (IsUpRod == true)
             {
                 dlt = 5 + 0.01 * percent * currentTemperature * 0.1;
             }
@@ -73,7 +73,7 @@ namespace CyberCity.Models.ReactorModel
         public void BlastReactor()
         {
             NuclearBlast = true;
-            FlagVoid = true;
+            IsOnVoid = true;
             UseVoid();
         }
         /// <summary>
@@ -82,7 +82,7 @@ namespace CyberCity.Models.ReactorModel
         public void UseVoid()
         {
             /// <summary>
-            /// TODO: Тут необходимо отправлять переменную FlagVoid на Arduino для включения дыма
+            /// TODO: Тут необходимо отправлять переменную IsOnVoid на Arduino для включения дыма
             /// </summary>
         }
 
