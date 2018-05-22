@@ -10,13 +10,13 @@ namespace CyberCity.Controllers
         [HttpPut("rele")]
         public void ChangeStateRele([FromQuery]bool flag)
         {
-            City.GetInstance().SubStation.ChangeRele(flag);
+            CyberCity.Models.City.GetInstance().SubStation.ChangeRele(flag);
         }
 
         [HttpGet("state")]
         public ActionResult GetState()
         {
-            return Ok(City.GetInstance().SubStation.GetState());
+            return Ok(CyberCity.Models.City.GetInstance().SubStation.GetState());
         }
     }
 }

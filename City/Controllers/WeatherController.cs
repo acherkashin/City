@@ -39,6 +39,7 @@ namespace CyberCity.Controllers
             if (Statics.StantionPower.IsOn)
             {
                 WebRequest request;
+
                 if (city != "PlayCity")
                 {
                     request = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q={city}&APPID=48e67cb1b0973a7baa74f011cc36315b");
@@ -70,10 +71,14 @@ namespace CyberCity.Controllers
 
                 WeaherResult result = new WeaherResult();
 
+                result.Pressure = Math.Round(weather.Main.Pressure, 2);
+                result.Wind = Math.Round(weather.Wind.Speed, 2);
+                result.Icon = weather.Weather[0].Icon;
+
 
                 if (city == "PlayCity")
                 {
-                    var getRequest = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q=Kursk&APPID=48e67cb1b0973a7baa74f011cc36315b");
+                    var getRequest = WebRequest.Create($"http://192.168.1.6/");
 
                     getRequest.Method = "POST";
                     getRequest.ContentType = "application/x-www-urlencoded";
@@ -89,13 +94,13 @@ namespace CyberCity.Controllers
                             deviceAnswer = reader.ReadToEnd();
                         }
                     }
+                    result.Tempreture = Convert.ToDouble(deviceAnswer.Substring(0, deviceAnswer.IndexOf(":")));
+                    result.Humidity = Convert.ToDouble(deviceAnswer.Substring(deviceAnswer.IndexOf(":") + 1));
                 }
                 else
                 {
                     result.Tempreture = Math.Round(weather.Main.Tempreture, 2);
-                    result.Pressure = Math.Round(weather.Main.Pressure, 2);
-                    result.Wind = Math.Round(weather.Wind.Speed, 2);
-                    result.Icon = weather.Weather[0].Icon;
+                    result.Humidity = Math.Round(weather.Main.Humidity, 2);
                 }
 
                 return result;
