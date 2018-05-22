@@ -9,13 +9,14 @@ namespace CyberCity.Models.Reactor
     public class Turbine
     {
         /// <summary>
-        /// Переменная, которая передается на объект Подстанция для включения сирены
+ 
+
         /// </summary>
-        public bool FlagSiren { get; set; } = false;
+        public bool IsOnSiren { get; set; } = false;
         /// <summary>
         /// Состояние турбины
         /// </summary>
-        public bool StateOfTurbine { get; set; } = false;
+        public bool IsOnTurbine { get; set; } = false;
         /// <summary>
         /// Текущие обороты турбины
         /// </summary>
@@ -51,20 +52,20 @@ namespace CyberCity.Models.Reactor
         /// <summary>
         /// Состояние поломки: поломана турбина или нет
         /// </summary>
-        private bool stateOfBroken = false;
-        public bool StateOfBroken
+        private bool isBroken = false;
+        public bool IsBroken
         {
-            get { return stateOfBroken; }
-            set { stateOfBroken = value; }
+            get { return isBroken; }
+            set { IsBroken = value; }
         }
         /// <summary>
         /// Запуск турбины
         /// </summary>
         public void Start()
         {
-            stateOfBroken = false;
-            StateOfTurbine = true;
-            FlagSiren = false;
+            IsBroken = false;
+            IsOnTurbine = true;
+            IsOnSiren = false;
         }
         /// <summary>
         /// Остановка турбины
@@ -72,11 +73,11 @@ namespace CyberCity.Models.Reactor
         public void Stop()
         {
             TimerOfBroken();
-            StateOfTurbine = false;
-            StateOfBroken = true;
+            IsOnTurbine = false;
+            IsBroken = true;
             currentRPM = 0;
             currentVibration = 0;
-            FlagSiren = true;
+            IsOnSiren = true;
         }
         /// <summary>
         /// Таймер, отвечающий за остановку турбины на 150 секунд при поломке
