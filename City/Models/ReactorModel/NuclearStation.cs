@@ -13,10 +13,10 @@ namespace CyberCity.Models.ReactorModel
         private NetHub _hub;
 
         /// <summary>
-        /// FLAG - глобальная переменная, которая отвечает за текущее состояние стержня, чтобы к ней можно было обращаться из метода StartReactor.
-        /// т.е. при нажатии на кнопок на html-странице происходит изменение переменной FLAG, а после к ней обращается метод StartReactor и работает уже с ней
+        /// IsUpRodGlobal - глобальная переменная, которая отвечает за текущее состояние стержня, чтобы к ней можно было обращаться из метода StartReactor.
+        /// т.е. при нажатии на кнопок на html-странице происходит изменение переменной IsUpRodGlobal, а после к ней обращается метод StartReactor и работает уже с ней
         /// </summary>
-        bool FLAG = false;
+        bool IsUpRodGlobal = false;
         private Object lockObj = new Object();
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
@@ -34,15 +34,15 @@ namespace CyberCity.Models.ReactorModel
 
         public void ChangeRodState(bool flag)
         {
-            FLAG = flag;
-            reactor.StateOfRod = FLAG;
+            IsUpRodGlobal = flag;
+            reactor.IsUpRod = IsUpRodGlobal;
         }
 
         private void StartReactor()
         {
             lock (lockObj)
             {
-                reactor.stateOfReactor = true;
+                reactor.IsOnReactor = true;
                 while (reactor.NuclearBlast == false)
                 {
                     /// <summary>
@@ -52,7 +52,7 @@ namespace CyberCity.Models.ReactorModel
                     /// <summary>
                     /// Тут происходит обращение к глобальной переменной и это значение присваивается в текущее состояние стержня
                     /// </summary>
-                    reactor.StateOfRod = FLAG;
+                    reactor.IsUpRod = IsUpRodGlobal;
                     ChangeTemperatue();
 
                     _hub.SendStateChanged(Subject.NuclearStation, GetState());
@@ -76,7 +76,7 @@ namespace CyberCity.Models.ReactorModel
         /// </remarks>
         private void ChangeTemperatue()
         {
-            if (reactor.StateOfRod)
+            if (reactor.IsUpRod)
             {
                 reactor.currentTemperature = reactor.currentTemperature - reactor.dlt;
             }
@@ -85,7 +85,7 @@ namespace CyberCity.Models.ReactorModel
                 reactor.currentTemperature = reactor.currentTemperature + reactor.dlt;
             }
 
-            if (turbine.StateOfTurbine == false)
+            if (turbine.IsOnTurbine == false)
             {
                 reactor.ChangeDlt(15);
             }
@@ -98,9 +98,9 @@ namespace CyberCity.Models.ReactorModel
             /// </summary>
             if (reactor.currentTemperature > reactor.BlastTemperature)
             {
-                reactor.FlagVoid = true;
-                reactor.stateOfReactor = false;
-                turbine.StateOfTurbine = false;
+                reactor.IsOnVoid = true;
+                reactor.IsOnReactor = false;
+                turbine.IsOnTurbine = false;
                 turbine.Stop();
                 OnSiren();
                 reactor.BlastReactor();
@@ -121,11 +121,11 @@ namespace CyberCity.Models.ReactorModel
                     /// </summary>
                     if (reactor.currentTemperature >= reactor.MinTemperature)
                     {
-                        if (turbine.currentRPM == 0 && turbine.StateOfBroken != true)
+                        if (turbine.currentRPM == 0 && turbine.IsBroken != true)
                         {
                             turbine.Start();
                         }
-                        if (turbine.StateOfTurbine == true)
+                        if (turbine.IsOnTurbine == true)
                         {
                             ChangeRPM();
                         }
@@ -156,13 +156,13 @@ namespace CyberCity.Models.ReactorModel
         private void ChangeRPM()
         {
             Random randomValue = new Random();
-            if (turbine.currentRPM < turbine.MaxRPM && reactor.StateOfRod == false)
+            if (turbine.currentRPM < turbine.MaxRPM && reactor.IsUpRod == false)
             {
                 turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
             }
             else
             {
-                if (turbine.currentRPM < turbine.MaxRPM && reactor.StateOfRod == true)
+                if (turbine.currentRPM < turbine.MaxRPM && reactor.IsUpRod == true)
                 {
                     turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
                 }
@@ -219,7 +219,7 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         private void ChangeVibration()
         {
-            if (turbine.StateOfBroken != true)
+            if (turbine.IsBroken != true)
             {
                 turbine.currentVibration += 100;
             }
@@ -239,12 +239,8 @@ namespace CyberCity.Models.ReactorModel
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
                 Method = "Siren",
-                Params = Newtonsoft.Json.JsonConvert.SerializeObject(turbine.FlagSiren),
+                Params = Newtonsoft.Json.JsonConvert.SerializeObject(turbine.IsOnSiren),
             });
-
-            /// <summary>
-            /// TODO: Тут необходимо через хаб обращаться к Подстанции и передавать переменную FlagSiren для влючения сирены
-            /// </summary>
         }
 
         public ReactorData GetState()
@@ -255,13 +251,9 @@ namespace CyberCity.Models.ReactorModel
                 Energy = reactor.energy,
                 RPM = turbine.currentRPM,
                 Vibration = turbine.currentVibration,
-                StReactor = reactor.stateOfReactor,
-                StRod = reactor.StateOfRod,
-                //TODO: Что значит состояние турбины??? 
-                /// <summary>
-                /// Состояние турбины означает работает она или нет (работает или поломана)
-                /// </summary>
-                StTurbine = turbine.StateOfTurbine,
+                StReactor = reactor.IsOnReactor,
+                StRod = reactor.IsUpRod,
+                StTurbine = turbine.IsOnTurbine,
             };
         }
     }
