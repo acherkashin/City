@@ -11,8 +11,8 @@ namespace CyberCity
 {
     public interface INetHub
     {
-        Task onRecieve(Package package);
-        Task onUpdateOnlineList(IEnumerable<User> users);
+        void onRecieve(Package package);
+        void onUpdateOnlineList(IEnumerable<User> users);
         void onStateChanged(object state);
     }
 
@@ -24,13 +24,11 @@ namespace CyberCity
 
         private City _city;
 
-        //private ReactorRunner _reactor;
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _city = City.Create(this);
-            //_reactor = new ReactorRunner(context);
+            _city = City.Create(context, this);
         }
 
         public async override Task OnConnectedAsync()
@@ -45,7 +43,7 @@ namespace CyberCity
                 OnlineUsersIds.Add(userId);
             }
 
-            await UpdateOnlineUserList();
+            UpdateOnlineUserList();
             await base.OnConnectedAsync();
         }
 
@@ -63,25 +61,31 @@ namespace CyberCity
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             OnlineUsersIds.Remove(GetId(Context.User));
-            await UpdateOnlineUserList();
+            UpdateOnlineUserList();
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task Send(Package package)
+        public async void Send(Package package)
         {
             _context.Add(package);
             _context.SaveChanges();
 
             var encrepted = package.CreateEncreted();
-            await Clients.Group(Subject.Hacker.ToString()).onRecieve(package);
 
-            await Clients.Group(package.To.ToString()).onRecieve(package);
+            Clients.Group(Subject.Hacker.ToString()).onRecieve(package);
+
+            Clients.Group(package.To.ToString()).onRecieve(package);
+
+            if(package.To.Equals(Subject.Substation))
+            {
+
+            }
         }
 
-        private async Task UpdateOnlineUserList()
+        private void UpdateOnlineUserList()
         {
             var onlineUsers = _context.Users.Where(u => OnlineUsersIds.Contains(u.Id) && u.Subject != Subject.Admin).ToList();
-            await Clients.Group(Subject.Admin.ToString()).onUpdateOnlineList(onlineUsers);
+            Clients.Group(Subject.Admin.ToString()).onUpdateOnlineList(onlineUsers);
         }
 
         private int GetId(ClaimsPrincipal principal)

@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Атомная станция";
+}
+<h2>@ViewBag.Title.</h2>
+
+
+<div id="app">
+    <div class="Use_Reactor">
+        <p>Управление реактором:</p>
+        <label>Состояние реактора:</label> {{labelReactorState}}
+        @*<textarea v-model="stateReactor" rows="1" cols="30"></textarea>*@
+        <br />
+        <label>Температура реактора:</label>
+        <input type="text" v-model="temperature" rows="1" cols="30"/>
+        <br />
+        <label>Состояние урановых стержней:</label> {{labelRodState}}
+        @*<textarea v-model="stateRod" id="stateRodID" rows="1" cols="30"></textarea>*@
+        <br />
+        <button class="btn glyphicon glyphicon-arrow-down" v-on:click="Down">Опустить урановые стержни</button>
+        <button class="btn glyphicon glyphicon-arrow-up" v-on:click="Up">Поднять урановые стержни</button>
+    </div>
+    <br />
+    <br />
+    <div class="Tourbine">
+        <p>Турбина:</p>
+        <label>Состояние турбины:</label> {{labelTurbineState}}
+        @*<textarea v-model="stateTurbine" rows="1" cols="30"></textarea>*@
+        <br />
+        <label>Скорость оборотов турбины:</label>
+        <input type="text" v-model="rpm" id="rpmID" rows="1" cols="30"/>
+        <br />
+        <label>Вибрация турбины:</label>
+        <input type="text" v-model="vibration" rows="1" cols="50"/>
+    </div>
+    <br />
+    <br />
+    <div class="Station">
+        <p>Подстанция:</p>
+        <label>Выработанная энергия:</label>
+        <textarea v-model="energy" rows="1" cols="50"></textarea>
+    </div>
+    <br />
+    <div>
+        <button v-on:click="UpdateData">Обновить данные</button>
+    </div>
+</div>
+
+<script>
+    $(() => {
+        var nuclearStationModel = new Vue({
+            el: '#app',
+            data: {
+                temperature: 0,
+                rpm: 0,
+                vibration: 0,
+                energy: 0,
+                stReactor: false,
+                stRod: false,
+                stTurbine: false,
+            },
+            computed: {
+                labelReactorState: {
+                    get: function () {
+                        return this.stReactor ? "Реактор запущен" : "Реактор остановлен";
+                    }
+                },
+                labelRodState: {
+                    get: function () {
+                        return this.stRod ? "Урановые стержни опущены" : "Урановые стержни подняты";
+                    }
+                },
+                labelTurbineState: {
+                    get: function () {
+                        return this.stTurbine ? "Турбины запущены" : "Турбины остановлены";
+                    },
+                }
+            },
+            methods: {
+                UpdateData: function () {
+                    axios.get("/api/nuclearstation/state")
+                        .then(response => {
+                            const state = response.data;
+
+                            this.energy = state.energy;
+                            this.rpm = state.rpm;
+                            this.stReactor = state.stReactor;
+                            this.stRod = state.stRod;
+                            this.stTurbine = state.stTurbine;
+                            this.temperature = state.temperature;
+                            this.vibration = state.vibration;
+                        })
+                },
+                Down: function () {
+                    var flag = true;
+                    axios.put("/api/nuclearstation/rod?flag=" + flag)
+                        .then(response => {
+                            console.log("Стержни опущены. Состояние:" + flag)
+                            this.stRod = flag;
+                        })
+                },
+                Up: function () {
+                    var flag = false;
+                    axios.put("/api/nuclearstation/rod?flag=" + flag)
+                        .then(response => {
+                            console.log("Стержни подняты. Состояние:" + flag)
+                            this.stRod = flag;
+                        });
+                }
+            }
+        });
+
+        new NetClient({
+            hubUrl: 'http://@Context.Request.Host/net',
+            onRecieve: (packate) => {
+            },
+            onUpdateOnlineList: (users) => {
+            },
+            onStateChanged: (state) => {
+                console.log('Состояние:');
+                console.dir(state)
+                nuclearStationModel.energy = state.energy;
+                nuclearStationModel.rpm = state.rpm;
+                nuclearStationModel.stReactor = state.stReactor;
+                nuclearStationModel.stRod = state.stRod;
+                nuclearStationModel.stTurbine = state.stTurbine;
+                nuclearStationModel.temperature = state.temperature;
+                nuclearStationModel.vibration = state.vibration;
+            }
+        })
+
+        nuclearStationModel.UpdateData();
+    })
+</script>

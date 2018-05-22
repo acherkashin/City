@@ -23,7 +23,7 @@
 </div>
 
 <script>
-    var v = new Vue({
+    var nuclearStationModel = new Vue({
         el: '#reactor-page',
         data: {
             power: 0,
@@ -65,7 +65,7 @@
                 axios.put("/api/substation/rele?flag=" + flag)
                     .then(response => {
                         console.log("Реле выключено. Состояние:" + flag)
-                    })
+                    });
             }
         }
     })

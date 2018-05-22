@@ -85,5 +85,6 @@ namespace CyberCity.Models.ReactorModel
             /// TODO: Тут необходимо отправлять переменную FlagVoid на Arduino для включения дыма
             /// </summary>
         }
+
     }
 }

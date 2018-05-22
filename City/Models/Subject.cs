@@ -20,10 +20,10 @@ namespace CyberCity.Models
         Airport,
 
         [Display(Name = "Атомная станция")]
-        NuclearPowerPlant,
+        NuclearStation,
 
-        [Display(Name = "Электрическая подстанция")]
-        ElectricalSubstation,
+        [Display(Name = "Подстанция")]
+        Substation,
 
         [Display(Name = "Метестанция")]
         WeatherStation,

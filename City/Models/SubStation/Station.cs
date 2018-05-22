@@ -10,7 +10,9 @@ namespace CyberCity.Models.SubStation
     {
         private NetHub _hub;
 
-        public Station(NetHub hub)
+        public event Action<SubstationState> OnStateChanged;
+
+        public Station(ApplicationContext context, NetHub hub)
         {
             _hub = hub;
         }
@@ -19,6 +21,14 @@ namespace CyberCity.Models.SubStation
         public bool StateOfRele { get; set; } = false;
         public bool StateOSiren { get; set; } = false;
 
+        public void ProcessPackage(Package package)
+        {
+            if (package.Method == "Siren")
+            {
+
+            }
+        }
+
         /// <summary>
         /// Включение/Выключение реле
         /// </summary>
@@ -26,7 +36,7 @@ namespace CyberCity.Models.SubStation
         {
             StateOfRele = flagRele;
             //ResultStRele = Convert.ToString(StateOfRele);
-            _hub.SendStateChanged(Subject.ElectricalSubstation, GetState());
+            _hub.SendStateChanged(Subject.Substation, GetState());
         }
 
         /// <summary>
@@ -39,7 +49,7 @@ namespace CyberCity.Models.SubStation
             /// </summary>   
             StateOSiren = flagSiren;
             //ResultStSiren = Convert.ToString(StateOSiren);
-            _hub.SendStateChanged(Subject.ElectricalSubstation, GetState());
+            _hub.SendStateChanged(Subject.Substation, GetState());
         }
 
         /// <summary>
@@ -58,7 +68,7 @@ namespace CyberCity.Models.SubStation
             /// <summary>
             /// TODO: Тут необходимо отправлять данные в город через хаб
             /// </summary>
-            _hub.SendStateChanged(Subject.ElectricalSubstation, GetState());
+            _hub.SendStateChanged(Subject.Substation, GetState());
         }
 
         public void Start()
