@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.ReactorModel
 {
-    public class NuclearStation
+    public class NuclearStation : ICityObject
     {
+        public void ProcessPackage(Package package)
+        {
+            throw new NotImplementedException();
+        }
+
         private ApplicationContext _context;
         private NetHub _hub;
 
