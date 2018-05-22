@@ -5,7 +5,6 @@ using CyberCity.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System;
-using CyberCity.Models.ReactorModel;
 
 namespace CyberCity
 {
@@ -22,13 +21,13 @@ namespace CyberCity
 
         private ApplicationContext _context;
 
-        private City _city;
+        private Models.City _city;
 
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _city = City.Create(context, this);
+            _city = Models.City.Create(context, this);
         }
 
         public async override Task OnConnectedAsync()

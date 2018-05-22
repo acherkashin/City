@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using City.Models;
-using City.Models.HouseModels;
 using CyberCity.Models;
+using CyberCity.Models.HouseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace City.Controllers
+namespace CyberCity.Controllers
 {
     public class HouseController : Controller
     {
@@ -124,7 +123,7 @@ namespace City.Controllers
             var package = new Package()
             {
                 From = Subject.Houses,
-                To = Subject.ElectricalSubstation,
+                To = Subject.Substation,
                 Method = "GetPower",
                 Params = ""
             };

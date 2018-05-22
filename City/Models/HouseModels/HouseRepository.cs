@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace City.Models.HouseModels
+namespace CyberCity.Models.HouseModels
 {
     public static class HouseRepository
     {
