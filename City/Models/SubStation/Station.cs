@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.SubStation
 {
-    public class Station
+    public class Station: ICityObject
     {
         private NetHub _hub;
 

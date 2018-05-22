@@ -49,7 +49,6 @@ namespace CyberCity
             services.AddMvc();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
            // services.AddScoped<IHouseRepository, HouseRepository>();
         }
 

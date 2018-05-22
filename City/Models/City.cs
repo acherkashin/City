@@ -12,6 +12,17 @@ namespace CyberCity.Models
         public Station SubStation { get; set; }
         public NuclearStation NuclearStation { get; set; }
 
+        public ICityObject GetObject(Subject subj)
+        {
+            switch (subj)
+            {
+                case Subject.NuclearStation: return NuclearStation;
+                case Subject.Substation: return SubStation;
+            }
+
+            return null;
+        }
+
         private City(ApplicationContext context, NetHub hub)
         {
             _hub = hub;
@@ -23,7 +34,6 @@ namespace CyberCity.Models
             SubStation.Start();
             NuclearStation.Start();
         }
-        
 
         public static City Create(ApplicationContext context, NetHub hub)
         {

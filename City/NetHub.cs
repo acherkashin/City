@@ -75,10 +75,7 @@ namespace CyberCity
 
             Clients.Group(package.To.ToString()).onRecieve(package);
 
-            if(package.To.Equals(Subject.Substation))
-            {
-
-            }
+            City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
 
         private void UpdateOnlineUserList()
