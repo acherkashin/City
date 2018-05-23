@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.ReactorModel
@@ -11,6 +14,10 @@ namespace CyberCity.Models.ReactorModel
         /// Переменная, которая передается на Arduino для включения дыма
         /// </summary>
         public bool IsOnVoid { get; set; } = false;
+        /// <summary>
+        /// Переменная, которая передается на Arduino для включения/отключения белой лампочки
+        /// </summary>
+        public bool IsOnLamp { get; set; } = false;
         /// <summary>
         /// Состояние реактора
         /// </summary>
@@ -74,16 +81,48 @@ namespace CyberCity.Models.ReactorModel
         {
             NuclearBlast = true;
             IsOnVoid = true;
-            UseVoid();
+            IsOnLamp = true;
+            SendToArduino("NameOfMethodVoid", IsOnVoid);
+            SendToArduino("NameOfMethodLamp", IsOnLamp);
         }
         /// <summary>
-        /// Включение дыма
+        /// Отправка данных на Arduino
         /// </summary>
-        public void UseVoid()
+        /// <param name="Method">Название метода</param>
+        /// <param name="p">Параметр</param>
+        public void SendToArduino(String Method,bool p)
         {
-            /// <summary>
-            /// TODO: Тут необходимо отправлять переменную IsOnVoid на Arduino для включения дыма
+            ///<summary>
+            ///TODO: Правильно ли формируются параметры и метод?
             /// </summary>
+            String Parameters = Newtonsoft.Json.JsonConvert.SerializeObject(p);
+            // Create a request using a URL that can receive a post.  
+            ///<summary>
+            ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
+            /// </summary>           
+            String URL = "192.168.#.#/"+Method+Parameters;
+            WebRequest request = WebRequest.Create(URL);
+
+            // Set the Method property of the request to POST.  
+            request.Method = "POST";
+            // Create POST data and convert it to a byte array.  
+            string postData = "This is a test that posts this string to a Web server.";
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            // Set the ContentType property of the WebRequest.  
+            request.ContentType = "application/x-www-form-urlencoded";
+            // Set the ContentLength property of the WebRequest.  
+            request.ContentLength = byteArray.Length;
+            // Get the request stream.  
+            Stream dataStream = request.GetRequestStream();
+            // Write the data to the request stream.  
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            // Close the Stream object.  
+            dataStream.Close();
+            // Get the response.  
+            WebResponse response = request.GetResponse();
+            // Clean up the streams.  
+            dataStream.Close();
+            response.Close();
         }
 
     }
