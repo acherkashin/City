@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models.Reactor;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace CyberCity.Models.ReactorModel
         }
 
         private ApplicationContext _context;
-        private NetHub _hub;
+        private DataBus _hub;
 
         /// <summary>
         /// IsUpRodGlobal - глобальная переменная, которая отвечает за текущее состояние стержня, чтобы к ней можно было обращаться из метода StartReactor.
@@ -26,10 +27,10 @@ namespace CyberCity.Models.ReactorModel
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
 
-        public NuclearStation(ApplicationContext context, NetHub hub)
+        public NuclearStation(ApplicationContext context, DataBus databus)
         {
             _context = context;
-            _hub = hub;
+            _hub = databus;
         }
 
         public void Start()

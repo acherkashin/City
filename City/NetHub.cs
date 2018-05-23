@@ -21,13 +21,10 @@ namespace CyberCity
 
         private ApplicationContext _context;
 
-        private Models.City _city;
-
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _city = Models.City.Create(context, this);
         }
 
         public async override Task OnConnectedAsync()
@@ -64,7 +61,7 @@ namespace CyberCity
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async void Send(Package package)
+        public void Send(Package package)
         {
             _context.Add(package);
             _context.SaveChanges();

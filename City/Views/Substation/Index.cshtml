@@ -81,9 +81,9 @@
             },
             onStateChanged: (state) => {
                 console.log(state);
-                v.power = state.power;
-                v.stateRele = state.stRele;
-                v.stateSiren = state.stSiren;
+                nuclearStationModel.power = state.power;
+                nuclearStationModel.stateRele = state.stRele;
+                nuclearStationModel.stateSiren = state.stSiren;
             }
         })
     })
