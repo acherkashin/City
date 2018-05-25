@@ -110,8 +110,9 @@
         });
 
         new NetClient({
+
             hubUrl: 'http://@Context.Request.Host/net',
-            onRecieve: (packate) => {
+            onRecievePackage: (packate) => {
             },
             onUpdateOnlineList: (users) => {
             },

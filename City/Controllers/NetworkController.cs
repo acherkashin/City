@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models;
+using CyberCity.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -19,14 +20,25 @@ namespace CyberCity.Controllers
         }
 
         [HttpGet("packages")]
-        public ActionResult GetPackages(ApplicationContext context, Subject subject)
+        public ActionResult GetPackages()
         {
-            if (subject.Equals(Subject.Admin))
+            var role = User.GetRole();
+
+            if (role.Equals(Subject.Admin.ToString()))
             {
                 return Ok(_context.Packages.ToList());
             }
 
-            return Ok(_context.Packages.Where(package => package.To.Equals(subject)).ToList());
+            var packages = _context.Packages.Where(package => package.To.ToString().Equals(role)).ToList();
+
+            if (role.Equals(Subject.Hacker.ToString()))
+            {
+                return Ok(packages.ToList());
+            }
+            else
+            {
+                return Ok(packages.Select(p => p.CreateEncreted()).ToList());
+            }
         }
     }
 }

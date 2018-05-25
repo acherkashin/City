@@ -73,8 +73,9 @@
 <script>
     $(document).ready(() => {
         new NetClient({
+            host: '#log',
             hubUrl: 'http://@Context.Request.Host/net',
-            onRecieve: (packate) => {
+            onRecievePackage: (packate) => {
             },
             onUpdateOnlineList: (users) => {
 
