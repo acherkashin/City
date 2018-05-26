@@ -1,6 +1,6 @@
 ﻿using CyberCity.Models.ReactorModel;
-using CyberCity.Models.SubStation;
-using Microsoft.AspNetCore.SignalR;
+using CyberCity.Models.SubStationModel;
+using CyberCity.Models.WeatherStantionModel;
 
 namespace CyberCity.Models
 {
@@ -19,16 +19,18 @@ namespace CyberCity.Models
         private DataBus _databus;
         private ApplicationContext _context;
 
-        public Station SubStation { get; private set; }
-        public NuclearStation NuclearStation { get; private set; }
+        public readonly SubStation SubStation;
+        public readonly NuclearStation NuclearStation;
+        public readonly WeatherStantion WeatherStantion;
 
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
             _context = context;
 
-            SubStation = new Station(_context, databus);
+            SubStation = new SubStation(_context, databus);
             NuclearStation = new NuclearStation(_context, databus);
+            WeatherStantion = new WeatherStantion();
 
             SubStation.Start();
             NuclearStation.Start();
@@ -42,6 +44,7 @@ namespace CyberCity.Models
             {
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
+                case Subject.WeatherStation:return WeatherStantion;
             }
 
             return null;

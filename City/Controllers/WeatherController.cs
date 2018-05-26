@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using CyberCity.Models.WeatherStantion;
-using CyberCity.Statics;
+using CyberCity.Models;
+using CyberCity.Models.WeatherStantionModel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -36,7 +36,7 @@ namespace CyberCity.Controllers
         /// <returns> Метеоусловия.</returns>
         public WeaherResult GetWeather(string city)
         {
-            if (Statics.StantionPower.IsOn)
+            if (City.GetInstance().WeatherStantion.IsOn)
             {
                 WebRequest request;
 
@@ -117,9 +117,9 @@ namespace CyberCity.Controllers
         /// <returns> Включена или нет станция. </returns>               
         public bool ChangePowerMode()
         {
-            StantionPower.IsOn = !Statics.StantionPower.IsOn;
+            City.GetInstance().WeatherStantion.IsOn = !City.GetInstance().WeatherStantion.IsOn;
 
-            return Statics.StantionPower.IsOn;
+            return City.GetInstance().WeatherStantion.IsOn;
         }
     }
 }

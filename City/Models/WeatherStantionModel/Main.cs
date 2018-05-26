@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CyberCity.Models.WeatherStantion
+namespace CyberCity.Models.WeatherStantionModel
 {
     /// <summary>
     /// Основные метеоданные.

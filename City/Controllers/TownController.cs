@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using CyberCity.Models.WeatherStantion;
+using CyberCity.Models.WeatherStantionModel;
 
 namespace CyberCity.Controllers
 {
