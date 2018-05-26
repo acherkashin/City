@@ -1,5 +1,4 @@
 ﻿using CyberCity.Models;
-using CyberCity.Models.SubStation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CyberCity.Controllers

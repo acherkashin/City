@@ -6,13 +6,13 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CyberCity.Models.SubStation
+namespace CyberCity.Models.SubStationModel
 {
-    public class Station: ICityObject
+    public class SubStation: ICityObject
     {
         private DataBus _bus;
 
-        public Station(ApplicationContext context, DataBus bus)
+        public SubStation(ApplicationContext context, DataBus bus)
         {
             _bus = bus;
         }
