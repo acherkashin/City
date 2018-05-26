@@ -107,7 +107,7 @@ namespace CyberCity.Models.ReactorModel
             }
             else
             {
-                /// Если температура меньше или равна 0, то текущая температра=0
+                /// Если температура меньше или равна 0, то текущая температра = 0
                 if (reactor.currentTemperature <= 0)
                 {
                     reactor.currentTemperature = 0;
