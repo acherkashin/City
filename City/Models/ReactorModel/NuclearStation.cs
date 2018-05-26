@@ -257,7 +257,7 @@ namespace CyberCity.Models.ReactorModel
             {
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
-                Method = "SendEnergy",
+                Method = "GetPower",
                 Params = Newtonsoft.Json.JsonConvert.SerializeObject(reactor.energy),
             });
         }
