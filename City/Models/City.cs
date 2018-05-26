@@ -30,7 +30,7 @@ namespace CyberCity.Models
 
             SubStation = new SubStation(_context, databus);
             NuclearStation = new NuclearStation(_context, databus);
-            WeatherStantion = new WeatherStantion();
+            WeatherStantion = new WeatherStantion(_context, databus);
 
             SubStation.Start();
             NuclearStation.Start();
