@@ -15,7 +15,7 @@
     configureMethods() {
         this.hubConnection.on("onRecievePackage", (packate) => {
             console.dir(packate);
-            this.packagesList && this.packagesList.push(packate);
+            this.packagesList && this.packagesList.packages && this.packagesList.packages.push(packate);
             this.options.onRecievePackage && this.options.onRecievePackage(packate);
         });
 

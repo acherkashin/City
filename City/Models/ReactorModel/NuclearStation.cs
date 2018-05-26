@@ -95,9 +95,7 @@ namespace CyberCity.Models.ReactorModel
             {
                 reactor.ChangeDlt(5);
             }
-            /// <summary>
             /// Если температура >= температуры взрыва, то происходит взрыв(логично...)
-            /// </summary>
             if (reactor.currentTemperature > reactor.BlastTemperature)
             {
                 reactor.IsOnVoid = true;
@@ -109,9 +107,7 @@ namespace CyberCity.Models.ReactorModel
             }
             else
             {
-                /// <summary>
                 /// Если температура меньше или равна 0, то текущая температра=0
-                /// </summary>
                 if (reactor.currentTemperature <= 0)
                 {
                     reactor.currentTemperature = 0;
@@ -124,9 +120,7 @@ namespace CyberCity.Models.ReactorModel
                 }
                 else
                 {
-                    /// <summary>
                     /// При рабочей температуре(от 180) начинают работать турбины
-                    /// </summary>
                     if (reactor.currentTemperature >= reactor.MinTemperature)
                     {
                         if (reactor.LampColor != "2")
@@ -186,27 +180,22 @@ namespace CyberCity.Models.ReactorModel
                 {
                     turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
                 }
-                /// <summary>
+
                 /// При достижении "рабочих" оборотов в 3000 ед. обороты начинают изменяться в диапазоне [3000;3050]
                 /// Поломка возможна только в случае перехвата и изменения пакетов, где обороты будут больше 3200 ед.
-                /// </summary>
                 else
                 {
                     turbine.currentRPM = (turbine.MaxRPM-200) + randomValue.Next(0, 51);
                 }
             }
-            /// <summary>
             /// Если текущие обороты меньше "рабочих", то энергия будет находиться в диапазоне 0-100%
-            /// </summary>
             if (turbine.currentRPM < turbine.MinRPM)
             {
                 reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
             }
             else
             {
-                /// <summary>
                 /// Если обороты больше максимальных, то начинает расти вибрация
-                /// </summary>
                 if (turbine.currentRPM > turbine.MaxRPM)
                 {
                     ChangeVibration();

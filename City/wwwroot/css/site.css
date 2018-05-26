@@ -37,6 +37,10 @@ body {
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 
 
@@ -82,4 +86,13 @@ body {
 
 .page__content {
     flex: 2;
+}
+
+.navbar-header {
+    margin-left: 5px;
+    width: 100%;
+}
+
+.btn-sign-out {
+    float: right;
 }

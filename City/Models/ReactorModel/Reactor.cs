@@ -95,17 +95,22 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         /// <param name="Method">Название метода</param>
         /// <param name="p">Параметр</param>
-        public void SendToArduino(String Method,string p)
+        public void SendToArduino(String Method, string p)
         {
-            ///<summary>
-            ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
-            /// </summary> 
-            String URL = "http://192.168.#.#/"+Method+"?p="+p;
-            WebRequest request = WebRequest.Create(URL); 
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            WebResponse response = request.GetResponse();
-            response.Close();
+            try
+            {
+                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                String URL = "http://192.168.#.#/" + Method + "?p=" + p;
+                WebRequest request = WebRequest.Create(URL);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                WebResponse response = request.GetResponse();
+                response.Close();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
     }
