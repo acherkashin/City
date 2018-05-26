@@ -33,10 +33,10 @@
         this.packagesList = new Vue({
             el: this.options.host,
             data: {
-                packages: []
+                packages: [],
             },
             methods: {
-                update: function() {
+                update: function () {
                     axios.get("/api/network/packages").then(packages => {
                         this.packages = packages.data;
                     });
