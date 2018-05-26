@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models;
+using CyberCity.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -11,13 +12,33 @@ namespace CyberCity.Controllers
     [Route("api/[controller]")]
     public class NetworkController : Controller
     {
-        private static IHubContext<NetHub, INetHub> _hubcontext;
         private ApplicationContext _context;
 
-        public NetworkController(ApplicationContext context, IHubContext<NetHub, INetHub> hubcontext)
+        public NetworkController(ApplicationContext context)
         {
             _context = context;
-            _hubcontext = hubcontext;
+        }
+
+        [HttpGet("packages")]
+        public ActionResult GetPackages()
+        {
+            var role = User.GetRole();
+
+            if (role.Equals(Subject.Admin.ToString()))
+            {
+                return Ok(_context.Packages.ToList());
+            }
+
+            var packages = _context.Packages.Where(package => package.To.ToString().Equals(role)).ToList();
+
+            if (role.Equals(Subject.Hacker.ToString()))
+            {
+                return Ok(packages.ToList());
+            }
+            else
+            {
+                return Ok(packages.Select(p => p.CreateEncreted()).ToList());
+            }
         }
     }
 }

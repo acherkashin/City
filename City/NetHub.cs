@@ -5,12 +5,13 @@ using CyberCity.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System;
+using CyberCity.Utils;
 
 namespace CyberCity
 {
     public interface INetHub
     {
-        void onRecieve(Package package);
+        void onRecievePackage(Package package);
         void onUpdateOnlineList(IEnumerable<User> users);
         void onStateChanged(object state);
     }
@@ -21,13 +22,10 @@ namespace CyberCity
 
         private ApplicationContext _context;
 
-        private Models.City _city;
-
 
         public NetHub(ApplicationContext context)
         {
             _context = context;
-            _city = Models.City.Create(context, this);
         }
 
         public async override Task OnConnectedAsync()
@@ -35,7 +33,7 @@ namespace CyberCity
             var user = Context.User;
             var userId = GetId(user);
 
-            await Groups.AddAsync(Context.ConnectionId, GetRole(user));
+            await Groups.AddAsync(Context.ConnectionId, user.GetRole());
 
             if (!OnlineUsersIds.Any(id => id == userId))
             {
@@ -46,36 +44,11 @@ namespace CyberCity
             await base.OnConnectedAsync();
         }
 
-        public void SendStateChanged(Subject subject, object state)
-        {
-            try
-            {
-                Clients.Group(subject.ToString()).onStateChanged(state);
-            }
-            catch (Exception ex)
-            {
-            }
-        }
-
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             OnlineUsersIds.Remove(GetId(Context.User));
             UpdateOnlineUserList();
             await base.OnDisconnectedAsync(exception);
-        }
-
-        public async void Send(Package package)
-        {
-            _context.Add(package);
-            _context.SaveChanges();
-
-            var encrepted = package.CreateEncreted();
-
-            Clients.Group(Subject.Hacker.ToString()).onRecieve(package);
-
-            Clients.Group(package.To.ToString()).onRecieve(package);
-
-            City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
 
         private void UpdateOnlineUserList()
@@ -88,11 +61,6 @@ namespace CyberCity
         {
             var userId = int.Parse(principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == "ID")?.Value);
             return userId;
-        }
-
-        private string GetRole(ClaimsPrincipal principal)
-        {
-            return principal.Identities.FirstOrDefault()?.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)?.Value;
         }
     }
 }

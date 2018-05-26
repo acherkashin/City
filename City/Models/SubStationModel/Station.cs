@@ -1,20 +1,19 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CyberCity.Models.SubStation
+namespace CyberCity.Models.SubStationModel
 {
-    public class Station: ICityObject
+    public class SubStation: ICityObject
     {
-        private NetHub _hub;
+        private DataBus _bus;
 
-        public event Action<SubstationState> OnStateChanged;
-
-        public Station(ApplicationContext context, NetHub hub)
+        public SubStation(ApplicationContext context, DataBus bus)
         {
-            _hub = hub;
+            _bus = bus;
         }
 
         public double Power { get; set; } = 0;
@@ -36,7 +35,7 @@ namespace CyberCity.Models.SubStation
         {
             StateOfRele = flagRele;
             //ResultStRele = Convert.ToString(StateOfRele);
-            _hub.SendStateChanged(Subject.Substation, GetState());
+            _bus.SendStateChanged(Subject.Substation, GetState());
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace CyberCity.Models.SubStation
             /// </summary>   
             StateOSiren = flagSiren;
             //ResultStSiren = Convert.ToString(StateOSiren);
-            _hub.SendStateChanged(Subject.Substation, GetState());
+            _bus.SendStateChanged(Subject.Substation, GetState());
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace CyberCity.Models.SubStation
             /// <summary>
             /// TODO: Тут необходимо отправлять данные в город через хаб
             /// </summary>
-            _hub.SendStateChanged(Subject.Substation, GetState());
+            _bus.SendStateChanged(Subject.Substation, GetState());
         }
 
         public void Start()

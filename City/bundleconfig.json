@@ -11,7 +11,9 @@
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
-      "wwwroot/js/site.js"
+      "wwwroot/js/net-client.js",
+      "wwwroot/js/online-list.js",
+      "wwwroot/js/arduino-panel.js"
     ],
     // Optionally specify minification options
     "minify": {

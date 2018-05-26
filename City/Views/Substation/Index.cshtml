@@ -5,6 +5,7 @@
 
 
 <div id="reactor-page">
+    <arduino-panel url="@ViewBag.ArduinoUrl"></arduino-panel>
     <div class="Use_Reactor">
         <p>Управление Подстанцией:</p>
         <label>Состояние реле: {{labelReleState}}</label>
@@ -73,17 +74,18 @@
 <script>
     $(document).ready(() => {
         new NetClient({
+            host: '#log',
             hubUrl: 'http://@Context.Request.Host/net',
-            onRecieve: (packate) => {
+            onRecievePackage: (packate) => {
             },
             onUpdateOnlineList: (users) => {
 
             },
             onStateChanged: (state) => {
                 console.log(state);
-                v.power = state.power;
-                v.stateRele = state.stRele;
-                v.stateSiren = state.stSiren;
+                nuclearStationModel.power = state.power;
+                nuclearStationModel.stateRele = state.stRele;
+                nuclearStationModel.stateSiren = state.stSiren;
             }
         })
     })

@@ -27,7 +27,7 @@ namespace CyberCity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlite(new SqliteConnectionStringBuilder { DataSource = $"city.db" }.ToString()));
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlite(new SqliteConnectionStringBuilder { DataSource = $"city.db" }.ToString()), ServiceLifetime.Singleton);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -49,7 +49,9 @@ namespace CyberCity
             services.AddMvc();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-           // services.AddScoped<IHouseRepository, HouseRepository>();
+            services.AddSingleton(typeof(DataBus));
+            services.AddSingleton(typeof(City));
+            // services.AddScoped<IHouseRepository, HouseRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +86,9 @@ namespace CyberCity
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //В данной строке будет создан город. Необходимо чтобы при старте системы синглот города уже был создан.
+            app.ApplicationServices.GetService(typeof(City));
         }
 
         private void Migrate(IApplicationBuilder app)

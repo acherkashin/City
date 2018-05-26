@@ -1,6 +1,7 @@
 ﻿using CyberCity.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,11 +22,14 @@ namespace CyberCity.Models
 
         public string Password { get; set; }
 
+        [Url]
+        public string ArduinoUrl { get; set; }
+
         [NotMapped]
         public bool IsOnline => NetHub.OnlineUsersIds.Contains(Id);
 
         [NotMapped]
-        
+
         public string SubjectName => Subject.GetDisplayName();
     }
 }

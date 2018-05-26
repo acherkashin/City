@@ -8,10 +8,6 @@ namespace CyberCity.Models.Reactor
 {
     public class Turbine
     {
-        /// <summary>
- 
-
-        /// </summary>
         public bool IsOnSiren { get; set; } = false;
         /// <summary>
         /// Состояние турбины
@@ -56,8 +52,9 @@ namespace CyberCity.Models.Reactor
         public bool IsBroken
         {
             get { return isBroken; }
-            set { IsBroken = value; }
+            set { isBroken = value; }
         }
+
         /// <summary>
         /// Запуск турбины
         /// </summary>
@@ -67,6 +64,7 @@ namespace CyberCity.Models.Reactor
             IsOnTurbine = true;
             IsOnSiren = false;
         }
+
         /// <summary>
         /// Остановка турбины
         /// </summary>
@@ -79,14 +77,16 @@ namespace CyberCity.Models.Reactor
             currentVibration = 0;
             IsOnSiren = true;
         }
+
         /// <summary>
-        /// Таймер, отвечающий за остановку турбины на 150 секунд при поломке
+        /// Таймер, отвечающий за остановку турбины на 150(150000 ms) секунд при поломке
         /// </summary>
         public void TimerOfBroken()
         {
             TimerCallback tm = new TimerCallback(RepareTurbine);
             Timer timer = new Timer(tm, null, 150000, -1);
         }
+
         /// <summary>
         /// Запуск турбины после починки
         /// </summary>
