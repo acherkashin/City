@@ -67,7 +67,7 @@ namespace CyberCity.Models.SubStationModel
         }
 
         /// <summary>
-        /// Передача энергии от Атомной станции
+        /// Получение энергии от Атомной станции
         /// </summary>
         public void GetPower(double value)
         {
