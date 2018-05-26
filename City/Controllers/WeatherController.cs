@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using CyberCity.Models;
 using CyberCity.Models.WeatherStantion;
 using CyberCity.Statics;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace CyberCity.Controllers
         /// <returns> Метеоусловия.</returns>
         public WeaherResult GetWeather(string city)
         {
-            if (Statics.StantionPower.IsOn)
+            if (Statics.WeatherStantionStatics.IsOn)
             {
                 WebRequest request;
 
@@ -117,9 +118,70 @@ namespace CyberCity.Controllers
         /// <returns> Включена или нет станция. </returns>               
         public bool ChangePowerMode()
         {
-            StantionPower.IsOn = !Statics.StantionPower.IsOn;
+            WeatherStantionStatics.IsOn = !WeatherStantionStatics.IsOn;
 
-            return Statics.StantionPower.IsOn;
+            return WeatherStantionStatics.IsOn;
+        }
+
+        /// <summary>
+        /// Установить режим работы.
+        /// </summary>
+        /// <param name="mode"> Режим работы.</param>
+        public void SetPowerMode(bool mode)
+        {
+            WeatherStantionStatics.IsOn = mode;
+        }
+
+        /// <summary>
+        /// Обработать пакет.
+        /// </summary>
+        /// <param name="package"> Обрабатываемый пакет.</param>
+        public void HandlePackage(Package package)
+        {
+            var request = package.Method;
+
+            var method = "";
+            var parameter = "";
+            if (request.Contains("?"))
+            {
+                method = request.Substring(0, request.IndexOf('?')); // Получить имя метода. 
+                parameter = request.Substring(request.IndexOf('?') + 1); // Получить список параметров
+            }
+            else
+            {
+                method = request;
+            }
+
+            switch(method)
+            {
+                case "GetAmbience": // Получить летную обстановку.
+                    var result = GetAmbience();
+                    break;
+                case "SetPowerMode": // Установить режим работы.
+
+                    break;
+            }            
+        }
+
+        /// <summary>
+        /// Получить летную обстановку пункта назначения. 
+        /// </summary>
+        /// <returns> Можно ли лететь / приземляться.</returns>
+        private bool GetAmbience()
+        {
+            if(WeatherStantionStatics.SendSmash == WeatherStantionStatics.CurrentAnswerNumber)
+            {
+                WeatherStantionStatics.SendSmash = WeatherStantionStatics.Random.Next(1, 10);
+                WeatherStantionStatics.CurrentAnswerNumber = 0; 
+
+                return false;
+            }
+            else
+            {
+                WeatherStantionStatics.CurrentAnswerNumber++;
+
+                return true;
+            }
         }
     }
 }
