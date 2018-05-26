@@ -44,36 +44,11 @@ namespace CyberCity
             await base.OnConnectedAsync();
         }
 
-        public void SendStateChanged(Subject subject, object state)
-        {
-            try
-            {
-                Clients.Group(subject.ToString()).onStateChanged(state);
-            }
-            catch (Exception ex)
-            {
-            }
-        }
-
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             OnlineUsersIds.Remove(GetId(Context.User));
             UpdateOnlineUserList();
             await base.OnDisconnectedAsync(exception);
-        }
-
-        public void Send(Package package)
-        {
-            _context.Add(package);
-            _context.SaveChanges();
-
-            var encrepted = package.CreateEncreted();
-
-            Clients.Group(Subject.Hacker.ToString()).onRecievePackage(package);
-
-            Clients.Group(package.To.ToString()).onRecievePackage(package);
-
-            City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
 
         private void UpdateOnlineUserList()
