@@ -16,6 +16,8 @@
 
 
 <div id="admin-page">
+    <div id="user-list"></div>
+    <div id="packages"></div>
 </div>
 
 <script>
@@ -24,10 +26,11 @@
 
         const onlineList = new OnlineList({
             users,
-            host: $('#admin-page'),
+            host: $('#user-list'),
         })
 
         const client = new NetClient({
+            host: '#packages',
             hubUrl: 'http://@Context.Request.Host/net',
             onRecievePackage: (packate) => {
 
