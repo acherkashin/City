@@ -1,1 +1,14 @@
-﻿
+﻿<div id="hacker-page">
+    <label for="package">Пакет данных</label>
+    <textarea id="package"></textarea>
+</div>
+<script>
+    new NetClient({
+    host: '#log',
+    hubUrl: 'http://@Context.Request.Host/net',
+    onRecievePackage: (packate) => {
+    },
+    onStateChanged: (state) => {
+    }
+})
+</script>

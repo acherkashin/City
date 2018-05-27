@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Controllers
 {
-    [Route("api/[controller]")]
     public class AccountController : BaseController
     {
         private City _city;
@@ -123,7 +122,7 @@ namespace CyberCity.Controllers
             return View(nameof(Login));
         }
 
-        [HttpPut("update-arduino-url")]
+        [HttpPut("api/[controller]/update-arduino-url")]
         public async Task<IActionResult> UpdateArduinoUrl([FromBody]UpdateUrlModel model)
         {
             if (ModelState.IsValid)
@@ -153,9 +152,14 @@ namespace CyberCity.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
 
-            if(!user.Subject.Equals(Subject.Admin) && !user.Subject.Equals(Subject.Hacker))
+            if (!user.Subject.Equals(Subject.Admin) && !user.Subject.Equals(Subject.Hacker))
             {
-                _city.GetObject(user.Subject).UserId = user.Id;
+                var cityObject = _city.GetObject(user.Subject);
+
+                if (cityObject != null)
+                {
+                    cityObject.UserId = user.Id;
+                }
             }
         }
     }

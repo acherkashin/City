@@ -46,8 +46,10 @@ namespace CyberCity.Models
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
                 case Subject.WeatherStation:return WeatherStantion;
-                default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
+                //default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
             }
+
+            return null;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace CyberCity.Models.SubStationModel
 {
     public class SubStation : CityObject
     {
+        //TODO Черкашин: Добавить описание методов, которые умеет обрабатывать подстанция
         public const string OnSirenMethod = "OnSiren";
         public const string GetPowerMethod = "GetPower";
 
@@ -26,7 +27,7 @@ namespace CyberCity.Models.SubStationModel
                 IsOnSiren = Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
                 UseSiren();
             }
-            if (package.Method == "GetPower")
+            if (package.Method == GetPowerMethod)
             {
                 double ParseData = Newtonsoft.Json.JsonConvert.DeserializeObject<double>(package.Params);
                 SetPower(ParseData);
@@ -47,10 +48,8 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public void UseSiren()
         {
-            /// <summary>
             /// TODO: IsOnSiren необходимо передавать на Arduino для включения сирены
             /// Конвертация из True в "1" и из False в "0" необходима по просьбе программистов Arduino
-            /// </summary>
             string isSiren;
             if (IsOnSiren)
             {
@@ -127,7 +126,6 @@ namespace CyberCity.Models.SubStationModel
         {
             try
             {
-                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
                 String URL = GetUser().ArduinoUrl + Method + "?p=" + p;
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";

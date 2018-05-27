@@ -11,6 +11,7 @@ namespace CyberCity.Models
     /// </summary>
     public class DataBus
     {
+        private object lockObj = new object();
         private readonly ApplicationContext _context;
         private readonly IHubContext<NetHub, INetHub> _hubContext;
 
@@ -22,16 +23,19 @@ namespace CyberCity.Models
 
         public void Send(Package package)
         {
-            _context.Add(package);
-            _context.SaveChanges();
+            lock (lockObj)
+            {
+                _context.Add(package);
+                _context.SaveChanges();
 
-            var encrepted = package.CreateEncreted();
+                var encrepted = package.CreateEncreted();
 
-            _hubContext.Clients.Group(Subject.Hacker.ToString()).onRecievePackage(package);
+                _hubContext.Clients.Group(Subject.Hacker.ToString()).onRecievePackage(package);
 
-            _hubContext.Clients.Group(package.To.ToString()).onRecievePackage(package);
+                _hubContext.Clients.Group(package.To.ToString()).onRecievePackage(package);
 
-            City.GetInstance().GetObject(package.To).ProcessPackage(package);
+                City.GetInstance().GetObject(package.To)?.ProcessPackage(package);
+            }
         }
 
         public void SendStateChanged(Subject subject, object state)

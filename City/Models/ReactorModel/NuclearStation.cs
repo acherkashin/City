@@ -25,7 +25,7 @@ namespace CyberCity.Models.ReactorModel
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
 
-        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus) { };
+        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
         public void Start()
         {

@@ -8,18 +8,22 @@
     <arduino-panel url="@ViewBag.ArduinoUrl"></arduino-panel>
     <div class="Use_Reactor">
         <p>Управление Подстанцией:</p>
-        <label>Состояние реле: {{labelReleState}}</label>
+        <label>Состояние реле:</label> {{labelReleState}}
         <br />
-        <label>Сирена: {{labelSirenState}} </label>
+        <label>Сирена: </label> {{labelSirenState}}
         <br />
-        <label>Мощность: {{power}} </label>
+        <label>Мощность: </label> {{power}} 
         <br />
-        <button class="btn glyphicon glyphicon-arrow-down" v-on:click="OnRele">Включить реле</button>
-        <button class="btn glyphicon glyphicon-arrow-up" v-on:click="OffRele">Выключить реле</button>
+        <button class="btn" v-on:click="OnRele">
+            <span class="glyphicon glyphicon-arrow-down"></span>Включить реле
+        </button>
+        <button class="btn" v-on:click="OffRele">
+            <span class="glyphicon glyphicon-arrow-up"></span>Выключить реле
+        </button>
     </div>
     <br />
     <div>
-        <button v-on:click="UpdateData">Обновить данные</button>
+        <button class="btn btn-primary" v-on:click="UpdateData">Обновить данные</button>
     </div>
 </div>
 
