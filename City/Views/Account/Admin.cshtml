@@ -16,6 +16,9 @@
 
 
 <div id="admin-page">
+    <div class="toolbar clearfix">
+        <button id="remove-packages" class="btn btn-danger">Удалить все пакеты</button>
+    </div>
     <div id="user-list"></div>
     <div id="packages"></div>
 </div>
@@ -38,6 +41,13 @@
             onUpdateOnlineList: (users) => {
                 onlineList.updateUsers(users);
             }
-        })
+        });
+
+        $('#remove-packages').click(() => {
+            axios.delete('/api/network/delete-all-packages').then(() => {
+                client.packagesList.packages = [];
+            });
+        });
+
     })
 </script>

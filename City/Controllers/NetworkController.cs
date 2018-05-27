@@ -2,6 +2,7 @@
 using CyberCity.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,21 @@ namespace CyberCity.Controllers
             try
             {
                 _bus.Send(package);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpDelete("delete-all-packages")]
+        public ActionResult DeleteAllPackages()
+        {
+            try
+            {
+                _context.Database.ExecuteSqlCommand("DELETE FROM Packages");
+                _context.SaveChanges();
                 return Ok();
             }
             catch (Exception ex)
