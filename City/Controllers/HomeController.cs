@@ -29,6 +29,11 @@ namespace CyberCity.Controllers
                 return View("Views/Hacker/Index.cshtml");
             }
 
+            if(User.IsInRole(Subject.Bank.ToString()))
+            {
+                return View("Bank/Bank");
+            }
+
             ViewBag.ArduinoUrl = GetCurrentUser().ArduinoUrl;
 
             return View();

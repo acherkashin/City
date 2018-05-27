@@ -31,4 +31,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\BankModel\" />
+    <Folder Include="Views\Bank\" />
+  </ItemGroup>
+
 </Project>

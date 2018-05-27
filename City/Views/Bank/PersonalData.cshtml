@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Персональные данные";
+}
+
+<div id="editBlock">
+    <p><a href="/Home/ClientPage"><img src="~/fonts/%d0%bd%d0%b0%d0%b7%d0%b0%d0%b4.png" height="50" width="50" /></a></p>
+    <center><b>Ваши данные</b></center>
+    <hr />
+    <center>Фамилия: @((String)TempData["Surname"])</center>
+    <center>Имя: @((String)TempData["Name"])</center>
+    <center>Отчество: @((String)TempData["Patronymic"])</center>
+    <center>Логин: @((String)TempData["Login"])</center>
+    <center>Пароль: @((String)TempData["Password"])</center>
+    <center>Номер счёта: @((Int32)TempData["Id"])</center>
+    <center>Баланс счёта: @((Double)TempData["Money"])</center>
+    <center>Баланс валютного счёта: @((Double)TempData["MoneyInCourse"])</center>
+</div>
