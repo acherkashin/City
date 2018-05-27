@@ -1,6 +1,7 @@
 ﻿using CyberCity.Models.ReactorModel;
 using CyberCity.Models.SubStationModel;
 using CyberCity.Models.WeatherStantionModel;
+using System;
 
 namespace CyberCity.Models
 {
@@ -38,16 +39,15 @@ namespace CyberCity.Models
             _instance = this;
         }
 
-        public ICityObject GetObject(Subject subj)
+        public CityObject GetObject(Subject subj)
         {
             switch (subj)
             {
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
                 case Subject.WeatherStation:return WeatherStantion;
+                default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
             }
-
-            return null;
         }
     }
 }

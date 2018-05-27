@@ -14,6 +14,9 @@ namespace CyberCity.Models
         /// <summary>
         /// JSON объект
         /// </summary>
+        /// <remarks>
+        /// Необходимо сериализовать все пакеты в строку, для дальнейшего сохранения их в базу
+        /// </remarks>
         public string Params { get; set; }
 
         public Package CreateEncreted()

@@ -8,30 +8,28 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.SubStationModel
 {
-    public class SubStation: ICityObject
+    public class SubStation : CityObject
     {
-        private DataBus _bus;
+        public const string OnSirenMethod = "OnSiren";
+        public const string GetPowerMethod = "GetPower";
 
-        public SubStation(ApplicationContext context, DataBus bus)
-        {
-            _bus = bus;
-        }
+        public SubStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
         public double Power { get; set; } = 0;
         public bool IsOnRele { get; set; } = false;
         public bool IsOnSiren { get; set; } = false;
 
-        public void ProcessPackage(Package package)
+        public override void ProcessPackage(Package package)
         {
-            if (package.Method == "OnSiren")
+            if (package.Method == OnSirenMethod)
             {
-                IsOnSiren= Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
+                IsOnSiren = Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
                 UseSiren();
             }
             if (package.Method == "GetPower")
             {
                 double ParseData = Newtonsoft.Json.JsonConvert.DeserializeObject<double>(package.Params);
-                GetPower(ParseData);
+                SetPower(ParseData);
             }
         }
 
@@ -67,9 +65,9 @@ namespace CyberCity.Models.SubStationModel
         }
 
         /// <summary>
-        /// Получение энергии от Атомной станции
+        /// Установка энергии, полученной от Атомной станции
         /// </summary>
-        public void GetPower(double value)
+        public void SetPower(double value)
         {
             Power = value;
         }
@@ -79,9 +77,7 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public void SendPower(double sendPower)
         {
-            ///<commit>
             ///TODO: Нужно узнать точное имя метода в объекте "Город"
-            /// </commit>
             _bus.Send(new Package()
             {
                 From = Subject.Substation,
@@ -106,6 +102,7 @@ namespace CyberCity.Models.SubStationModel
                     {
                         SendPower(0);
                     }
+
                     Thread.Sleep(60000);
                 }
             }).Start();
@@ -131,7 +128,7 @@ namespace CyberCity.Models.SubStationModel
             try
             {
                 ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
-                String URL = "http://192.168.#.#/" + Method + "?p=" + p;
+                String URL = GetUser().ArduinoUrl + Method + "?p=" + p;
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";

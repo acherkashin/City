@@ -25,7 +25,7 @@ namespace CyberCity.Models
         [Display(Name = "Подстанция")]
         Substation,
 
-        [Display(Name = "Метестанция")]
+        [Display(Name = "Метеостанция")]
         WeatherStation,
 
         [Display(Name = "Жилые дома")]

@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CyberCity.Models;
 using CyberCity.Models.HouseModels;
+using CyberCity.Models.SubStationModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -124,7 +125,7 @@ namespace CyberCity.Controllers
             {
                 From = Subject.Houses,
                 To = Subject.Substation,
-                Method = "GetPower",
+                Method = SubStation.GetPowerMethod,
                 Params = ""
             };
 
@@ -199,7 +200,6 @@ namespace CyberCity.Controllers
                request.Method = "GET";
                WebResponse response = request.GetResponse();
             }
-
         }
 
 
