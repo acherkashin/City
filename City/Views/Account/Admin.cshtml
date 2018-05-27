@@ -16,6 +16,11 @@
 
 
 <div id="admin-page">
+    <div class="toolbar clearfix">
+        <button id="remove-packages" class="btn btn-danger">Удалить все пакеты</button>
+    </div>
+    <div id="user-list"></div>
+    <div id="packages"></div>
 </div>
 
 <script>
@@ -24,10 +29,11 @@
 
         const onlineList = new OnlineList({
             users,
-            host: $('#admin-page'),
+            host: $('#user-list'),
         })
 
         const client = new NetClient({
+            host: '#packages',
             hubUrl: 'http://@Context.Request.Host/net',
             onRecievePackage: (packate) => {
 
@@ -35,6 +41,13 @@
             onUpdateOnlineList: (users) => {
                 onlineList.updateUsers(users);
             }
-        })
+        });
+
+        $('#remove-packages').click(() => {
+            axios.delete('/api/network/delete-all-packages').then(() => {
+                client.packagesList.packages = [];
+            });
+        });
+
     })
 </script>

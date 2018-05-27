@@ -96,3 +96,13 @@ body {
 .btn-sign-out {
     float: right;
 }
+
+.toolbar {
+    padding: 10px;
+    background: #eee;
+    border: 1px solid #ddd;
+}
+
+#remove-packages {
+    float: right;
+}

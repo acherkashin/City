@@ -15,11 +15,13 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Controllers
 {
-    [Route("api/[controller]")]
     public class AccountController : BaseController
     {
-        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext)
+        private City _city;
+
+        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext, City city)
         {
+            _city = city;
             _context = context;
             DatabaseInitialize(); // добавляем пользователя и роли в бд
         }
@@ -120,7 +122,7 @@ namespace CyberCity.Controllers
             return View(nameof(Login));
         }
 
-        [HttpPut("update-arduino-url")]
+        [HttpPut("api/[controller]/update-arduino-url")]
         public async Task<IActionResult> UpdateArduinoUrl([FromBody]UpdateUrlModel model)
         {
             if (ModelState.IsValid)
@@ -149,6 +151,16 @@ namespace CyberCity.Controllers
                 ClaimsIdentity.DefaultRoleClaimType);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+
+            if (!user.Subject.Equals(Subject.Admin) && !user.Subject.Equals(Subject.Hacker))
+            {
+                var cityObject = _city.GetObject(user.Subject);
+
+                if (cityObject != null)
+                {
+                    cityObject.UserId = user.Id;
+                }
+            }
         }
     }
 }

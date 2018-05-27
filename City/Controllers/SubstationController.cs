@@ -1,9 +1,11 @@
 ﻿using CyberCity.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CyberCity.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Substation")]
     public class SubstationController : Controller
     {
         private readonly City _city;

@@ -1,1 +1,39 @@
-﻿
+﻿<div id="hacker-page">
+    <div class="form-group">
+        <label for="package">Пакет данных</label>
+        <textarea class="form-control" rows="5" id="package"></textarea>
+        <button id="send-package" class="btn btn-primary">Отправить</button>
+    </div>
+    <div id="log">
+
+    </div>
+</div>
+<script>
+    $(document).ready(() => {
+        new NetClient({
+            host: '#log',
+            hubUrl: 'http://@Context.Request.Host/net',
+            onRecievePackage: (packate) => {
+            },
+            onStateChanged: (state) => {
+            }
+        });
+
+        $('#send-package').click(() => {
+            const strPackage = $('#package').val();
+            const package = isJson(strPackage) ? JSON.parse(strPackage) : null;
+
+            axios.post('/api/network/send-package', package);
+        });
+
+        function isJson(str) {
+            try {
+                JSON.parse(str);
+                return true;
+            } catch{
+                return false;
+            }
+        }
+    })
+
+</script>

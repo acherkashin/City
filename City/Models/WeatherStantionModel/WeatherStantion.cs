@@ -2,7 +2,10 @@
 
 namespace CyberCity.Models.WeatherStantionModel
 {
-    public class WeatherStantion: ICityObject
+    /// <summary>
+    /// Метеостанция
+    /// </summary>
+    public class WeatherStantion : CityObject
     {
         /// <summary>
         /// Включена ли станция.
@@ -25,25 +28,11 @@ namespace CyberCity.Models.WeatherStantionModel
         public int CurrentAnswerNumber = 0;
 
         /// <summary>
-        /// Контекст данных.
-        /// </summary>
-        private ApplicationContext _context;
-
-        /// <summary>
-        /// Шина передачи пакетов
-        /// </summary>
-        private DataBus _bus;
-
-        /// <summary>
         /// Конструктор класса
         /// </summary>
         /// <param name="context"> Контекст данных.</param>
         /// <param name="bus"> Шина передачи пакетов.</param>
-        public WeatherStantion(ApplicationContext context, DataBus bus)
-        {
-            _context = context;
-            _bus = bus;
-        }
+        public WeatherStantion(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
         /// <summary>
         /// Установить режим работы.
@@ -51,26 +40,28 @@ namespace CyberCity.Models.WeatherStantionModel
         /// <param name="mode"> Режим работы.</param>
         public void SetPowerMode(bool mode)
         {
-            City.GetInstance().WeatherStantion.IsOn = mode;            
+            //TODO Черкашин: может заменить на this.IsOn = mode; ?
+            City.GetInstance().WeatherStantion.IsOn = mode;
         }
 
         /// <summary>
         /// Обработать пакет.
         /// </summary>
         /// <param name="package"> Обрабатываемый пакет.</param>
-        public void ProcessPackage(Package package)
+        public override void ProcessPackage(Package package)
         {
             var response = new Package();
 
             response.From = package.To;
-            response.To = package.From; 
-
+            response.To = package.From;
+            
             var request = package.Method;
 
             var method = "";
             var parameter = "";
             if (request.Contains("?"))
             {
+                //TODO Черкашин: зачем передавать параметры в методе, у пакета есть свойство Params ?
                 method = request.Substring(0, request.IndexOf('?')); // Получить имя метода. 
                 parameter = request.Substring(request.IndexOf('?') + 1); // Получить список параметров
             }
@@ -92,7 +83,7 @@ namespace CyberCity.Models.WeatherStantionModel
                     {
                         mode = Convert.ToBoolean(parameter);
                     }
-                    catch (Exception ex) { }                    
+                    catch (Exception ex) { }
 
                     SetPowerMode(mode);
                     break;

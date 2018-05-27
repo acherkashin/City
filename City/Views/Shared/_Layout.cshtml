@@ -51,9 +51,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">City</a>
-                <a asp-area="" asp-controller="House" asp-action="Index" class="navbar-brand">Жилые дома</a>
-                <a asp-area="" asp-controller="Weather" asp-action="Index" class="navbar-brand">Метеостанция</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Кибер город</a>
                 @if (this.User.Identity.IsAuthenticated)
                 {
                     <a asp-area="" asp-controller="Account" asp-action="SignOut" class="navbar-brand btn-sign-out">Выйти</a>
@@ -63,10 +61,6 @@
     </nav>
     <div class="body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - City</p>
-        </footer>
     </div>
 
     @RenderSection("Scripts", required: false)

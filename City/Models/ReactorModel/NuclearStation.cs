@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models.Reactor;
+using CyberCity.Models.SubStationModel;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,12 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.ReactorModel
 {
-    public class NuclearStation : ICityObject
+    public class NuclearStation : CityObject
     {
-        public void ProcessPackage(Package package)
+        public override void ProcessPackage(Package package)
         {
             throw new NotImplementedException();
         }
-
-        private ApplicationContext _context;
-        private DataBus _hub;
 
         /// <summary>
         /// IsUpRodGlobal - глобальная переменная, которая отвечает за текущее состояние стержня, чтобы к ней можно было обращаться из метода StartReactor.
@@ -27,11 +25,7 @@ namespace CyberCity.Models.ReactorModel
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
 
-        public NuclearStation(ApplicationContext context, DataBus databus)
-        {
-            _context = context;
-            _hub = databus;
-        }
+        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
         public void Start()
         {
@@ -51,15 +45,11 @@ namespace CyberCity.Models.ReactorModel
                 reactor.IsOnReactor = true;
                 while (reactor.NuclearBlast == false)
                 {
-                    /// <summary>
                     /// Тут происходит обращение к глобальной переменной и это значение присваивается в текущее состояние стержня
-                    /// </summary>
                     reactor.IsUpRod = IsUpRodGlobal;
                     ChangeTemperatue();
-                    _hub.SendStateChanged(Subject.NuclearStation, GetState());
-                    /// <summary>
+                    _bus.SendStateChanged(Subject.NuclearStation, GetState());
                     /// Тут происходит отправка данных на Электрическую подстанцию
-                    /// </summary>
                     SendEnergyForSubStation();
                     Thread.Sleep(60000);
                 }
@@ -206,9 +196,8 @@ namespace CyberCity.Models.ReactorModel
                     reactor.energy = 100;
                 }
             }
-            /// <summary>
+
             /// Если вибрация достигает предела(300 ед.), то происходит поломка
-            /// </summary>
             if (turbine.currentVibration > turbine.MaxVibration)
             {
                 turbine.Stop();
@@ -239,11 +228,11 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         private void OnSiren()
         {
-            _hub.Send(new Package()
+            _bus.Send(new Package()
             {
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
-                Method = "OnSiren",
+                Method = SubStation.OnSirenMethod,
                 Params = Newtonsoft.Json.JsonConvert.SerializeObject(turbine.IsOnSiren),
             });
         }
@@ -253,11 +242,11 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         private void SendEnergyForSubStation()
         {
-            _hub.Send(new Package()
+            _bus.Send(new Package()
             {
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
-                Method = "GetPower",
+                Method = SubStation.GetPowerMethod,
                 Params = Newtonsoft.Json.JsonConvert.SerializeObject(reactor.energy),
             });
         }

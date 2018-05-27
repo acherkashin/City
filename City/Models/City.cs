@@ -1,6 +1,9 @@
-﻿using CyberCity.Models.ReactorModel;
+﻿using CyberCity.Models.BankModel;
+using CyberCity.Models.MunicipalityModel;
+using CyberCity.Models.ReactorModel;
 using CyberCity.Models.SubStationModel;
 using CyberCity.Models.WeatherStantionModel;
+using System;
 
 namespace CyberCity.Models
 {
@@ -22,15 +25,19 @@ namespace CyberCity.Models
         public readonly SubStation SubStation;
         public readonly NuclearStation NuclearStation;
         public readonly WeatherStantion WeatherStantion;
+        public readonly Municipality Municipality;
+        public readonly Bank Bank;
 
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
             _context = context;
 
-            SubStation = new SubStation(_context, databus);
-            NuclearStation = new NuclearStation(_context, databus);
-            WeatherStantion = new WeatherStantion(_context, databus);
+            SubStation = new SubStation(_context, _databus);
+            NuclearStation = new NuclearStation(_context, _databus);
+            WeatherStantion = new WeatherStantion(_context, _databus);
+            Municipality = new Municipality(_context, _databus);
+            Bank = new Bank(_context, _databus);
 
             SubStation.Start();
             NuclearStation.Start();
@@ -38,13 +45,14 @@ namespace CyberCity.Models
             _instance = this;
         }
 
-        public ICityObject GetObject(Subject subj)
+        public CityObject GetObject(Subject subj)
         {
             switch (subj)
             {
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
                 case Subject.WeatherStation:return WeatherStantion;
+                //default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
             }
 
             return null;
