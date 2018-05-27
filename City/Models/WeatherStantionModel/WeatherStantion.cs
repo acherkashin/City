@@ -90,7 +90,7 @@ namespace CyberCity.Models.WeatherStantionModel
                     bool mode = true;
                     try
                     {
-                        mode = Convert.ToBoolean(parameter.Substring(request.IndexOf('?') + 1));
+                        mode = Convert.ToBoolean(parameter);
                     }
                     catch (Exception ex) { }                    
 

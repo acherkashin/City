@@ -131,5 +131,18 @@ namespace CyberCity.Controllers
 
             return City.GetInstance().WeatherStantion.IsOn;
         }
+
+        /// <summary>
+        /// Проверка корректности парсинга пакета.
+        /// </summary>
+        /// <param name="method"> Режим работы. </param>
+        public void TestPackage(string method)
+        {
+            var package = new Package();
+            package.To = Subject.WeatherStation;
+            package.From = Subject.Airport;
+            package.Method = method;
+            City.GetInstance().WeatherStantion.ProcessPackage(package);
+        }
     }
 }
