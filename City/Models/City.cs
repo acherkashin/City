@@ -1,4 +1,5 @@
-﻿using CyberCity.Models.MunicipalityModel;
+﻿using CyberCity.Models.BankModel;
+using CyberCity.Models.MunicipalityModel;
 using CyberCity.Models.ReactorModel;
 using CyberCity.Models.SubStationModel;
 using CyberCity.Models.WeatherStantionModel;
@@ -25,16 +26,18 @@ namespace CyberCity.Models
         public readonly NuclearStation NuclearStation;
         public readonly WeatherStantion WeatherStantion;
         public readonly Municipality Municipality;
+        public readonly Bank Bank;
 
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
             _context = context;
 
-            SubStation = new SubStation(_context, databus);
-            NuclearStation = new NuclearStation(_context, databus);
-            WeatherStantion = new WeatherStantion(_context, databus);
-            Municipality = new Municipality(_context, databus);
+            SubStation = new SubStation(_context, _databus);
+            NuclearStation = new NuclearStation(_context, _databus);
+            WeatherStantion = new WeatherStantion(_context, _databus);
+            Municipality = new Municipality(_context, _databus);
+            Bank = new Bank(_context, _databus);
 
             SubStation.Start();
             NuclearStation.Start();
