@@ -1,6 +1,10 @@
-﻿using CyberCity.Models.ReactorModel;
-using CyberCity.Models.SubStation;
-using Microsoft.AspNetCore.SignalR;
+﻿using CyberCity.Models.BankModel;
+using CyberCity.Models.MunicipalityModel;
+using CyberCity.Models.ReactorModel;
+using CyberCity.Models.SubStationModel;
+using CyberCity.Models.WeatherStantionModel;
+using System;
+using CyberCity.Models.HouseModels;
 
 namespace CyberCity.Models
 {
@@ -19,16 +23,25 @@ namespace CyberCity.Models
         private DataBus _databus;
         private ApplicationContext _context;
 
-        public Station SubStation { get; private set; }
-        public NuclearStation NuclearStation { get; private set; }
+        public readonly SubStation SubStation;
+        public readonly NuclearStation NuclearStation;
+        public readonly WeatherStantion WeatherStantion;
+        public readonly Municipality Municipality;
+        public readonly Bank Bank;
+        public readonly HouseRepository Houses;
+
 
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
             _context = context;
 
-            SubStation = new Station(_context, databus);
-            NuclearStation = new NuclearStation(_context, databus);
+            SubStation = new SubStation(_context, _databus);
+            NuclearStation = new NuclearStation(_context, _databus);
+            WeatherStantion = new WeatherStantion(_context, _databus);
+            Municipality = new Municipality(_context, _databus);
+            Bank = new Bank(_context, _databus);
+            Houses = new HouseRepository(_context, _databus);
 
             SubStation.Start();
             NuclearStation.Start();
@@ -36,12 +49,15 @@ namespace CyberCity.Models
             _instance = this;
         }
 
-        public ICityObject GetObject(Subject subj)
+        public CityObject GetObject(Subject subj)
         {
             switch (subj)
             {
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
+                case Subject.WeatherStation:return WeatherStantion;
+                case Subject.Houses: return Houses;
+                    //default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
             }
 
             return null;

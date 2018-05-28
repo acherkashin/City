@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Купить валюту";
+}
+
+<div id="editBlock">
+    <p><a href="/Home/ClientPage"><img src="~/fonts/%d0%bd%d0%b0%d0%b7%d0%b0%d0%b4.png" height="50" width="50" /></a></p>
+    <center><b>КУПИТЬ ВАЛЮТУ</b></center>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" value="@ViewBag.Id" name="Id" />
+        <input type="hidden" value="@((Int32)TempData["Id"])" name="Client" />
+        <center>
+            <p>
+                Укажите сумму валюты, необходимую для покупки:
+                <input id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["MaxToBuy"])" required />
+            </p>
+        </center><br>
+        <center> <p><input id="Submit2" type="submit" value="Купить" /></p></center>
+    </form><br>
+    <footer>
+        <p align="right">&copy; @DateTime.Now.Day : @DateTime.Now.Month : @DateTime.Now.Year</p><br />
+        <p align="right">@DateTime.Now.Hour : @DateTime.Now.Minute : @DateTime.Now.Second</p>
+    </footer>
+</div>
+

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using CyberCity.Models.WeatherStantion;
-using CyberCity.Statics;
+using CyberCity.Models;
+using CyberCity.Models.WeatherStantionModel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -14,7 +14,7 @@ namespace CyberCity.Controllers
         /// 
         /// </summary>
         /// <param name="mode">Режим отображения представления</param>
-        /// <returns></returns>
+        /// <returns></returns>        
         public IActionResult Index(int? mode)
         {
             if (mode != null)
@@ -34,9 +34,10 @@ namespace CyberCity.Controllers
         /// </summary>
         /// <param name="city"> Город.</param>
         /// <returns> Метеоусловия.</returns>
+
         public WeaherResult GetWeather(string city)
         {
-            if (Statics.StantionPower.IsOn)
+            if (City.GetInstance().WeatherStantion.IsOn)
             {
                 WebRequest request;
 
@@ -83,19 +84,28 @@ namespace CyberCity.Controllers
                     getRequest.Method = "POST";
                     getRequest.ContentType = "application/x-www-urlencoded";
 
-                    var deviceResponse = getRequest.GetResponse();
-
-                    var deviceAnswer = string.Empty;
-
-                    using (var stream = deviceResponse.GetResponseStream())
+                    WebResponse deviceResponse;
+                    try
                     {
-                        using (var reader = new StreamReader(stream))
+                        deviceResponse = getRequest.GetResponse();
+
+                        var deviceAnswer = string.Empty;
+
+                        using (var stream = deviceResponse.GetResponseStream())
                         {
-                            deviceAnswer = reader.ReadToEnd();
+                            using (var reader = new StreamReader(stream))
+                            {
+                                deviceAnswer = reader.ReadToEnd();
+                            }
                         }
+                        result.Tempreture = Convert.ToDouble(deviceAnswer.Substring(0, deviceAnswer.IndexOf(":")));
+                        result.Humidity = Convert.ToDouble(deviceAnswer.Substring(deviceAnswer.IndexOf(":") + 1));
                     }
-                    result.Tempreture = Convert.ToDouble(deviceAnswer.Substring(0, deviceAnswer.IndexOf(":")));
-                    result.Humidity = Convert.ToDouble(deviceAnswer.Substring(deviceAnswer.IndexOf(":") + 1));
+                    catch(Exception ex)
+                    {
+                        result.Tempreture = 0;
+                        result.Humidity = 0;
+                    }                   
                 }
                 else
                 {
@@ -117,9 +127,22 @@ namespace CyberCity.Controllers
         /// <returns> Включена или нет станция. </returns>               
         public bool ChangePowerMode()
         {
-            StantionPower.IsOn = !Statics.StantionPower.IsOn;
+            City.GetInstance().WeatherStantion.IsOn = !City.GetInstance().WeatherStantion.IsOn;
 
-            return Statics.StantionPower.IsOn;
+            return City.GetInstance().WeatherStantion.IsOn;
+        }
+
+        /// <summary>
+        /// Проверка корректности парсинга пакета.
+        /// </summary>
+        /// <param name="method"> Режим работы. </param>
+        public void TestPackage(string method)
+        {
+            var package = new Package();
+            package.To = Subject.WeatherStation;
+            package.From = Subject.Airport;
+            package.Method = method;
+            City.GetInstance().WeatherStantion.ProcessPackage(package);
         }
     }
 }

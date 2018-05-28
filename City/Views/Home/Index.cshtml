@@ -5,25 +5,30 @@
 }
 
 
-<div class="row">
-    @if (User.IsInRole(Subject.Substation.ToString()))
-    {
-        @Html.Partial("~/Views/Substation/Index.cshtml")
-    }
-    else if (User.IsInRole(Subject.WeatherStation.ToString()))
-    {
-        @Html.Partial("~/Views/Weather/Index.cshtml")
-    }
-    else if (User.IsInRole(Subject.NuclearStation.ToString()))
-    {
-        @Html.Partial("~/Views/NuclearStation/Index.cshtml");
-    }
-    else
-    {
-        <div>
-            Страница для объекта не найдена
-        </div>
-    }
-    <div id="log"></div>
+<div class="page">
+    <div class="page__content">
+        @if (User.IsInRole(Subject.Substation.ToString()))
+        {
+            @Html.Partial("~/Views/Substation/Index.cshtml")
+        }
+        else if (User.IsInRole(Subject.WeatherStation.ToString()))
+        {
+            @Html.Partial("~/Views/Weather/Index.cshtml")
+        }
+        else if (User.IsInRole(Subject.NuclearStation.ToString()))
+        {
+            @Html.Partial("~/Views/NuclearStation/Index.cshtml");
+        }
+        else
+        {
+            <div>
+                Страница для объекта не найдена
+            </div>
+        }
+    </div>
+
+    <div class="page__log">
+        <div id="log"></div>
+    </div>
 </div>
 

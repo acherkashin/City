@@ -1,4 +1,6 @@
 ﻿using CyberCity.Models;
+using CyberCity.Models.AccountModel;
+using CyberCity.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -13,30 +15,32 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private ApplicationContext _context;
+        private City _city;
 
-        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext)
+        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext, City city)
         {
+            _city = city;
             _context = context;
             DatabaseInitialize(); // добавляем пользователя и роли в бд
         }
 
         private void DatabaseInitialize()
         {
-            string adminEmail = "admin";
+            string adminLogin = "admin";
 
-            if (!_context.Users.Any(user => user.Login == adminEmail))
+            if (!_context.Users.Any(user => user.Login == adminLogin))
             {
                 string adminPassword = "123456";
 
                 // добавляем администратора
-                _context.Users.Add(new User { Login = adminEmail, Password = adminPassword, Subject = Subject.Admin });
+                _context.Users.Add(new User { Login = adminLogin, Password = adminPassword, Subject = Subject.Admin });
 
                 _context.SaveChanges();
             }
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -57,7 +61,7 @@ namespace CyberCity.Controllers
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Login == model.Login);
                 if (user == null)
                 {
-                    user = new User { Login = model.Login, Password = model.Password, FirstName = model.FirstName, LastName = model.LastName, Subject = model.Subject };
+                    user = model.ToUser();
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
@@ -112,19 +116,51 @@ namespace CyberCity.Controllers
             });
         }
 
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync();
+            return View(nameof(Login));
+        }
+
+        [HttpPut("api/[controller]/update-arduino-url")]
+        public async Task<IActionResult> UpdateArduinoUrl([FromBody]UpdateUrlModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = GetCurrentUser();
+                user.ArduinoUrl = model.ArduinoUrl;
+
+
+                await _context.SaveChangesAsync();
+                return Ok(user);
+            }
+
+            return BadRequest();
+        }
+
         private async Task Authenticate(User user)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Subject.ToString()),
-                new Claim("ID", user.Id.ToString()),
+                new Claim(UserExtentions.IdClaimType, user.Id.ToString()),
             };
 
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+
+            if (!user.Subject.Equals(Subject.Admin) && !user.Subject.Equals(Subject.Hacker))
+            {
+                var cityObject = _city.GetObject(user.Subject);
+
+                if (cityObject != null)
+                {
+                    cityObject.UserId = user.Id;
+                }
+            }
         }
     }
 }

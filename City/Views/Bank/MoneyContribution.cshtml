@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Внести вклад";
+}
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<div id="editBlock">
+    <p><a href="/Home/ClientPage"><img src="~/fonts/%d0%bd%d0%b0%d0%b7%d0%b0%d0%b4.png" height="50" width="50" /></a></p>
+    <center><b>СДЕЛАТЬ ВКЛАД</b></center>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" value="@ViewBag.Id" name="Id" />
+        <input type="hidden" value="@((Int32)TempData["Id"])" name="Client" />
+        <center>
+            <p>
+                Укажите сумму вклада:
+                <input id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["Money"])" required />
+            </p>
+        </center><br>
+        <center>
+            <p>
+                Укажите срок вклада в днях:
+                <input id="Text2" type="number" name="Duration" min="1" max="31" required />
+            </p>
+        </center><br>
+        <center> <p><input id="Submit2" type="submit" value="Сделать вклад" /></p></center>
+    </form><br>
+    <footer>
+        <p align="right">&copy; @DateTime.Now.Year : @DateTime.Now.Month : @DateTime.Now.Day    @DateTime.Now.Hour : @DateTime.Now.Minute : @DateTime.Now.Second</p>
+    </footer>
+</div>
+

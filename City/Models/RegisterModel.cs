@@ -19,6 +19,9 @@ namespace CyberCity.Models
 
         public Subject Subject { get; set; }
 
+        [DataType(DataType.Url)]
+        public string ArduinoUrl { get; set; }
+
         [Required(ErrorMessage = "Не указан пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
@@ -26,5 +29,18 @@ namespace CyberCity.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароль введен неверно")]
         public string ConfirmPassword { get; set; }
+
+        public User ToUser()
+        {
+            return new User
+            {
+                Login = Login,
+                Password = Password,
+                FirstName = FirstName,
+                LastName = LastName,
+                Subject = Subject,
+                ArduinoUrl = ArduinoUrl
+            };
+        }
     }
 }

@@ -15,9 +15,10 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         public bool IsOnVoid { get; set; } = false;
         /// <summary>
-        /// Переменная, которая передается на Arduino для включения/отключения белой лампочки
+        /// Переменная, которая передается на Arduino для включения лампочки соответствующего цвета:
+        /// 1 - Синяя, 2 - Зеленая, 3 - Красная, 4 - Белая
         /// </summary>
-        public bool IsOnLamp { get; set; } = false;
+        public string LampColor { get; set; } = "";
         /// <summary>
         /// Состояние реактора
         /// </summary>
@@ -50,6 +51,7 @@ namespace CyberCity.Models.ReactorModel
         {
             IsUpRod = true;
         }
+
         /// <summary>
         /// Поднятие урановых стежней
         /// </summary>
@@ -57,6 +59,7 @@ namespace CyberCity.Models.ReactorModel
         {
             IsUpRod = false;
         }
+
         /// <summary>
         /// Изменение числа, на которое изменяется температура
         /// Если стержни опущены, то температура изменяется медленнее
@@ -74,6 +77,7 @@ namespace CyberCity.Models.ReactorModel
             }
 
         }
+
         /// <summary>
         /// Взрыв реактора
         /// </summary>
@@ -81,48 +85,32 @@ namespace CyberCity.Models.ReactorModel
         {
             NuclearBlast = true;
             IsOnVoid = true;
-            IsOnLamp = true;
-            SendToArduino("NameOfMethodVoid", IsOnVoid);
-            SendToArduino("NameOfMethodLamp", IsOnLamp);
+            LampColor = "4";
+            SendToArduino("NameOfMethodVoid", Convert.ToString(IsOnVoid));
+            SendToArduino("NameOfMethodLamp", LampColor);
         }
+
         /// <summary>
         /// Отправка данных на Arduino
         /// </summary>
         /// <param name="Method">Название метода</param>
         /// <param name="p">Параметр</param>
-        public void SendToArduino(String Method,bool p)
+        public void SendToArduino(String Method, string p)
         {
-            ///<summary>
-            ///TODO: Правильно ли формируются параметры и метод?
-            /// </summary>
-            String Parameters = Newtonsoft.Json.JsonConvert.SerializeObject(p);
-            // Create a request using a URL that can receive a post.  
-            ///<summary>
-            ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
-            /// </summary>           
-            String URL = "192.168.#.#/"+Method+Parameters;
-            WebRequest request = WebRequest.Create(URL);
+            try
+            {
+                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                String URL = "http://192.168.#.#/" + Method + "?p=" + p;
+                WebRequest request = WebRequest.Create(URL);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                WebResponse response = request.GetResponse();
+                response.Close();
+            }
+            catch (Exception ex)
+            {
 
-            // Set the Method property of the request to POST.  
-            request.Method = "POST";
-            // Create POST data and convert it to a byte array.  
-            string postData = "This is a test that posts this string to a Web server.";
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-            // Set the ContentType property of the WebRequest.  
-            request.ContentType = "application/x-www-form-urlencoded";
-            // Set the ContentLength property of the WebRequest.  
-            request.ContentLength = byteArray.Length;
-            // Get the request stream.  
-            Stream dataStream = request.GetRequestStream();
-            // Write the data to the request stream.  
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            // Close the Stream object.  
-            dataStream.Close();
-            // Get the response.  
-            WebResponse response = request.GetResponse();
-            // Clean up the streams.  
-            dataStream.Close();
-            response.Close();
+            }
         }
 
     }

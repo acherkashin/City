@@ -1,12 +1,17 @@
 ﻿using CyberCity.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+using CyberCity.Utils;
 
 namespace CyberCity.Controllers
 {
-    public class HomeController : Controller
-    { 
+    public class HomeController : BaseController
+    {
+        public HomeController(ApplicationContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             if (!User.Identity.IsAuthenticated)
@@ -18,6 +23,18 @@ namespace CyberCity.Controllers
             {
                 return Redirect("/Account/Admin");
             }
+
+            if (User.IsInRole(Subject.Hacker.ToString()))
+            {
+                return View("Views/Hacker/Index.cshtml");
+            }
+
+            if(User.IsInRole(Subject.Bank.ToString()))
+            {
+                return View("Bank/Bank");
+            }
+
+            ViewBag.ArduinoUrl = GetCurrentUser().ArduinoUrl;
 
             return View();
         }

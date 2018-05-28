@@ -17,17 +17,17 @@ namespace CyberCity.Models.HouseModels
         /// <summary>
         /// Текущее значение мощности
         /// </summary>
-        public int CurrentPower { get; set; }
+        public float CurrentPower { get; set; }
 
         /// <summary>
         /// потрачено за день в кВт
         /// </summary>
-        public int SpentPower{ get; set; }
+        public float SpentPower { get; set; }
 
         /// <summary>
         /// Тарифный коэффициент, обозначающий сколько стоит 1 кВт в рублях
         /// </summary>
-        public int Tarif { get; set; }
+        public float Tarif { get; set; }
 
         public void UpdateMeters(int electricPower)
         {

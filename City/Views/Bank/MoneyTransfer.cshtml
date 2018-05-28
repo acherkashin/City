@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "Выполнить перевод";
+}
+
+<div id="editBlock">
+    <p><a href="/Home/ClientPage"><img src="~/fonts/%d0%bd%d0%b0%d0%b7%d0%b0%d0%b4.png" height="50" width="50" /></a></p>
+    <center><b>ВЫПОЛНИТЬ ПЕРЕВОД</b></center>
+    <hr />
+
+    <form method="post">
+        <input type="hidden" value="@ViewBag.Id" name="Id" />
+        <input type="hidden" value="@((Int32)TempData["Id"])" name="Sender" />
+        <center>
+            <p>
+                Укажите сумму, которую Вы хотите перевести:
+                <input id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["Money"])" required />
+            </p>
+        </center><br>
+        <center>
+            <p>
+                <script>
+                    db = openDatabase("BankClientContext", "0.1", "A list of to do items.", 200000);
+                    if (!db) {
+                        alert("Failed to connect to database.");
+                    }
+                </script>
+
+                <section>
+                    <label class="select-label">Выберите получателя:</label>
+
+                    <select class="cs-select cs-skin-rotate" name="Recipient">
+                        @foreach (var person in ViewBag.Residents)
+                        {
+                            if ((@person.Id != 1) && (@person.Id != 2) && (@person.Id != 3) && (@person.Id != ViewBag.Id))
+                            {
+                                <option value=@person.Id>@person.Surname @person.Name @person.Patronymic, номер счёта: @person.Id</option>
+                            }
+                        }
+
+                    </select>
+                </section>
+
+            </p>
+        </center><br>
+        <center> <p><input id="Submit2" type="submit" value="Перевести" /></p></center>)
+    </form><br>
+</div>
+
+

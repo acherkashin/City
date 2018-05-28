@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace CyberCity.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "NuclearStation")]
     public class NuclearStationController : Controller
     {
         [HttpPut("rod")]

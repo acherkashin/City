@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Повторный вход в систему";
+}
+
+<div id="editBlock">
+    <form method="post">
+        <p><a href="/Home/Enter"><img src="~/fonts/%d0%bd%d0%b0%d0%b7%d0%b0%d0%b4.png" height="50" width="50" /></a></p>
+        <center><b></b>ВХОД В ЛИЧНЫЙ КАБИНЕТ</b></center>
+        <center>Такой пользователь не зарегистрирован в системе! Проверьте правильность введённых данных</center>
+        <hr />
+        <input type="hidden" value="-" name="PersonId" />
+        <input type="hidden" value="-" name="Surname" />
+        <input type="hidden" value="-" name="Name" />
+        <input type="hidden" value="-" name="Patronymic" />
+        <input type="hidden" value="-" name="Money" />
+        <center>
+            <p>
+                Введите логин
+                <input id="Text1" type="text" name="Login" required />
+            </p>
+        </center><br>
+        <center>
+            <p>
+                Введите пароль
+                <input id="Password1" type="password" name="password" required />
+            </p>
+        </center><br>
+        <center> <p><input id="Submit2" type="submit" value="Войти" /></p></center><br>
+    </form>
+</div>
