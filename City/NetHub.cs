@@ -72,7 +72,7 @@ namespace CyberCity
 
             Clients.Group(package.To.ToString()).onRecieve(package);
 
-            City.GetInstance().GetObject(package.To).ProcessPackage(package);
+            CyberCity.Models.City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
 
         private void UpdateOnlineUserList()

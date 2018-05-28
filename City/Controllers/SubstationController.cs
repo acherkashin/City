@@ -7,9 +7,9 @@ namespace CyberCity.Controllers
     [Route("api/[controller]")]
     public class SubstationController : Controller
     {
-        private readonly City _city;
+        private readonly CyberCity.Models.City _city;
 
-        public SubstationController(City city)
+        public SubstationController(CyberCity.Models.City city)
         {
             _city = city;
         }

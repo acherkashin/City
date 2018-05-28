@@ -50,7 +50,7 @@ namespace CyberCity
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(typeof(DataBus));
-            services.AddSingleton(typeof(City));
+            services.AddSingleton(typeof(CyberCity.Models.City));
             // services.AddScoped<IHouseRepository, HouseRepository>();
         }
 
@@ -88,7 +88,7 @@ namespace CyberCity
             });
 
             //В данной строке будет создан город. Необходимо чтобы при старте системы синглот города уже был создан.
-            app.ApplicationServices.GetService(typeof(City));
+            app.ApplicationServices.GetService(typeof(CyberCity.Models.City));
         }
 
         private void Migrate(IApplicationBuilder app)
