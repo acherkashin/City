@@ -16,12 +16,12 @@ namespace CyberCity.Models.HouseModels
         /// <summary>
         /// Потраченно газа за день в куб м
         /// </summary>
-        public int CurrentVolume { get; set; }
+        public float CurrentVolume { get; set; }
 
         /// <summary>
         /// Тарифный коэффициент, обозначающий сколько стоит 1 куб м газа в рублях
         /// </summary>
-        public int Tarif { get; set; }
+        public float Tarif { get; set; }
 
         public void UpdateMeters()
         {

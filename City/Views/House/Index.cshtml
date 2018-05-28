@@ -138,6 +138,7 @@
                 $.each(homes,
                     function (index, home) {
                         rows += getRow(home);
+                        switchLight(home.id, home.isOnLight);
                     });
                 $("table tbody").append(rows);
             }
@@ -145,7 +146,7 @@
     }
 
     function getRow(home) {
-        var checked = home.isOnLight? "checked" : "";
+        var checked = home.isOnLight ? "checked" : "";
         return "<tr data-rowid='" + home.id + "'>"
             + "<td>" + home.id + "</td>"
             + "<td>" + home.name + "</td>"
@@ -153,6 +154,14 @@
             + "<td>" + home.gasMeter.currentVolume + "</td>"
             + "<td>" + home.waterMeter.currentVolume + "</td>" +
             "<td><input class='switch-light' data-id=" + home.id + " type='checkbox' " + checked+ "></td></tr>";
+    }
+
+    function switchLight(id,isOnLight) {
+        if (isOnLight) {
+            $("#home" + id + " .window").addClass("light");
+        } else {
+            $("#home" + id+" .window").removeClass("light");
+        }
     }
 
     getHomes();
@@ -179,11 +188,7 @@
                     data: { id: id, isOnLight: isOnLight },
                     url: 'http://@Context.Request.Host/House/HandleSwitchLight',
                     success: function () {
-                        if (isOnLight) {
-                            $("#home" + id + " .window").addClass("light");
-                        } else {
-                            $("#home" + id+" .window").removeClass("light");
-                        }
+                        switchLight(id, isOnLight);
                     }
                 });
             });

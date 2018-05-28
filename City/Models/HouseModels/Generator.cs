@@ -8,10 +8,11 @@ namespace CyberCity.Models.HouseModels
     public static class Generator
     {
 
-        public static int GenerateValue(int min, int max)
+        public static float GenerateValue(float min, float max)
         {
             Random random = new Random();
-            return random.Next(min, max);
+
+            return (float) random.NextDouble() * (max-min) + min;
         }
     }
 }

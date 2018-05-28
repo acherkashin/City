@@ -4,6 +4,7 @@ using CyberCity.Models.ReactorModel;
 using CyberCity.Models.SubStationModel;
 using CyberCity.Models.WeatherStantionModel;
 using System;
+using CyberCity.Models.HouseModels;
 
 namespace CyberCity.Models
 {
@@ -27,6 +28,8 @@ namespace CyberCity.Models
         public readonly WeatherStantion WeatherStantion;
         public readonly Municipality Municipality;
         public readonly Bank Bank;
+        public readonly HouseRepository Houses;
+
 
         public City(ApplicationContext context, DataBus databus)
         {
@@ -38,6 +41,7 @@ namespace CyberCity.Models
             WeatherStantion = new WeatherStantion(_context, _databus);
             Municipality = new Municipality(_context, _databus);
             Bank = new Bank(_context, _databus);
+            Houses = new HouseRepository(_context, _databus);
 
             SubStation.Start();
             NuclearStation.Start();
@@ -52,7 +56,8 @@ namespace CyberCity.Models
                 case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
                 case Subject.WeatherStation:return WeatherStantion;
-                //default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
+                case Subject.Houses: return Houses;
+                    //default: throw new ArgumentException($"Неизвестный тип объекта: ${subj.ToString()}");
             }
 
             return null;
