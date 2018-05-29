@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace CyberCity.Controllers
 {
-    public class WeatherController : Controller
+    public class WeatherController : BaseController
     {       
         /// <summary>
         /// 
@@ -79,7 +79,8 @@ namespace CyberCity.Controllers
 
                 if (city == "PlayCity")
                 {
-                    var getRequest = WebRequest.Create($"http://192.168.1.6/");
+                    var arduinoUrl = $"http://192.168.1.6/";//TODO: заменить на GetCurrentUser().ArduinoUrl;
+                    var getRequest = WebRequest.Create(arduinoUrl);
 
                     getRequest.Method = "POST";
                     getRequest.ContentType = "application/x-www-urlencoded";
