@@ -108,7 +108,7 @@ namespace CyberCity.Models.HouseModels
         {
             var homes = GetAll();
 
-            string urlToArduino = "http://192.168.0.0/";
+            string urlToArduino = GetUser().ArduinoUrl;
 
             foreach (var home in homes)
             {
