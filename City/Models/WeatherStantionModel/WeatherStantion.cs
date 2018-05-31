@@ -39,8 +39,7 @@ namespace CyberCity.Models.WeatherStantionModel
         /// </summary>
         /// <param name="mode"> Режим работы.</param>
         public void SetPowerMode(bool mode)
-        {
-            //TODO Черкашин: может заменить на this.IsOn = mode; ?
+        {            
             City.GetInstance().WeatherStantion.IsOn = mode;
         }
 
@@ -55,26 +54,15 @@ namespace CyberCity.Models.WeatherStantionModel
             response.From = package.To;
             response.To = package.From;
             
-            var request = package.Method;
-
-            var method = "";
-            var parameter = "";
-            if (request.Contains("?"))
-            {
-                //TODO Черкашин: зачем передавать параметры в методе, у пакета есть свойство Params ?
-                method = request.Substring(0, request.IndexOf('?')); // Получить имя метода. 
-                parameter = request.Substring(request.IndexOf('?') + 1); // Получить список параметров
-            }
-            else
-            {
-                method = request;
-            }
+            var method = package.Method;        
+            var parameter = Newtonsoft.Json.JsonConvert.DeserializeObject(package.Params);           
 
             switch (method)
             {
                 case "GetAmbience": // Получить летную обстановку.
                     var result = GetAmbience();
-                    response.Method = "AllowFlight?" + result.ToString();
+                    response.Method = "AllowFlight?";
+                    response.Params = Newtonsoft.Json.JsonConvert.SerializeObject(result);                    
                     _bus.Send(response);
                     break;
                 case "SetPowerMode": // Установить режим работы.

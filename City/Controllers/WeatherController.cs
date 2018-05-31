@@ -39,17 +39,15 @@ namespace CyberCity.Controllers
         {
             if (City.GetInstance().WeatherStantion.IsOn)
             {
-                WebRequest request;
+                var requestCity = city;
 
-                if (city != "PlayCity")
+                if(city == "PlayCity")
                 {
-                    request = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q={city}&APPID=48e67cb1b0973a7baa74f011cc36315b");
+                    requestCity = "Kursk";
                 }
-                else
-                {
-                    request = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q=Kursk&APPID=48e67cb1b0973a7baa74f011cc36315b");
-                }
-
+                
+                var request = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q={requestCity}&APPID=48e67cb1b0973a7baa74f011cc36315b");
+                
                 request.Method = "POST";
 
                 request.ContentType = "application/x-www-urlencoded";
@@ -79,10 +77,23 @@ namespace CyberCity.Controllers
 
                 if (city == "PlayCity")
                 {
-                    var getRequest = WebRequest.Create($"http://192.168.1.6/");
+                    var user = City.GetInstance().WeatherStantion.GetUser();
+                    var arduinoUrl = ""; 
+                    
+                    if(user == null)
+                    {
+                        arduinoUrl = "192.168.1.6";
+                    }
+                    else
+                    {
+                        arduinoUrl = user.ArduinoUrl;
+                    }
+
+                    var getRequest = WebRequest.Create($"http://{arduinoUrl}");
 
                     getRequest.Method = "POST";
                     getRequest.ContentType = "application/x-www-urlencoded";
+                    getRequest.Timeout = 5000;
 
                     WebResponse deviceResponse;
                     try
@@ -135,13 +146,16 @@ namespace CyberCity.Controllers
         /// <summary>
         /// Проверка корректности парсинга пакета.
         /// </summary>
-        /// <param name="method"> Режим работы. </param>
-        public void TestPackage(string method)
+        /// <param name="method"> Метод. </param>
+        /// <param name="mode"> Передаваемый параметр. </param>
+        public void TestPackage(string method, bool mode)
         {
             var package = new Package();
             package.To = Subject.WeatherStation;
             package.From = Subject.Airport;
             package.Method = method;
+            package.Params = Newtonsoft.Json.JsonConvert.SerializeObject(mode);
+
             City.GetInstance().WeatherStantion.ProcessPackage(package);
         }
     }
