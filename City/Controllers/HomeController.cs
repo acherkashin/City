@@ -14,6 +14,8 @@ namespace CyberCity.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Mode = "false";
+
             if (!User.Identity.IsAuthenticated)
             {
                 return Redirect("/Account/Login");
