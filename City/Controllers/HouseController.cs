@@ -9,9 +9,9 @@ namespace CyberCity.Controllers
 {
     public class HouseController : Controller
     {
-        private readonly City _city;
+        private readonly CyberCity.Models.City _city;
 
-        public HouseController(City city)
+        public HouseController(CyberCity.Models.City city)
         {
             _city = city;
         }

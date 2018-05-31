@@ -1,7 +1,63 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Аэропорт";
 }
 
-<h2>Index</h2>
+
+<img src="~/images/TravelAirplane.png" width="200px" />
+<h4>Состояние самолета:</h4>
+<div id="state"></div>
+<h4>Свет на взлетной полосе:</h4>
+<div id="lightState"></div>
+<h4>Список пассажиров</h4>
+<ul id="passangers"></ul>
+
+<script>
+      function getFlight() {
+        $.ajax({
+            url: 'http://@Context.Request.Host/Airport/GetAll',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data)
+                var state = getStringState(data.flightStates);
+                var lightState = getStringLightState(data.lightStates);
+                $('#state').text(state);
+                $('#lightState').text(lightState)
+                var passangers = "";
+                $.each(data.passengers,
+                    function (index, passenger) {
+                        passangers += getRow(passenger);
+                    });
+                $("#passangers").append(passangers);
+            }
+        });
+    }
+
+    function getStringState(state) {
+        switch (state) {
+            case 0: return "Улетел";
+            case 1: return "Прилетел";
+            case 2: return "Не отправлен";
+            case 3: return "Не посажен";
+            case 4: return "Авария";
+            default: return "Неизвестное состояние"
+        }
+    }
+
+    function getStringLightState(state) {
+        switch (state) {
+            case 0: return "Включен";
+            case 1: return "Выключен";
+            default: return "Неизвестное состояние"
+        }
+    }
+
+    function getRow(passanger) {
+        return "<ol>" + passanger.id +" "+  passanger.name + "</ol>"
+    }
+
+    getFlight()
+</script>
+
 

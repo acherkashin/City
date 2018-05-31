@@ -58,9 +58,9 @@ namespace CyberCity
 
             var encrepted = package.CreateEncreted();
 
-            Clients.Group(Subject.Hacker.ToString()).onRecieve(package);
+            Clients.Group(Subject.Hacker.ToString()).onRecievePackage(package);
 
-            Clients.Group(package.To.ToString()).onRecieve(package);
+            Clients.Group(package.To.ToString()).onRecievePackage(package);
 
             CyberCity.Models.City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
