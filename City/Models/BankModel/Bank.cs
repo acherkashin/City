@@ -15,10 +15,12 @@ namespace CyberCity.Models.BankModel
 
         public override void ProcessPackage(Package package)
         {
-            if(package.Method == Houses.SendMetricsMethod)
+            if (package.Method == Houses.SendMetricsMethod)
             {
                 //TODO Черкашин: добавить обработку
-            } else if(package.Method == ) 
+            }
+            //else
+            //    if (package.Method == ) 
         }
     }
 }
