@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CyberCity.Models.AirportModels;
+using System;
 
 namespace CyberCity.Models.WeatherStantionModel
 {
@@ -39,7 +40,7 @@ namespace CyberCity.Models.WeatherStantionModel
         /// </summary>
         /// <param name="mode"> Режим работы.</param>
         public void SetPowerMode(bool mode)
-        {            
+        {
             City.GetInstance().WeatherStantion.IsOn = mode;
         }
 
@@ -53,16 +54,20 @@ namespace CyberCity.Models.WeatherStantionModel
 
             response.From = package.To;
             response.To = package.From;
-            
-            var method = package.Method;        
-            var parameter = Newtonsoft.Json.JsonConvert.DeserializeObject(package.Params);           
+
+            var method = package.Method;
+            var parameter = Newtonsoft.Json.JsonConvert.DeserializeObject(package.Params);
 
             switch (method)
             {
-                case "GetAmbience": // Получить летную обстановку.
-                    var result = GetAmbience();
-                    response.Method = "AllowFlight?";
-                    response.Params = Newtonsoft.Json.JsonConvert.SerializeObject(result);                    
+                case Airport.CanFlyMethod: // Получить летную обстановку.
+                    response.Method = Airport.CanFlyMethod;
+                    response.Params = Newtonsoft.Json.JsonConvert.SerializeObject(GetAmbience());
+                    _bus.Send(response);
+                    break;
+                case Airport.CanLandMethod: // Получить летную обстановку.
+                    response.Method = Airport.CanLandMethod;
+                    response.Params = Newtonsoft.Json.JsonConvert.SerializeObject(GetAmbience());
                     _bus.Send(response);
                     break;
                 case "SetPowerMode": // Установить режим работы.

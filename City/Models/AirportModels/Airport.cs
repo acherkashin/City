@@ -7,6 +7,14 @@ namespace CyberCity.Models.AirportModels
 {
     public class Airport : CityObject
     {
+        //TODO Черкашин: Описать все поля
+        public const string CanFlyMethod = "CanFly";
+        public const string CanLandMethod = "CanLand";
+        /// <summary>
+        /// Отправитьданны о пассажирах в банк
+        /// </summary>
+        public const string AirportInvoiceMethod = "AirportInvoice";
+
         public Airport(ApplicationContext context, DataBus bus) : base(context, bus)
         {
             Passengers = new List<Passenger> {
@@ -21,15 +29,29 @@ namespace CyberCity.Models.AirportModels
 
         public override void ProcessPackage(Package package)
         {
-            throw new NotImplementedException();
+            if (package.Method == CanFlyMethod)
+            {
+                var canFly = Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
+
+                if (canFly)
+                {
+                    _bus.Send(new Package()
+                    {
+                        From = Subject.Airport,
+                        To = Subject.Bank,
+                        Method = AirportInvoiceMethod,
+                        Params = Newtonsoft.Json.JsonConvert.SerializeObject(null),//TODO : заменить null на информацию о пассажирах
+                    });
+                }
+            }
+            else if (package.Method == CanLandMethod)
+            {
+                //TODO: Добавить обработку посадки
+            }
         }
 
         public FlightStates flightStates { get; set; }
         public LightStates lightStates { get; set; }
-
-
-        public bool Send { get; set; } = false;
-        public bool Land { get; set; } = false;
 
         /// <summary>
         /// Пассажиры, отправленные в полет
@@ -39,15 +61,23 @@ namespace CyberCity.Models.AirportModels
         // отправить самолет
         public void SendPlane()
         {
-            Send = true;
-            // отправить запрос на разрешение полета в метеостанцию
+            _bus.Send(new Package()
+            {
+                From = Subject.Airport,
+                To = Subject.WeatherStation,
+                Method = CanFlyMethod,
+            });
         }
 
         // посадить самолет
         public void LandPlane()
         {
-            Land = true;
-            // отправить запрос на разрешение посадки в метеостанцию
+            _bus.Send(new Package()
+            {
+                From = Subject.Airport,
+                To = Subject.WeatherStation,
+                Method = CanLandMethod,
+            });
         }
 
         //включить свет
@@ -67,16 +97,16 @@ namespace CyberCity.Models.AirportModels
         // прием разрешения на вылет/прилет
         public void AllowFlight(bool resolution)
         {
-            if (resolution && Send)
-            {
-                //1.Рандомно набрать в Airport.Passangers 3 человека(перед этим очистить список)
-                //2.Отправить запрос в банк на оплату билетов
-                flightStates = FlightStates.FlewAway;
-            }
-            else if (resolution && Land) flightStates = FlightStates.FlewIn;
-            else if (!resolution && Send) flightStates = FlightStates.NotSend;
-            else if (!resolution && Land) flightStates = FlightStates.NotLand;
-            else throw new Exception();
+            //if (resolution && Send)
+            //{
+            //    //1.Рандомно набрать в Airport.Passangers 3 человека(перед этим очистить список)
+            //    //2.Отправить запрос в банк на оплату билетов
+            //    flightStates = FlightStates.FlewAway;
+            //}
+            //else if (resolution && Land) flightStates = FlightStates.FlewIn;
+            //else if (!resolution && Send) flightStates = FlightStates.NotSend;
+            //else if (!resolution && Land) flightStates = FlightStates.NotLand;
+            //else throw new Exception();
         }
 
 
@@ -98,8 +128,6 @@ namespace CyberCity.Models.AirportModels
                     LandPlane();
                     break;
             }
-
-
         }
     }
 }

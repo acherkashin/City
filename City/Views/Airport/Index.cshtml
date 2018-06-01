@@ -59,5 +59,21 @@
 
     getFlight()
 </script>
+<script>
+    $(document).ready(() => {
+        new NetClient({
+            host: '#log',
+            hubUrl: 'http://@Context.Request.Host/net',
+            onRecievePackage: (packate) => {
+            },
+            onUpdateOnlineList: (users) => {
+
+            },
+            onStateChanged: (state) => {
+
+            }
+        })
+    })
+</script>
 
 
