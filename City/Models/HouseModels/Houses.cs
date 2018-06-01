@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.HouseModels
@@ -25,6 +26,22 @@ namespace CyberCity.Models.HouseModels
             Add(new House() { Name = "Жилой дом 4", Id = 4, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
         }
 
+        public void Start()
+        {
+            new Task(() =>
+            {
+                _bus.Send(new Package()
+                {
+                    From = Subject.Houses,
+                    To = Subject.Bank,
+                    Method = SendMetricsMethod,
+                    Params = "", //TODO Черкашин: добавить метрики
+                });
+
+                Thread.Sleep(1000);
+            }).Start();
+        }
+
         public override void ProcessPackage(Package package)
         {
             if (package.Method == Municipality.UpdateTarifMethod)
@@ -32,11 +49,6 @@ namespace CyberCity.Models.HouseModels
                 //TODO Черкашин: Обновить тарифы в домах
                 var tarifs = JsonConvert.DeserializeObject<Tarifs>(package.Params);
 
-            }
-            else if (package.Method == SendMetricsMethod)
-            {
-                //double ParseData = Newtonsoft.Json.JsonConvert.DeserializeObject<double>(package.Params);
-                //SetPower(ParseData);
             }
             else if (package.Method == SubStation.PowerInHousesMethod)
             {
