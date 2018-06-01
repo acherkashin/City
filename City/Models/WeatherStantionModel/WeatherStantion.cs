@@ -42,6 +42,7 @@ namespace CyberCity.Models.WeatherStantionModel
         public void SetPowerMode(bool mode)
         {
             City.GetInstance().WeatherStantion.IsOn = mode;
+            _bus.SendStateChanged(Subject.WeatherStation, GetState());
         }
 
         /// <summary>
@@ -102,6 +103,15 @@ namespace CyberCity.Models.WeatherStantionModel
 
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Получить состояние станции.
+        /// </summary>
+        /// <returns> Состояние.</returns>
+        private bool GetState()
+        {
+            return this.IsOn;
         }
     }
 }

@@ -19,11 +19,7 @@ namespace CyberCity.Models.BankModel
             if (package.Method == Houses.SendMetricsMethod)
             {
                 //TODO Черкашин: добавить обработку
-            }
-            else if (package.Method == Airport.AirportInvoiceMethod)
-            {
-
-            }
+            } else if(package.Method == ) 
         }
     }
 }
