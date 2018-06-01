@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models.MunicipalityModel;
+using CyberCity.Models.SubStationModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -32,18 +33,14 @@ namespace CyberCity.Models.HouseModels
                 var tarifs = JsonConvert.DeserializeObject<Tarifs>(package.Params);
 
             }
-            if (package.Method == SendMetricsMethod)
+            else if (package.Method == SendMetricsMethod)
             {
                 //double ParseData = Newtonsoft.Json.JsonConvert.DeserializeObject<double>(package.Params);
                 //SetPower(ParseData);
             }
-            if (package.Method == GetPowerMethod)
+            else if (package.Method == SubStation.PowerInHousesMethod)
             {
-                float power = Newtonsoft.Json.JsonConvert.DeserializeObject<float>(package.Params);
-
-                //todo убери потом генератор
-                power = Generator.GenerateValue(0, 100);
-
+                float power = JsonConvert.DeserializeObject<float>(package.Params);
                 ChangePower(power);
             }
         }
