@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CyberCity.Models;
+using CyberCity.Models.AccountModel;
 using CyberCity.Utils;
 using Microsoft.AspNetCore.Mvc;
 

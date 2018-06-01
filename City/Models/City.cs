@@ -9,11 +9,11 @@ using CyberCity.Models.HouseModels;
 using System.Threading;
 
 namespace CyberCity.Models
-{    
+{
     public class City
     {
         private static City _instance;
-        
+
         /// <summary>
         /// Флаг - идет ли время в городе.
         /// </summary>
@@ -22,7 +22,7 @@ namespace CyberCity.Models
         /// <summary>
         /// Текущий час.
         /// </summary>
-        public int Hour; 
+        public int Hour;
 
         /// <summary>
         /// Метод для получения экземпляра города(синглтона). Необходим для того чтобы иметь возможность использовать город в любом месте программы
@@ -48,7 +48,7 @@ namespace CyberCity.Models
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
-            _context = context;            
+            _context = context;
 
             SubStation = new SubStation(_context, _databus);
             NuclearStation = new NuclearStation(_context, _databus);
@@ -58,21 +58,31 @@ namespace CyberCity.Models
             Houses = new Houses(_context, _databus);
             Airport = new Airport(_context, _databus);
 
-            SubStation.Start();
-            NuclearStation.Start();
-            Airport.Start(); 
+            Start();
 
             _instance = this;
-            IsTimeRunning = true;            
+            IsTimeRunning = true;
+        }
+
+        public void Start()
+        {
+            SubStation.Start();
+            NuclearStation.Start();
+            Airport.Start();
+            Municipality.Start();
+            Houses.Start();
+            Airport.Start();
         }
 
         public CityObject GetObject(Subject subj)
         {
             switch (subj)
             {
-                case Subject.NuclearStation: return NuclearStation;
                 case Subject.Substation: return SubStation;
-                case Subject.WeatherStation:return WeatherStantion;
+                case Subject.NuclearStation: return NuclearStation;
+                case Subject.WeatherStation: return WeatherStantion;
+                case Subject.Municipality: return Municipality;
+                case Subject.Bank: return Bank;
                 case Subject.Houses: return Houses;
                 case Subject.Airport: return Airport;
 
@@ -82,6 +92,6 @@ namespace CyberCity.Models
             return null;
         }
 
-        
+
     }
 }

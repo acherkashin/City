@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CyberCity.Controllers
 {
     [Authorize(Roles = "Bank")]
-    public class BankController: BaseController
+    public class BankController : BaseController
     {
         public BankController(ApplicationContext context)
         {
@@ -48,7 +48,7 @@ namespace CyberCity.Controllers
             response.Close();
             needToWork = needToWork.Substring(1722);
             int length = needToWork.Length - 5;
-            
+
             // Чтобы корректно распарсить число заменяет "," на "."
             //https://stackoverflow.com/questions/11560465/parse-strings-to-double-with-comma-and-point
             needToWork = needToWork.Substring(0, needToWork.Length - length).Replace(',', '.');
@@ -121,7 +121,7 @@ namespace CyberCity.Controllers
             MakeNeedOperation();
             double Course = GetCourse();
             TempData["CourseSel"] = Course;
-            
+
             Random rnd = new Random();
 
             int difference = rnd.Next(0, 5);
@@ -243,8 +243,7 @@ namespace CyberCity.Controllers
             TempData["CourseSel"] = courseSel;
             TempData["CourseBuy"] = courseBuy;
             TempData["Month"] = month;
-            //  TempData["CourseSel"] = 61.32;//////////////////////////////
-            //TempData["CourseBuy"] = 59.17;//////////////////////////////
+
             TempData.Keep();
             foreach (var person in clients)
             {
@@ -818,9 +817,7 @@ namespace CyberCity.Controllers
             TempData.Keep();
             string month = Convert.ToString(TempData["Month"]);
             TempData["Month"] = month;
-            //          TempData["CourseSel"] = 61.32;//////////////////////////////
-            //     TempData["CourseBuy"] = 59.17;//////////////////////////////
-            //   double courseBuy = 59.17;//////////////////////////////
+
             TempData.Keep();
             if (needTransfer.Sender.Surname == "Муниципалитет")    // если деньги идут от муниципалитета (значит перечисляют зарплату)
             {

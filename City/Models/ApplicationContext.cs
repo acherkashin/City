@@ -1,9 +1,6 @@
-﻿using CyberCity.Models.BankModel;
+﻿using CyberCity.Models.AccountModel;
+using CyberCity.Models.BankModel;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CyberCity.Models
 {

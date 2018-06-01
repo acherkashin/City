@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System;
 using CyberCity.Utils;
+using CyberCity.Models.AccountModel;
 
 namespace CyberCity
 {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.MunicipalityModel
@@ -9,6 +10,7 @@ namespace CyberCity.Models.MunicipalityModel
     public class Municipality : CityObject
     {
         public const string UpdateTarifMethod = "UpdateTarif";
+        public const string PaySalaryMethod = "PaySalary";
 
         public Municipality(ApplicationContext context, DataBus bus) : base(context, bus)
         {
@@ -30,6 +32,16 @@ namespace CyberCity.Models.MunicipalityModel
                         Watter = Generator.GenerateValue(1, 10),
                     })
                 });
+
+                _bus.Send(new Package()
+                {
+                    From = Subject.Municipality,
+                    To = Subject.Bank,
+                    Method = PaySalaryMethod,
+                    Params = "",//TODO Черкашин: отправлять реальные данные в банк
+                });
+
+                Thread.Sleep(10000);
             }).Start();
         }
 

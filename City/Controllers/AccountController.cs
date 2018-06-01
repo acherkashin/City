@@ -17,7 +17,7 @@ namespace CyberCity.Controllers
 {
     public class AccountController : BaseController
     {
-        private CyberCity.Models.City _city;
+        private City _city;
 
         public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext, CyberCity.Models.City city)
         {
