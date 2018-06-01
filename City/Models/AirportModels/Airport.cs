@@ -52,8 +52,6 @@ namespace CyberCity.Models.AirportModels
         }
 
 
-
-
         public FlightStates flightStates { get; set; }
         public LightStates lightStates { get; set; }
 
