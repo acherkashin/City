@@ -1,47 +1,58 @@
-﻿using System;
+﻿using CyberCity.Models.MunicipalityModel;
+using CyberCity.Models.SubStationModel;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.HouseModels
 {
-    public class HouseRepository:CityObject
+    public class Houses : CityObject
     {
-        public const string GetTarifMethod = "GetTarif";
         public const string SendMetricsMethod = "SendMetrics";
         public const string GetPowerMethod = "GetPower";
 
         private ConcurrentDictionary<int, House> _houses = new ConcurrentDictionary<int, House>();
 
-        public HouseRepository(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Houses(ApplicationContext context, DataBus bus) : base(context, bus)
         {
-            Add(new House() { Name = "Жилой дом 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter()});
-            Add(new House() { Name = "Жилой дом 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter()});
-            Add(new House() { Name = "Жилой дом 3", Id = 3, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter()});
-            Add(new House() { Name = "Жилой дом 4", Id = 4, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter()});
+            Add(new House() { Name = "Жилой дом 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Add(new House() { Name = "Жилой дом 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Add(new House() { Name = "Жилой дом 3", Id = 3, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Add(new House() { Name = "Жилой дом 4", Id = 4, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+        }
+
+        public void Start()
+        {
+            new Task(() =>
+            {
+                _bus.Send(new Package()
+                {
+                    From = Subject.Houses,
+                    To = Subject.Bank,
+                    Method = SendMetricsMethod,
+                    Params = "", //TODO Черкашин: добавить метрики
+                });
+
+                Thread.Sleep(1000);
+            }).Start();
         }
 
         public override void ProcessPackage(Package package)
         {
-            if (package.Method == GetTarifMethod)
+            if (package.Method == Municipality.UpdateTarifMethod)
             {
-                int tarifs = Newtonsoft.Json.JsonConvert.DeserializeObject<int>(package.Params);
-                
-            }
-            if (package.Method == SendMetricsMethod)
-            {
-                //double ParseData = Newtonsoft.Json.JsonConvert.DeserializeObject<double>(package.Params);
-                //SetPower(ParseData);
-            }
-            if (package.Method == GetPowerMethod)
-            {
-                float power = Newtonsoft.Json.JsonConvert.DeserializeObject<float>(package.Params);
+                //TODO Черкашин: Обновить тарифы в домах
+                var tarifs = JsonConvert.DeserializeObject<Tarifs>(package.Params);
 
-                //todo убери потом генератор
-                power = Generator.GenerateValue(0, 100);
-
+            }
+            else if (package.Method == SubStation.PowerInHousesMethod)
+            {
+                float power = JsonConvert.DeserializeObject<float>(package.Params);
                 ChangePower(power);
             }
         }
@@ -57,7 +68,7 @@ namespace CyberCity.Models.HouseModels
                 foreach (var house in houses)
                 {
                     house.IsOnLight = false;
-                    
+
                 }
             }
             else if (power <= 100 && power >= 75)
@@ -121,7 +132,7 @@ namespace CyberCity.Models.HouseModels
             }
         }
 
-        public  IEnumerable<House> GetAll()
+        public IEnumerable<House> GetAll()
         {
             return _houses.Values;
         }
@@ -131,7 +142,7 @@ namespace CyberCity.Models.HouseModels
             _houses[home.Id] = home;
         }
 
-        public  House Find(int id)
+        public House Find(int id)
         {
             House item;
             _houses.TryGetValue(id, out item);
@@ -139,7 +150,7 @@ namespace CyberCity.Models.HouseModels
         }
 
 
-        public  void Update(House home)
+        public void Update(House home)
         {
             _houses[home.Id] = home;
         }

@@ -13,6 +13,7 @@ namespace CyberCity.Models.SubStationModel
         //TODO Черкашин: Добавить описание методов, которые умеет обрабатывать подстанция
         public const string OnSirenMethod = "OnSiren";
         public const string GetPowerMethod = "GetPower";
+        public const string PowerInHousesMethod = "PowerInHouses";
 
         public SubStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
@@ -81,7 +82,7 @@ namespace CyberCity.Models.SubStationModel
             {
                 From = Subject.Substation,
                 To = Subject.Houses,
-                Method = "NameMethodOfGetPowerInHouses",
+                Method = PowerInHousesMethod,
                 Params = Newtonsoft.Json.JsonConvert.SerializeObject(sendPower),
             });
             _bus.SendStateChanged(Subject.Substation, GetState());

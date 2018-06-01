@@ -7,28 +7,22 @@ namespace CyberCity.Models.AirportModels
 {
     public class Airport : CityObject
     {
-
-
         public Airport(ApplicationContext context, DataBus bus) : base(context, bus)
         {
             Passengers = new List<Passenger> {
-            new Passenger{ Id=1,Name = "Петров И.И" },
-            new Passenger{ Id=2,Name = "Иванов И.И" },
-            new Passenger{ Id=3,Name = "Соколов И.И" }
+                new Passenger{ Id=1,Name = "Петров И.И" },
+                new Passenger{ Id=2,Name = "Иванов И.И" },
+                new Passenger{ Id=3,Name = "Соколов И.И" }
             };
+
             flightStates = FlightStates.NotSend;
             lightStates = LightStates.TurnedOff;
-
-
         }
 
         public override void ProcessPackage(Package package)
         {
             throw new NotImplementedException();
         }
-
-
-
 
         public FlightStates flightStates { get; set; }
         public LightStates lightStates { get; set; }
