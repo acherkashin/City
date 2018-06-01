@@ -29,7 +29,7 @@ namespace CyberCity.Models
         public readonly WeatherStantion WeatherStantion;
         public readonly Municipality Municipality;
         public readonly Bank Bank;
-        public readonly HouseRepository Houses;
+        public readonly Houses Houses;
         public readonly Airport Airport;
 
 
@@ -43,7 +43,7 @@ namespace CyberCity.Models
             WeatherStantion = new WeatherStantion(_context, _databus);
             Municipality = new Municipality(_context, _databus);
             Bank = new Bank(_context, _databus);
-            Houses = new HouseRepository(_context, _databus);
+            Houses = new Houses(_context, _databus);
             Airport = new Airport(_context, _databus);
 
             SubStation.Start();
