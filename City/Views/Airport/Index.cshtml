@@ -11,6 +11,7 @@
 <div id="lightState"></div>
 <h4>Список пассажиров</h4>
 <ul id="passangers"></ul>
+<div id="log"></div>
 
 <script>
       function getFlight() {
@@ -70,7 +71,7 @@
 
             },
             onStateChanged: (state) => {
-
+                //TODO: обновлять UI, для вызова метода необходимо вызвать метод bus.SendStateChanged на сервере
             }
         })
     })
