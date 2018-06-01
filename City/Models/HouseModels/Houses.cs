@@ -54,6 +54,9 @@ namespace CyberCity.Models.HouseModels
             {
                 float power = JsonConvert.DeserializeObject<float>(package.Params);
                 ChangePower(power);
+
+                //TDOO Черкашин: Добавить обновление вьюхи
+                _bus.SendStateChanged(Subject.Houses, null);
             }
         }
 
@@ -117,18 +120,25 @@ namespace CyberCity.Models.HouseModels
 
         public void SwitchLightOnArduino()
         {
-            var homes = GetAll();
-
-            string urlToArduino = GetUser().ArduinoUrl;
-
-            foreach (var home in homes)
+            try
             {
-                string switchLightCommand = home.IsOnLight
-                    ? ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn)
-                    : ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
-                WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
-                request.Method = "GET";
-                WebResponse response = request.GetResponse();
+                var homes = GetAll();
+
+                string urlToArduino = GetUser().ArduinoUrl;
+
+                foreach (var home in homes)
+                {
+                    string switchLightCommand = home.IsOnLight
+                        ? ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn)
+                        : ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
+                    WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
+                    request.Method = "GET";
+                    WebResponse response = request.GetResponse();
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
