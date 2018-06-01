@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CyberCity.Models.HouseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,10 @@ namespace CyberCity.Models.BankModel
 
         public override void ProcessPackage(Package package)
         {
-            throw new NotImplementedException();
+            if(package.Method == Houses.SendMetricsMethod)
+            {
+                //TODO Черкашин: добавить обработку
+            }
         }
     }
 }

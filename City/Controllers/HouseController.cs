@@ -3,15 +3,17 @@ using System.Net;
 using CyberCity.Models;
 using CyberCity.Models.HouseModels;
 using CyberCity.Models.SubStationModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CyberCity.Controllers
 {
+    [Authorize(Roles = "Houses")]
     public class HouseController : Controller
     {
-        private readonly CyberCity.Models.City _city;
+        private readonly City _city;
 
-        public HouseController(CyberCity.Models.City city)
+        public HouseController(City city)
         {
             _city = city;
         }
@@ -30,7 +32,7 @@ namespace CyberCity.Controllers
         /// </summary>
         public ActionResult UpadateData()
         {
-           var houses = _city.Houses.GetAll();
+            var houses = _city.Houses.GetAll();
             foreach (var house in houses)
             {
                 house.UpdateMeters();
@@ -90,10 +92,6 @@ namespace CyberCity.Controllers
 
             return new JsonResult(package);
         }
-
-
-   
-
 
 
         [HttpPost]
