@@ -99,7 +99,10 @@ namespace CyberCity.Models.ReactorModel
         {
             try
             {
+                ///<summary>
                 ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                ///IP 192.168.0.2
+                ///</summary>
                 String URL = "http://192.168.#.#/" + Method + "?p=" + p;
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";
