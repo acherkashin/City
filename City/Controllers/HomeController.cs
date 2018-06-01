@@ -33,7 +33,7 @@ namespace CyberCity.Controllers
 
             if (User.IsInRole(Subject.Bank.ToString()))
             {
-                return View("Bank/Bank");
+                return Redirect("Bank");
             }
 
             if (User.IsInRole(Subject.Houses.ToString()))

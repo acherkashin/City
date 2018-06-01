@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using CyberCity.Models;
 using CyberCity.Models.BankModel;
+using CyberCity.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,19 +19,16 @@ namespace CyberCity.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Получения курса валют
+        /// </summary>
         public double GetCourse()
         {
-            string day;
-            if (DateTime.Now.Day < 10)
-                day = "0" + Convert.ToString(DateTime.Now.Day);
-            else day = Convert.ToString(DateTime.Now.Day);
-            string month;
-            if (DateTime.Now.Month < 10)
-                month = "0" + Convert.ToString(DateTime.Now.Month);
-            else month = Convert.ToString(DateTime.Now.Month);
-            //     string slka = "https://www.cbr-xml-daily.ru/daily_json.js";
+            var day = DateTime.Now.ToString("dd");
+            var month = DateTime.Now.ToString("MM");
+
             string slka = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + day + "." + month + "." + DateTime.Now.Year;
-            //   string slka = "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=" + day + "/" + month + "/" + DateTime.Now.Year + "&date_req2=21/04/2018&VAL_NM_RQ=R01235";
+
             WebRequest request = WebRequest.Create(slka);
             WebResponse response = request.GetResponse();
             string needToWork = "";
@@ -49,8 +48,11 @@ namespace CyberCity.Controllers
             response.Close();
             needToWork = needToWork.Substring(1722);
             int length = needToWork.Length - 5;
-            needToWork = needToWork.Substring(0, needToWork.Length - length);
-            double course = Convert.ToDouble(needToWork);
+            
+            // Чтобы корректно распарсить число заменяет "," на "."
+            //https://stackoverflow.com/questions/11560465/parse-strings-to-double-with-comma-and-point
+            needToWork = needToWork.Substring(0, needToWork.Length - length).Replace(',', '.');
+            double course = double.Parse(needToWork, CultureInfo.InvariantCulture);
             return course;
         }
 
@@ -84,7 +86,7 @@ namespace CyberCity.Controllers
             return true;
         }
 
-        public ActionResult Bank()
+        public ActionResult Index()
         {
             ViewBag.Title = "Банк";
             MakeNeedOperation();
@@ -119,39 +121,17 @@ namespace CyberCity.Controllers
             MakeNeedOperation();
             double Course = GetCourse();
             TempData["CourseSel"] = Course;
-            TempData.Keep();
+            
             Random rnd = new Random();
+
             int difference = rnd.Next(0, 5);
             int mn = rnd.Next(0, 9);
-            int month = DateTime.Now.Month;
-            if (month == 1)
-                TempData["Month"] = "ЯНВАРЯ";
-            if (month == 2)
-                TempData["Month"] = "ФЕВРАЛЯ";
-            if (month == 3)
-                TempData["Month"] = "МАРТА";
-            if (month == 4)
-                TempData["Month"] = "АПРЕЛЯ";
-            if (month == 5)
-                TempData["Month"] = "МАЯ";
-            if (month == 6)
-                TempData["Month"] = "ИЮНЯ";
-            if (month == 7)
-                TempData["Month"] = "ИЮЛЯ";
-            if (month == 8)
-                TempData["Month"] = "АВГУСТА";
-            if (month == 9)
-                TempData["Month"] = "СЕНТЯБРЯ";
-            if (month == 10)
-                TempData["Month"] = "ОКТЯБРЯ";
-            if (month == 11)
-                TempData["Month"] = "НОЯБРЯ";
-            if (month == 12)
-                TempData["Month"] = "ДЕКАБРЯ";
+
+            TempData["Month"] = DateUtils.GetMonth(DateTime.Now.Month);
             TempData["CourseBuy"] = Course - Convert.ToDouble(difference) - Convert.ToDouble((0.12) * mn);
+
             TempData.Keep();
-            //    TempData["CourseSel"] = 61.32;
-            //  TempData["CourseBuy"] = 59.17;
+
             return View();
         }
 
@@ -168,7 +148,7 @@ namespace CyberCity.Controllers
         {
             var clients = _context.Residents;
             MakeNeedOperation();
-            //       var op = db.NeedOprerations;
+
             foreach (var person in clients)
             {
                 if ((person.Login == resident.Login) && (person.Password == resident.Password))
@@ -181,6 +161,7 @@ namespace CyberCity.Controllers
                     TempData["Password"] = person.Password;
                     TempData["Money"] = person.Money;
                     TempData["MoneyInCourse"] = person.MoneyInCourse;
+
                     return Redirect("/Bank/ClientPage");
                 }
             }

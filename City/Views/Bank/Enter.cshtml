@@ -9,12 +9,11 @@
         <hr />
 
         <center>
-            <a href="/Home/EnterToSystem"><img src="~/fonts/%d0%92%d1%85%d0%be%d0%b4.png" height="300" width="300" /></a>
+            <a class="btn btn-primary btn-lg" href="/Bank/EnterToSystem">Войти</a>
+            <a class="btn btn-primary btn-lg" href="/Bank/Registration">Зарегистрироваться</a>
+        </center>
 
-            <a href="/Home/Registration"><img src="~/fonts/%d0%a0%d0%b5%d0%b3%d0%b8%d1%81%d1%82%d1%80%d0%b0%d1%86%d0%b8%d1%8f%20%d0%b2%20%d1%81%d0%b8%d1%81%d1%82%d0%b5%d0%bc%d0%b5.png" height="300" width="300" /></a>
-        </center><br><br><br><br><br><br><br>
-
-
+        <br><br><br><br><br><br><br>
 
         <center>КУРС АМЕРИКАНСКОГО ДОЛЛАРА НА @DateTime.Now.Day @((String)TempData["Month"]) @DateTime.Now.Year ГОДА</center><br />
         <center>Курс продажи: @((Double)TempData["CourseSel"]) руб./ дол.</center>
