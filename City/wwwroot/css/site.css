@@ -73,21 +73,6 @@ body {
     content: "";
 }
 
-
-.page {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-}
-
-.page__log {
-    flex: 1;
-}
-
-.page__content {
-    flex: 2;
-}
-
 .navbar-header {
     margin-left: 5px;
     width: 100%;

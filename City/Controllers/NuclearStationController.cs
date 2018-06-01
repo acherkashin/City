@@ -12,16 +12,21 @@ namespace CyberCity.Controllers
     [Authorize(Roles = "NuclearStation")]
     public class NuclearStationController : Controller
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         [HttpPut("rod")]
         public void ChangeStateRele([FromQuery]bool flag)
         {
-            CyberCity.Models.City.GetInstance().NuclearStation.ChangeRodState(flag);
+            City.GetInstance().NuclearStation.ChangeRodState(flag);
         }
 
         [HttpGet("state")]
         public ActionResult GetState()
         {
-            return Ok(CyberCity.Models.City.GetInstance().NuclearStation.GetState());
+            return Ok(City.GetInstance().NuclearStation.GetState());
         }
     }
 }

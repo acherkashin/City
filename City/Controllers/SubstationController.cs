@@ -8,9 +8,14 @@ namespace CyberCity.Controllers
     [Authorize(Roles = "Substation")]
     public class SubstationController : Controller
     {
-        private readonly CyberCity.Models.City _city;
+        private readonly City _city;
 
-        public SubstationController(CyberCity.Models.City city)
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public SubstationController(City city)
         {
             _city = city;
         }

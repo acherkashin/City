@@ -17,29 +17,28 @@ namespace CyberCity.Controllers
             ViewBag.Mode = "false";
 
             if (!User.Identity.IsAuthenticated)
-            {
                 return Redirect("/Account/Login");
-            }
 
             if (User.IsInRole("Admin"))
-            {
                 return Redirect("/Account/Admin");
-            }
 
             if (User.IsInRole(Subject.Hacker.ToString()))
-            {
                 return View("Views/Hacker/Index.cshtml");
-            }
 
             if (User.IsInRole(Subject.Bank.ToString()))
-            {
                 return Redirect("Bank");
-            }
 
             if (User.IsInRole(Subject.Houses.ToString()))
-            {
-                return Redirect("House/Index");
-            }
+                return Redirect("House");
+
+            if (User.IsInRole(Subject.Substation.ToString()))
+                return Redirect("Substation");
+
+            if (User.IsInRole(Subject.WeatherStation.ToString()))
+                return Redirect("Weather");
+
+            else if (User.IsInRole(Subject.NuclearStation.ToString()))
+                return Redirect("NuclearStation");
 
             ViewBag.ArduinoUrl = GetCurrentUser().ArduinoUrl;
 

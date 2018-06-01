@@ -1,9 +1,6 @@
 ﻿using CyberCity.Models.AirportModels;
 using CyberCity.Models.HouseModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CyberCity.Models.MunicipalityModel;
 
 namespace CyberCity.Models.BankModel
 {
@@ -21,6 +18,10 @@ namespace CyberCity.Models.BankModel
                 //TODO Черкашин: добавить обработку
             }
             else if (package.Method == Airport.AirportInvoiceMethod)
+            {
+
+            }
+            else if (package.Method == Municipality.PaySalaryMethod)
             {
 
             }

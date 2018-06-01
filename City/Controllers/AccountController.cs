@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -19,7 +18,7 @@ namespace CyberCity.Controllers
     {
         private City _city;
 
-        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext, CyberCity.Models.City city)
+        public AccountController(ApplicationContext context, IHubContext<NetHub> hubcontext, City city)
         {
             _city = city;
             _context = context;

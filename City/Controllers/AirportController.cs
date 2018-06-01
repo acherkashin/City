@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CyberCity.Models.AirportModels;
 using CyberCity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CyberCity.Controllers
 {
     [Produces("application/json")]
-    //[Route("api/Airport")]
+    [Authorize(Roles = "Airport")]
     public class AirportController : Controller
     {
 
