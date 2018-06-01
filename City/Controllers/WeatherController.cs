@@ -80,6 +80,7 @@ namespace CyberCity.Controllers
                     var user = City.GetInstance().WeatherStantion.GetUser();
                     var arduinoUrl = ""; 
                     
+                    
                     if(user == null)
                     {
                         arduinoUrl = "192.168.1.6";

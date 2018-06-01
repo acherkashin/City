@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.AirportModels
@@ -49,6 +50,9 @@ namespace CyberCity.Models.AirportModels
                 //TODO: Добавить обработку посадки
             }
         }
+
+
+
 
         public FlightStates flightStates { get; set; }
         public LightStates lightStates { get; set; }
@@ -109,8 +113,11 @@ namespace CyberCity.Models.AirportModels
             //else throw new Exception();
         }
 
-
-        // Вызывает обработку события по времени
+       
+        /// <summary>
+        /// Проверяет, пришло ли время отправлять или приземлять самолет.
+        /// </summary>
+        /// <param name="Time"> Время в часах.</param>
         public void IsTime(int Time)
         {
             switch (Time)
@@ -129,5 +136,30 @@ namespace CyberCity.Models.AirportModels
                     break;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Start()
+        {
+            new Task(() =>
+            {
+                int hour = 0;
+                while (true)
+                {
+                    IsTime(hour);
+                    Thread.Sleep(60000);
+
+                    if (hour == 23)
+                    {
+                        hour = 0;
+                    }
+                    else
+                    {
+                        hour++;
+                    }
+                }
+            }).Start();
+        }        
     }
 }

@@ -6,12 +6,24 @@ using CyberCity.Models.WeatherStantionModel;
 using CyberCity.Models.AirportModels;
 using System;
 using CyberCity.Models.HouseModels;
+using System.Threading;
 
 namespace CyberCity.Models
-{
+{    
     public class City
     {
         private static City _instance;
+        
+        /// <summary>
+        /// Флаг - идет ли время в городе.
+        /// </summary>
+        public bool IsTimeRunning;
+
+        /// <summary>
+        /// Текущий час.
+        /// </summary>
+        public int Hour; 
+
         /// <summary>
         /// Метод для получения экземпляра города(синглтона). Необходим для того чтобы иметь возможность использовать город в любом месте программы
         /// и не ограничиваться возможностями внедрения через констрктор asp.net core.
@@ -36,7 +48,7 @@ namespace CyberCity.Models
         public City(ApplicationContext context, DataBus databus)
         {
             _databus = databus;
-            _context = context;
+            _context = context;            
 
             SubStation = new SubStation(_context, _databus);
             NuclearStation = new NuclearStation(_context, _databus);
@@ -48,8 +60,10 @@ namespace CyberCity.Models
 
             SubStation.Start();
             NuclearStation.Start();
+            Airport.Start(); 
 
             _instance = this;
+            IsTimeRunning = true;            
         }
 
         public CityObject GetObject(Subject subj)
@@ -67,5 +81,7 @@ namespace CyberCity.Models
 
             return null;
         }
+
+        
     }
 }
