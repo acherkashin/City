@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models.AirportModels
@@ -27,7 +28,37 @@ namespace CyberCity.Models.AirportModels
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Установить контекст
+        /// </summary>
+        /// <param name="context"> Контекст.</param>
+        public void SetContext(ApplicationContext context)
+        {
+            _context = context;
+        }
 
+        /// <summary>
+        /// Установить шину передачи данных.
+        /// </summary>
+        /// <param name="bus"> Шина.</param>
+        public void SetDataBus(DataBus bus)
+        {
+            _bus = bus;
+        }
+
+        /// <summary>
+        /// Установить настройки по умолчанию.
+        /// </summary>
+        public void SetDefault()
+        {
+            Passengers = new List<Passenger> {
+            new Passenger{ Id=1,Name = "Петров И.И" },
+            new Passenger{ Id=2,Name = "Иванов И.И" },
+            new Passenger{ Id=3,Name = "Соколов И.И" }
+            };
+            flightStates = FlightStates.NotSend;
+            lightStates = LightStates.TurnedOff;
+        }
 
 
         public FlightStates flightStates { get; set; }
@@ -85,8 +116,11 @@ namespace CyberCity.Models.AirportModels
             else throw new Exception();
         }
 
-
-        // Вызывает обработку события по времени
+       
+        /// <summary>
+        /// Проверяет, пришло ли время отправлять или приземлять самолет.
+        /// </summary>
+        /// <param name="Time"> Время в часах.</param>
         public void IsTime(int Time)
         {
             switch (Time)
@@ -104,8 +138,31 @@ namespace CyberCity.Models.AirportModels
                     LandPlane();
                     break;
             }
-
-
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Start()
+        {
+            new Task(() =>
+            {
+                int hour = 0;
+                while (true)
+                {
+                    IsTime(hour);
+                    Thread.Sleep(60000);
+
+                    if (hour == 23)
+                    {
+                        hour = 0;
+                    }
+                    else
+                    {
+                        hour++;
+                    }
+                }
+            }).Start();
+        }        
     }
 }
