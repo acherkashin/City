@@ -22,7 +22,13 @@ namespace CyberCity.Models.ReactorModel
         /// Состояние реактора
         /// </summary>
         public bool IsOnReactor { get; set; }
+        /// <summary>
+        /// Взорван реактор или нет(0-нет/1-да)
+        /// </summary>
         public bool NuclearBlast { get; set; } = false;
+        /// <summary>
+        /// Подняты стержни или нет(0-опущены/1-подняты)
+        /// </summary>
         public bool IsUpRod { get; set; } = false;
 
         /// <summary>
@@ -41,6 +47,9 @@ namespace CyberCity.Models.ReactorModel
         /// Температура, при которой включаются турбины
         /// </summary>
         public int MinTemperature = 180;
+        /// <summary>
+        /// Температура, при которой происходит взрыв реактора
+        /// </summary>
         public int BlastTemperature { get; } = 3000;
 
         /// <summary>
@@ -74,11 +83,10 @@ namespace CyberCity.Models.ReactorModel
             {
                 dlt = 5 + 0.01 * percent * currentTemperature;
             }
-
         }
 
         /// <summary>
-        /// Взрыв реактора
+        /// Взрыв реактора 
         /// </summary>
         public void BlastReactor()
         {

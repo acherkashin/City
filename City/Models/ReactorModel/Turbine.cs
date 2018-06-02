@@ -68,16 +68,22 @@ namespace CyberCity.Models.Reactor
             IsBroken = false;
             IsOnTurbine = true;
             IsOnSiren = false;
-            /// <summary>
-            /// Запуск турбины на Arduino
-            /// </summary>
+            OnTurbineOnArduino();
+
+        }
+
+        /// <summary>
+        /// Запуск турбины на Arduino
+        /// </summary>
+        private void OnTurbineOnArduino()
+        {
             try
             {
                 ///<summary>
                 ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
                 ///IP 192.168.0.2
                 ///</summary>
-                String URL = "http://192.168.0.2/" +ArduinoOnOffTurbineMethod + "?p=1";
+                String URL = "http://192.168.0.2/" + ArduinoOnOffTurbineMethod + "?p=1";
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";

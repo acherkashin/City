@@ -24,7 +24,6 @@ namespace CyberCity.Models.ReactorModel
         private Object lockObj = new Object();
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
-
         public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
         public void Start()
@@ -55,10 +54,6 @@ namespace CyberCity.Models.ReactorModel
                     ///Тут происходит отправка данных на Электрическую подстанцию
                     /// </summary>
                     SendEnergyForSubStation();
-                    ///<summary>
-                    ///Тут происходит отправка данных на Arduino Атомной станции для изменения цвета лампочек
-                    /// </summary>
-                    reactor.SendToArduino(Reactor.ArduinoLampColorMethod, Convert.ToString(reactor.energy));
                     Thread.Sleep(60000);
                 }
             }
@@ -84,7 +79,10 @@ namespace CyberCity.Models.ReactorModel
             {
                 reactor.currentTemperature = reactor.currentTemperature + reactor.dlt;
             }
-
+            ///<summary>
+            ///Тут происходит отправка данных на Arduino Атомной станции для изменения цвета лампочек
+            /// </summary>
+            reactor.SendToArduino(Reactor.ArduinoLampColorMethod, Convert.ToString(reactor.currentTemperature));
             if (turbine.IsOnTurbine == false)
             {
                 reactor.ChangeDlt(15);
@@ -93,7 +91,9 @@ namespace CyberCity.Models.ReactorModel
             {
                 reactor.ChangeDlt(5);
             }
+            /// <summary>
             /// Если температура >= температуры взрыва, то происходит взрыв(логично...)
+            /// </summary> 
             if (reactor.currentTemperature > reactor.BlastTemperature)
             {
                 reactor.IsOnReactor = false;
@@ -104,7 +104,9 @@ namespace CyberCity.Models.ReactorModel
             }
             else
             {
+                /// <summary>
                 /// Если температура меньше или равна 0, то текущая температра = 0
+                /// </summary>
                 if (reactor.currentTemperature <= 0)
                 {
                     reactor.currentTemperature = 0;
@@ -112,7 +114,9 @@ namespace CyberCity.Models.ReactorModel
                 }
                 else
                 {
-                    /// При рабочей температуре(от 180) начинают работать турбины
+                    ///<summary>
+                    ///При рабочей температуре(от 180) начинают работать турбины
+                    /// </summary>
                     if (reactor.currentTemperature >= reactor.MinTemperature)
                     {
                         if (turbine.currentRPM == 0 && turbine.IsBroken != true)
@@ -123,7 +127,6 @@ namespace CyberCity.Models.ReactorModel
                         {
                             ChangeRPM();
                         }
-
                     }
                     else
                     {
@@ -138,7 +141,6 @@ namespace CyberCity.Models.ReactorModel
                             reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
                         }
                     }
-
                 }
             }
         }
@@ -159,22 +161,27 @@ namespace CyberCity.Models.ReactorModel
                 {
                     turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
                 }
-
+                ///<remarks>
                 /// При достижении "рабочих" оборотов в 3000 ед. обороты начинают изменяться в диапазоне [3000;3050]
                 /// Поломка возможна только в случае перехвата и изменения пакетов, где обороты будут больше 3200 ед.
+                /// </remarks>
                 else
                 {
                     turbine.currentRPM = (turbine.MaxRPM-200) + randomValue.Next(0, 51);
                 }
             }
-            /// Если текущие обороты меньше "рабочих", то энергия будет находиться в диапазоне 0-100%
+            ///<summary>
+            ///Если текущие обороты меньше "рабочих", то энергия будет находиться в диапазоне 0-100%
+            /// </summary>
             if (turbine.currentRPM < turbine.MinRPM)
             {
                 reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
             }
             else
             {
-                /// Если обороты больше максимальных, то начинает расти вибрация
+                ///<summary>
+                ///Если обороты больше максимальных, то начинает расти вибрация
+                /// </summary>
                 if (turbine.currentRPM > turbine.MaxRPM)
                 {
                     ChangeVibration();
@@ -185,8 +192,9 @@ namespace CyberCity.Models.ReactorModel
                     reactor.energy = 100;
                 }
             }
-
-            /// Если вибрация достигает предела(300 ед.), то происходит поломка
+            ///<summary>
+            ///Если вибрация достигает предела(300 ед.), то происходит поломка
+            /// </summary>
             if (turbine.currentVibration > turbine.MaxVibration)
             {
                 turbine.Stop();
@@ -198,8 +206,10 @@ namespace CyberCity.Models.ReactorModel
 
         /// <summary>
         /// Изменение уровня вибрации
-        /// Если турбина поломана, вибрация =0
         /// </summary>
+        /// <remarks>
+        /// Если турбина поломана, вибрация =0
+        /// </remarks>
         private void ChangeVibration()
         {
             if (turbine.IsBroken != true)
@@ -210,7 +220,6 @@ namespace CyberCity.Models.ReactorModel
             {
                 turbine.currentVibration = 0;
             }
-
         }
 
         /// <summary>
