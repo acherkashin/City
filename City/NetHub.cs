@@ -63,12 +63,12 @@ namespace CyberCity
 
             Clients.Group(package.To.ToString()).onRecievePackage(package);
 
-            CyberCity.Models.City.GetInstance().GetObject(package.To).ProcessPackage(package);
+            City.GetInstance().GetObject(package.To).ProcessPackage(package);
         }
 
         private void UpdateOnlineUserList()
         {
-            var onlineUsers = _context.Users.Where(u => OnlineUsersIds.Contains(u.Id) && u.Subject != Subject.Admin).ToList();
+            var onlineUsers = _context.Users.Where(u => u.Subject != Subject.Admin).ToList();
             Clients.Group(Subject.Admin.ToString()).onUpdateOnlineList(onlineUsers);
         }
 

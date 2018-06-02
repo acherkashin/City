@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CyberCity.Models
@@ -11,6 +14,10 @@ namespace CyberCity.Models
     /// </summary>
     public class DataBus
     {
+        //var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
+        //optionsBuilder.UseSqlite("Data Source=city.db");
+        //new ApplicationContext(optionsBuilder.Options);
+
         private object lockObj = new object();
         private readonly ApplicationContext _context;
         private readonly IHubContext<NetHub, INetHub> _hubContext;
@@ -46,6 +53,36 @@ namespace CyberCity.Models
             }
             catch (Exception ex)
             {
+            }
+        }
+
+        public string SendToArduino(string url)
+        {
+            try
+            {
+                var retuest = WebRequest.Create(url);
+
+                retuest.Method = "POST";
+                retuest.ContentType = "application/x-www-urlencoded";
+                retuest.Timeout = 5000;
+
+                WebResponse deviceResponse = retuest.GetResponse();
+
+                var deviceAnswer = string.Empty;
+
+                using (var stream = deviceResponse.GetResponseStream())
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        deviceAnswer = reader.ReadToEnd();
+                    }
+                }
+
+                return deviceAnswer;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }
