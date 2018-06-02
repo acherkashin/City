@@ -16,16 +16,6 @@ namespace CyberCity.Models
         private static City _instance;
 
         /// <summary>
-        /// Флаг - идет ли время в городе.
-        /// </summary>
-        public bool IsTimeRunning;
-
-        /// <summary>
-        /// Текущий час.
-        /// </summary>
-        public int Hour;
-
-        /// <summary>
         /// Метод для получения экземпляра города(синглтона). Необходим для того чтобы иметь возможность использовать город в любом месте программы
         /// и не ограничиваться возможностями внедрения через констрктор asp.net core.
         /// </summary>
@@ -62,7 +52,6 @@ namespace CyberCity.Models
             Start();
 
             _instance = this;
-            IsTimeRunning = true;
         }
 
         public void Start()

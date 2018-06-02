@@ -1,13 +1,8 @@
 ﻿using CyberCity.Models.Core;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace CyberCity.Models
 {
