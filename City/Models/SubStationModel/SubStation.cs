@@ -10,9 +10,17 @@ namespace CyberCity.Models.SubStationModel
 {
     public class SubStation : CityObject
     {
-        //TODO Черкашин: Добавить описание методов, которые умеет обрабатывать подстанция
+        /// <summary>
+        /// Метод для принятия запроса на включения сирены на Arduino
+        /// </summary>
         public const string OnSirenMethod = "OnSiren";
+        /// <summary>
+        /// Метод для получения энергии с объекта "Атомная станция"
+        /// </summary>
         public const string GetPowerMethod = "GetPower";
+        /// <summary>
+        /// Метод для отправки мощности на объект "Жилые дома"
+        /// </summary>
         public const string PowerInHousesMethod = "PowerInHouses";
 
         public SubStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
@@ -49,8 +57,10 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public void UseSiren()
         {
-            /// TODO: IsOnSiren необходимо передавать на Arduino для включения сирены
+            /// <summary>
+            /// IsOnSiren необходимо передавать на Arduino для включения сирены
             /// Конвертация из True в "1" и из False в "0" необходима по просьбе программистов Arduino
+            /// </summary>
             string isSiren;
             if (IsOnSiren)
             {
@@ -77,7 +87,6 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public void SendPower(double sendPower)
         {
-            ///TODO: Нужно узнать точное имя метода в объекте "Город"
             _bus.Send(new Package()
             {
                 From = Subject.Substation,
