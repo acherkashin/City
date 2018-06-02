@@ -58,10 +58,8 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public void UseSiren()
         {
-            /// <summary>
-            /// IsOnSiren необходимо передавать на Arduino для включения сирены
-            /// Конвертация из True в "1" и из False в "0" необходима по просьбе программистов Arduino
-            /// </summary>
+            // IsOnSiren необходимо передавать на Arduino для включения сирены
+            // Конвертация из True в "1" и из False в "0" необходима по просьбе программистов Arduino
             string isSiren;
             if (IsOnSiren)
             {
