@@ -23,7 +23,7 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         public bool IsOnReactor { get; set; }
         /// <summary>
-        /// Взорван реактор или нет(0-нет/1-да)
+        /// Взорван реактор или нет(0-нет/1-да) 
         /// </summary>
         public bool NuclearBlast { get; set; } = false;
         /// <summary>
