@@ -51,7 +51,7 @@ namespace CyberCity.Models.ReactorModel
                     ChangeTemperatue();
                     _bus.SendStateChanged(Subject.NuclearStation, GetState());
                     ///<summary>
-                    ///Тут происходит отправка данных на Электрическую подстанцию
+                    ///Тут происходит отправка данных на Электрическую подстанцию 
                     /// </summary>
                     SendEnergyForSubStation();
                     Thread.Sleep(60000);
