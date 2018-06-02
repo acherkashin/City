@@ -1,14 +1,13 @@
-﻿using CyberCity.Models.Reactor;
+﻿using CyberCity.Models.Core;
+using CyberCity.Models.Reactor;
 using CyberCity.Models.SubStationModel;
-using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CyberCity.Models.ReactorModel
 {
+    /// <summary>
+    /// Атомная станция
+    /// </summary>
     public class NuclearStation : CityObject
     {
         public override void ProcessPackage(Package package)
@@ -16,46 +15,28 @@ namespace CyberCity.Models.ReactorModel
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// IsUpRodGlobal - глобальная переменная, которая отвечает за текущее состояние стержня, чтобы к ней можно было обращаться из метода StartReactor.
-        /// т.е. при нажатии на кнопок на html-странице происходит изменение переменной IsUpRodGlobal, а после к ней обращается метод StartReactor и работает уже с ней
-        /// </summary>
-        bool IsUpRodGlobal = false;
         private Object lockObj = new Object();
         Reactor reactor = new Reactor();
         Turbine turbine = new Turbine();
-        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
 
-        public void Start()
+        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus)
         {
-            new Task(StartReactor).Start();
+            reactor.IsOnReactor = true;
         }
 
         public void ChangeRodState(bool flag)
         {
-            IsUpRodGlobal = flag;
-            reactor.IsUpRod = IsUpRodGlobal;
+            reactor.IsUpRod = flag;
         }
 
-        private void StartReactor()
+        public void Work(CityTime time)
         {
-            lock (lockObj)
+            if (!reactor.NuclearBlast)
             {
-                reactor.IsOnReactor = true;
-                while (reactor.NuclearBlast == false)
-                {
-                    ///<summary>
-                    ///Тут происходит обращение к глобальной переменной и это значение присваивается в текущее состояние стержня
-                    /// </summary>
-                    reactor.IsUpRod = IsUpRodGlobal;
-                    ChangeTemperatue();
-                    _bus.SendStateChanged(Subject.NuclearStation, GetState());
-                    ///<summary>
-                    ///Тут происходит отправка данных на Электрическую подстанцию 
-                    /// </summary>
-                    SendEnergyForSubStation();
-                    Thread.Sleep(60000);
-                }
+                ChangeTemperatue();
+                _bus.SendStateChanged(Subject.NuclearStation, GetState());
+                /// Тут происходит отправка данных на Электрическую подстанцию
+                SendEnergyForSubStation();
             }
         }
 
@@ -151,13 +132,13 @@ namespace CyberCity.Models.ReactorModel
         private void ChangeRPM()
         {
             Random randomValue = new Random();
-            if (turbine.currentRPM < (turbine.MaxRPM-200) && reactor.IsUpRod == false)
+            if (turbine.currentRPM < (turbine.MaxRPM - 200) && reactor.IsUpRod == false)
             {
                 turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
             }
             else
             {
-                if (turbine.currentRPM < (turbine.MaxRPM-200) && reactor.IsUpRod == true)
+                if (turbine.currentRPM < (turbine.MaxRPM - 200) && reactor.IsUpRod == true)
                 {
                     turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
                 }
@@ -167,7 +148,7 @@ namespace CyberCity.Models.ReactorModel
                 /// </remarks>
                 else
                 {
-                    turbine.currentRPM = (turbine.MaxRPM-200) + randomValue.Next(0, 51);
+                    turbine.currentRPM = (turbine.MaxRPM - 200) + randomValue.Next(0, 51);
                 }
             }
             ///<summary>
@@ -185,7 +166,7 @@ namespace CyberCity.Models.ReactorModel
                 if (turbine.currentRPM > turbine.MaxRPM)
                 {
                     ChangeVibration();
-                    reactor.energy=100;
+                    reactor.energy = 100;
                 }
                 else
                 {

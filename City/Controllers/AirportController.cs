@@ -20,9 +20,7 @@ namespace CyberCity.Controllers
         public AirportController(CyberCity.Models.City city)
         {
             _city = city;
-
         }
-
 
         public ActionResult Index()
         {
@@ -33,7 +31,5 @@ namespace CyberCity.Controllers
         {
             return new ObjectResult(_city.Airport);
         }
-
-
     }
 }

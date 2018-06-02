@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using CyberCity.Models.Core;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,24 +98,17 @@ namespace CyberCity.Models.SubStationModel
             _bus.SendStateChanged(Subject.Substation, GetState());
         }
 
-        public void Start()
+        public void Work(CityTime time)
         {
-            new Task(() =>
+            if (IsOnRele)
             {
-                while (true)
-                {
-                    if (IsOnRele)
-                    {
-                        SendPower(Power);
-                    }
-                    else
-                    {
-                        SendPower(0);
-                    }
+                SendPower(Power);
+            }
+            else
+            {
+                SendPower(0);
+            }
 
-                    Thread.Sleep(60000);
-                }
-            }).Start();
         }
 
         public SubstationState GetState()
@@ -145,7 +139,7 @@ namespace CyberCity.Models.SubStationModel
             }
             catch (Exception ex)
             {
-
+                
             }
         }
     }

@@ -7,6 +7,7 @@ using CyberCity.Models.AirportModels;
 using System;
 using CyberCity.Models.HouseModels;
 using System.Threading;
+using CyberCity.Models.Core;
 
 namespace CyberCity.Models
 {
@@ -44,6 +45,8 @@ namespace CyberCity.Models
         public readonly Houses Houses;
         public readonly Airport Airport;
 
+        private readonly CitySheduler _cityTime = new CitySheduler();
+
 
         public City(ApplicationContext context, DataBus databus)
         {
@@ -66,12 +69,15 @@ namespace CyberCity.Models
 
         public void Start()
         {
-            SubStation.Start();
-            NuclearStation.Start();
-            Airport.Start();
+            _cityTime.Start();
+            
+            _cityTime.RunEach(1, SubStation.Work);
+            _cityTime.RunEach(1, NuclearStation.Work);
+            
             Municipality.Start();
             Houses.Start();
-            Airport.Start();
+
+            _cityTime.RunEach(1, Airport.Work);
         }
 
         public CityObject GetObject(Subject subj)

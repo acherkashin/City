@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CyberCity.Models.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -135,29 +136,9 @@ namespace CyberCity.Models.AirportModels
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Start()
+        public void Work(CityTime dateTime)
         {
-            new Task(() =>
-            {
-                int hour = 0;
-                while (true)
-                {
-                    IsTime(hour);
-                    Thread.Sleep(60000);
-
-                    if (hour == 23)
-                    {
-                        hour = 0;
-                    }
-                    else
-                    {
-                        hour++;
-                    }
-                }
-            }).Start();
-        }        
+            IsTime(dateTime.Hours);
+        }
     }
 }
