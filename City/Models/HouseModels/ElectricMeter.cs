@@ -9,9 +9,8 @@ namespace CyberCity.Models.HouseModels
     {
         public ElectricMeter()
         {
-            SpentPower = Generator.GenerateValue(0,1000);
-            CurrentPower = Generator.GenerateValue(0,100);
-            Tarif = Generator.GenerateValue(1,10);
+            SpentPower = 0;
+            CurrentPower = 0;
         }
 
         /// <summary>
@@ -24,12 +23,7 @@ namespace CyberCity.Models.HouseModels
         /// </summary>
         public float SpentPower { get; set; }
 
-        /// <summary>
-        /// Тарифный коэффициент, обозначающий сколько стоит 1 кВт в рублях
-        /// </summary>
-        public float Tarif { get; set; }
-
-        public void UpdateMeters(int electricPower)
+        public void UpdateMeters(float electricPower)
         {
             if (electricPower != 0)
             {

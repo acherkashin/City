@@ -23,18 +23,11 @@ namespace CyberCity.Models.HouseModels
             GasMeter = new GasMeter();
         }
 
-        public void UpdateMeters(int electricPower = 0)
+        public void UpdateMeters(float electricPower = 0)
         {
             ElectricMeter.UpdateMeters(electricPower);
-            WaterMeter.UpdateMeters();
             GasMeter.UpdateMeters();
-        }
-
-        public void UpdateTarifs(int gasTarif,int waterTarif,int electricTarif)
-        {
-            ElectricMeter.Tarif = electricTarif;
-            WaterMeter.Tarif = waterTarif;
-            GasMeter.Tarif = gasTarif;
+            WaterMeter.UpdateMeters();
         }
     }
 }
