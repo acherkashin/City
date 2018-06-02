@@ -18,7 +18,7 @@ namespace CyberCity.Models.HouseModels
 
         private ConcurrentDictionary<int, House> _houses = new ConcurrentDictionary<int, House>();
 
-        public Houses(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Houses(DataBus bus) : base(bus)
         {
             Add(new House() { Name = "Жилой дом 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
             Add(new House() { Name = "Жилой дом 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });

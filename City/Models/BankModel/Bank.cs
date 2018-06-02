@@ -24,7 +24,7 @@ namespace CyberCity.Models.BankModel
         /// </summary>
         public double CourseBuy { get; set; }
 
-        public Bank(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Bank(DataBus bus) : base(bus)
         {
             UpdateCourses();
         }

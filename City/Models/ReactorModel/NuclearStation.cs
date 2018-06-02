@@ -29,7 +29,7 @@ namespace CyberCity.Models.ReactorModel
         private readonly Reactor _reactor = new Reactor();
         private readonly Turbine _turbine = new Turbine();
 
-        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus)
+        public NuclearStation(DataBus bus) : base(bus)
         {   
             _reactor.IsOnReactor = true;
         }

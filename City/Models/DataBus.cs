@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using CyberCity.Models.Core;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,17 +16,13 @@ namespace CyberCity.Models
     /// </summary>
     public class DataBus
     {
-        //var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-        //optionsBuilder.UseSqlite("Data Source=city.db");
-        //new ApplicationContext(optionsBuilder.Options);
-
         private object lockObj = new object();
-        private readonly ApplicationContext _context;
+
+        public static ApplicationContext Context => ContextFactory.GetContext();
         private readonly IHubContext<NetHub, INetHub> _hubContext;
 
-        public DataBus(ApplicationContext context, IHubContext<NetHub, INetHub> hubContext)
+        public DataBus(IHubContext<NetHub, INetHub> hubContext)
         {
-            _context = context;
             _hubContext = hubContext;
         }
 
@@ -32,8 +30,8 @@ namespace CyberCity.Models
         {
             lock (lockObj)
             {
-                _context.Add(package);
-                _context.SaveChanges();
+                Context.Add(package);
+                Context.SaveChanges();
 
                 var encrepted = package.CreateEncreted();
 

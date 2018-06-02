@@ -12,7 +12,7 @@ namespace CyberCity.Models.MunicipalityModel
         public const string UpdateTarifMethod = "UpdateTarif";
         public const string PaySalaryMethod = "PaySalary";
 
-        public Municipality(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Municipality(DataBus bus) : base(bus)
         {
         }
 

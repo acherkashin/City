@@ -1,11 +1,4 @@
 ﻿using CyberCity.Models.Core;
-using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CyberCity.Models.SubStationModel
 {
@@ -24,7 +17,7 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public const string PowerInHousesMethod = "PowerInHouses";
 
-        public SubStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
+        public SubStation(DataBus bus) : base(bus) { }
 
         public double Power { get; set; } = 0;
         public bool IsOnRele { get; set; } = false;
