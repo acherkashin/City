@@ -120,10 +120,13 @@ namespace CyberCity.Models.HouseModels
 
         public void SwitchLightOnArduino()
         {
+            if (GetUser() == null)
+                return;
+
             try
             {
                 var homes = GetAll();
-
+                
                 string urlToArduino = GetUser().ArduinoUrl;
 
                 foreach (var home in homes)
@@ -134,6 +137,8 @@ namespace CyberCity.Models.HouseModels
                     WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
+
+                    //TODO: можно использовать _bus.SendToArduino()
                 }
             }
             catch (Exception ex)

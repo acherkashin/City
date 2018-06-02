@@ -112,7 +112,7 @@ namespace CyberCity.Models.AirportModels
             //else throw new Exception();
         }
 
-       
+
         /// <summary>
         /// Проверяет, пришло ли время отправлять или приземлять самолет.
         /// </summary>

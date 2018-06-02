@@ -30,7 +30,7 @@ namespace CyberCity.Models.ReactorModel
         private readonly Turbine _turbine = new Turbine();
 
         public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus)
-        {
+        {   
             _reactor.IsOnReactor = true;
         }
 
@@ -140,6 +140,9 @@ namespace CyberCity.Models.ReactorModel
 
         private void SendToArduino(string method, string p)
         {
+            if (GetUser() == null)
+                return;
+
             string url = $"{GetUser().ArduinoUrl}/method?p={p}";
             _bus.SendToArduino(url);
         }
