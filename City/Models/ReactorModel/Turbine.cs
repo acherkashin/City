@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,10 @@ namespace CyberCity.Models.Reactor
 {
     public class Turbine
     {
+        /// <summary>
+        /// Название метода на Arduino для включения/выключения турбины
+        /// </summary>
+        public const string ArduinoOnOffTurbineMethod = "OnOffTurbine";
         public bool IsOnSiren { get; set; } = false;
         /// <summary>
         /// Состояние турбины
@@ -63,6 +68,26 @@ namespace CyberCity.Models.Reactor
             IsBroken = false;
             IsOnTurbine = true;
             IsOnSiren = false;
+            /// <summary>
+            /// Запуск турбины на Arduino
+            /// </summary>
+            try
+            {
+                ///<summary>
+                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                ///IP 192.168.0.2
+                ///</summary>
+                String URL = "http://192.168.0.2/" +ArduinoOnOffTurbineMethod + "?p=1";
+                WebRequest request = WebRequest.Create(URL);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                WebResponse response = request.GetResponse();
+                response.Close();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         /// <summary>
@@ -93,6 +118,7 @@ namespace CyberCity.Models.Reactor
         private void RepareTurbine(object obj)
         {
             Start();
+            
         }
     }
 }

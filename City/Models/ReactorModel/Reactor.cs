@@ -11,14 +11,13 @@ namespace CyberCity.Models.ReactorModel
     public class Reactor
     {
         /// <summary>
-        /// Переменная, которая передается на Arduino для включения дыма
+        /// Название метода на Arduino для включения дыма, белого цвета лампы и отключения вентилятора(турбины)
         /// </summary>
-        public bool IsOnVoid { get; set; } = false;
+        public const string ArduinoBlastMethod = "NuclearBlast";
         /// <summary>
-        /// Переменная, которая передается на Arduino для включения лампочки соответствующего цвета:
-        /// 1 - Синяя, 2 - Зеленая, 3 - Красная, 4 - Белая
+        /// Название метода на Arduino для изменения цвета подсветки
         /// </summary>
-        public string LampColor { get; set; } = "";
+        public const string ArduinoLampColorMethod = "ChangeColorLamp";
         /// <summary>
         /// Состояние реактора
         /// </summary>
@@ -84,10 +83,7 @@ namespace CyberCity.Models.ReactorModel
         public void BlastReactor()
         {
             NuclearBlast = true;
-            IsOnVoid = true;
-            LampColor = "4";
-            SendToArduino("NameOfMethodVoid", Convert.ToString(IsOnVoid));
-            SendToArduino("NameOfMethodLamp", LampColor);
+            SendToArduino(ArduinoBlastMethod, "");
         }
 
         /// <summary>
@@ -103,7 +99,7 @@ namespace CyberCity.Models.ReactorModel
                 ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
                 ///IP 192.168.0.2
                 ///</summary>
-                String URL = "http://192.168.#.#/" + Method + "?p=" + p;
+                String URL = "http://192.168.0.2/" + Method + "?p=" + p;
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";

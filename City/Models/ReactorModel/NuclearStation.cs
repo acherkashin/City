@@ -45,12 +45,20 @@ namespace CyberCity.Models.ReactorModel
                 reactor.IsOnReactor = true;
                 while (reactor.NuclearBlast == false)
                 {
-                    /// Тут происходит обращение к глобальной переменной и это значение присваивается в текущее состояние стержня
+                    ///<summary>
+                    ///Тут происходит обращение к глобальной переменной и это значение присваивается в текущее состояние стержня
+                    /// </summary>
                     reactor.IsUpRod = IsUpRodGlobal;
                     ChangeTemperatue();
                     _bus.SendStateChanged(Subject.NuclearStation, GetState());
-                    /// Тут происходит отправка данных на Электрическую подстанцию
+                    ///<summary>
+                    ///Тут происходит отправка данных на Электрическую подстанцию
+                    /// </summary>
                     SendEnergyForSubStation();
+                    ///<summary>
+                    ///Тут происходит отправка данных на Arduino Атомной станции для изменения цвета лампочек
+                    /// </summary>
+                    reactor.SendToArduino(Reactor.ArduinoLampColorMethod, Convert.ToString(reactor.energy));
                     Thread.Sleep(60000);
                 }
             }
@@ -88,7 +96,6 @@ namespace CyberCity.Models.ReactorModel
             /// Если температура >= температуры взрыва, то происходит взрыв(логично...)
             if (reactor.currentTemperature > reactor.BlastTemperature)
             {
-                reactor.IsOnVoid = true;
                 reactor.IsOnReactor = false;
                 turbine.IsOnTurbine = false;
                 turbine.Stop();
@@ -101,11 +108,6 @@ namespace CyberCity.Models.ReactorModel
                 if (reactor.currentTemperature <= 0)
                 {
                     reactor.currentTemperature = 0;
-                    if (reactor.LampColor != "1")
-                    {
-                        reactor.LampColor = "1";
-                        reactor.SendToArduino("NameOfMethodLamp", reactor.LampColor);
-                    }
 
                 }
                 else
@@ -113,11 +115,6 @@ namespace CyberCity.Models.ReactorModel
                     /// При рабочей температуре(от 180) начинают работать турбины
                     if (reactor.currentTemperature >= reactor.MinTemperature)
                     {
-                        if (reactor.LampColor != "2")
-                        {
-                            reactor.LampColor = "2";
-                            reactor.SendToArduino("NameOfMethodLamp", reactor.LampColor);
-                        }
                         if (turbine.currentRPM == 0 && turbine.IsBroken != true)
                         {
                             turbine.Start();
@@ -130,14 +127,6 @@ namespace CyberCity.Models.ReactorModel
                     }
                     else
                     {
-                        if (reactor.currentTemperature < (reactor.BlastTemperature - 500))
-                        {
-                            if (reactor.LampColor != "3")
-                            {
-                                reactor.LampColor = "3";
-                                reactor.SendToArduino("NameOfMethodLamp", reactor.LampColor);
-                            }
-                        }
                         if (turbine.currentRPM < 10)
                         {
                             turbine.currentRPM = 0;
@@ -201,6 +190,7 @@ namespace CyberCity.Models.ReactorModel
             if (turbine.currentVibration > turbine.MaxVibration)
             {
                 turbine.Stop();
+                reactor.SendToArduino(Turbine.ArduinoOnOffTurbineMethod, "0");
                 OnSiren();
                 reactor.energy = 0;
             }
