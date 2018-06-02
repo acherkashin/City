@@ -23,11 +23,11 @@ namespace CyberCity.Models.ReactorModel
         /// </summary>
         public bool IsOnReactor { get; set; }
         /// <summary>
-        /// Взорван реактор или нет(0-нет/1-да) 
+        /// Взорван реактор или нет(false-нет/true-да) 
         /// </summary>
         public bool NuclearBlast { get; set; } = false;
         /// <summary>
-        /// Подняты стержни или нет(0-опущены/1-подняты)
+        /// Подняты стержни или нет(true-опущены/false-подняты)
         /// </summary>
         public bool IsUpRod { get; set; } = false;
 
@@ -70,9 +70,11 @@ namespace CyberCity.Models.ReactorModel
 
         /// <summary>
         /// Изменение числа, на которое изменяется температура
+        /// </summary>
+        /// <remarks>
         /// Если стержни опущены, то температура изменяется медленнее
         /// Если они подняты, то температура растет быстрее
-        /// </summary>
+        /// </remarks>
         public void ChangeDlt(int percent)
         {
             if (IsUpRod == true)
@@ -103,10 +105,8 @@ namespace CyberCity.Models.ReactorModel
         {
             try
             {
-                ///<summary>
-                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
-                ///IP 192.168.0.2
-                ///</summary>
+                //TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                //IP 192.168.0.2
                 String URL = "http://192.168.0.2/" + Method + "?p=" + p;
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";

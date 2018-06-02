@@ -79,10 +79,8 @@ namespace CyberCity.Models.Reactor
         {
             try
             {
-                ///<summary>
-                ///TODO: Вместо # необходимо вписывать IP соответствующего объекта
-                ///IP 192.168.0.2
-                ///</summary>
+                //TODO: Вместо # необходимо вписывать IP соответствующего объекта
+                //IP 192.168.0.2
                 String URL = "http://192.168.0.2/" + ArduinoOnOffTurbineMethod + "?p=1";
                 WebRequest request = WebRequest.Create(URL);
                 request.Method = "POST";
