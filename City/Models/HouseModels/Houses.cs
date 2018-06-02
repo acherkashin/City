@@ -2,9 +2,7 @@
 using CyberCity.Models.SubStationModel;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,18 +14,37 @@ namespace CyberCity.Models.HouseModels
         public const string SendMetricsMethod = "SendMetrics";
         public const string GetPowerMethod = "GetPower";
 
-        private ConcurrentDictionary<int, House> _houses = new ConcurrentDictionary<int, House>();
+        /// <summary>
+        /// Жилые комплексы
+        /// </summary>
+        public List<House> Homes { get; set; }
+
+        /// <summary>
+        /// Тарифные коэффициенты, получаемые от Муниципалитета
+        /// </summary>
+        public Tarifs Tarifs { get; set; }
+
+        /// <summary>
+        /// Мощность, полученная от подстанции, действует на все дома
+        /// </summary>
+        public float CityPower { get; set; }
 
         public Houses(DataBus bus) : base(bus)
         {
-            Add(new House() { Name = "Жилой дом 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
-            Add(new House() { Name = "Жилой дом 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
-            Add(new House() { Name = "Жилой дом 3", Id = 3, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
-            Add(new House() { Name = "Жилой дом 4", Id = 4, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Homes = new List<House>();
+            Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Homes.Add(new House() { Name = "Жилой комплекс 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+
+            Tarifs = new Tarifs() { Gas = 1, Water = 1, Electric = 1 };
+            CityPower = 100;
         }
 
+        /// <summary>
+        /// Метод для отправки пакетов другим объектам города
+        /// </summary>
         public void Start()
         {
+            List<HouseMeter> metrics = GetMetrics();
             new Task(() =>
             {
                 _bus.Send(new Package()
@@ -35,89 +52,113 @@ namespace CyberCity.Models.HouseModels
                     From = Subject.Houses,
                     To = Subject.Bank,
                     Method = SendMetricsMethod,
-                    Params = "", //TODO Черкашин: добавить метрики
+                    Params = JsonConvert.SerializeObject(metrics), 
                 });
-
                 Thread.Sleep(1000);
             }).Start();
         }
 
+        /// <summary>
+        /// Формирует данные о том, сколько должен заплатить каждый дом за потраченные ресурсы
+        /// </summary>
+        /// <returns></returns>
+        public List<HouseMeter> GetMetrics()
+        {
+            List<HouseMeter> homeMeters = new List<HouseMeter>();
+            foreach (var home in Homes)
+            {
+                float meters = home.GasMeter.CurrentVolume * Tarifs.Gas +
+                               home.ElectricMeter.SpentPower * Tarifs.Electric +
+                               home.WaterMeter.CurrentVolume * Tarifs.Water;
+                homeMeters.Add(new HouseMeter { IdHome = home.Id, Meters = meters });
+            }
+            return homeMeters;
+        }
+
+        /// <summary>
+        /// Обрабатывает пакеты с данными, полученные от других объектов города
+        /// </summary>
         public override void ProcessPackage(Package package)
         {
             if (package.Method == Municipality.UpdateTarifMethod)
             {
-                //TODO Черкашин: Обновить тарифы в домах
                 var tarifs = JsonConvert.DeserializeObject<Tarifs>(package.Params);
+
+                foreach(var house in Homes)
+                {
+                    Tarifs.Electric = tarifs.Electric;
+                    Tarifs.Gas = tarifs.Gas;
+                    Tarifs.Water = tarifs.Water;
+                }
 
             }
             else if (package.Method == SubStation.PowerInHousesMethod)
             {
-                float power = JsonConvert.DeserializeObject<float>(package.Params);
-                ChangePower(power);
-
-                //TDOO Черкашин: Добавить обновление вьюхи
+                CityPower = JsonConvert.DeserializeObject<float>(package.Params);
+                SwitchLight();
                 _bus.SendStateChanged(Subject.Houses, null);
+
             }
         }
 
-        private void ChangePower(float power)
+        /// <summary>
+        /// Вкл/выкл свет в жилых комплексах, в зависимости от того, сколько мощности пришло от подстанции
+        /// </summary>
+        private void SwitchLight()
         {
-            var houses = GetAll();
-
-
             //пришло слишком много мощности, поэтому отрубаем свет во всех домах
-            if (power > 100)
+            if (CityPower > 100)
             {
-                foreach (var house in houses)
+                foreach (var house in Homes)
                 {
                     house.IsOnLight = false;
-
+                    house.UpdateMeters(0);
                 }
             }
-            else if (power <= 100 && power >= 75)
+            else if (CityPower <= 100 && CityPower >= 50)
             {
-                foreach (var house in houses)
+                foreach (var house in Homes)
                 {
                     house.IsOnLight = true;
+                    house.UpdateMeters(CityPower);
                 }
             }
-            else if (power < 75 && power >= 50)
+            else if (CityPower < 50 && CityPower >= 25)
             {
-                Find(1).IsOnLight = false;
+                Homes.Find(x=>x.Id == 1).IsOnLight = false;
+                Homes.Find(x => x.Id == 1).UpdateMeters(0);
 
-                Find(2).IsOnLight = true;
-                Find(3).IsOnLight = true;
-                Find(4).IsOnLight = true;
+                Homes.Find(x => x.Id == 2).IsOnLight = true;
+                Homes.Find(x => x.Id == 1).UpdateMeters(CityPower);
 
-            }
-            else if (power < 50 && power >= 25)
-            {
-                Find(1).IsOnLight = false;
-                Find(2).IsOnLight = false;
-
-                Find(3).IsOnLight = true;
-                Find(4).IsOnLight = true;
-            }
-            else if (power < 25 && power >= 10)
-            {
-                Find(1).IsOnLight = false;
-                Find(2).IsOnLight = false;
-                Find(3).IsOnLight = false;
-
-                Find(4).IsOnLight = true;
             }
             //пришло слишком мало мощности, поэтому отрубаем свет во всех домах
-            else if (power < 10)
+            else if (CityPower < 25)
             {
-                foreach (var house in houses)
+                foreach (var house in Homes)
                 {
                     house.IsOnLight = false;
+                    house.UpdateMeters(0);
                 }
             }
 
             SwitchLightOnArduino();
         }
 
+        /// <summary>
+        /// Переключение света в конкретном доме
+        /// </summary>
+        public void SwitchLightInHouse(int id, bool isOnLight)
+        {
+            if( CityPower < 100 || CityPower >= 25)
+            {
+                Homes.Find(x => x.Id == id).IsOnLight = isOnLight;
+            }
+        }
+
+        /// <summary>
+        /// Передача команды для переключения света контроллеру Ардуино
+        /// </summary>
         public void SwitchLightOnArduino()
         {
             if (GetUser() == null)
@@ -125,11 +166,10 @@ namespace CyberCity.Models.HouseModels
 
             try
             {
-                var homes = GetAll();
-                
+                //TODO Лукина: уточнить, как получить ip для каждого жилого комплекса
                 string urlToArduino = GetUser().ArduinoUrl;
 
-                foreach (var home in homes)
+                foreach (var home in Homes)
                 {
                     string switchLightCommand = home.IsOnLight
                         ? ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn)
@@ -137,37 +177,14 @@ namespace CyberCity.Models.HouseModels
                     WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
-
-                    //TODO: можно использовать _bus.SendToArduino()
                 }
+
+                //TODO: Использовать _bus.SendToArduino
             }
             catch (Exception ex)
             {
 
             }
-        }
-
-        public IEnumerable<House> GetAll()
-        {
-            return _houses.Values;
-        }
-
-        public void Add(House home)
-        {
-            _houses[home.Id] = home;
-        }
-
-        public House Find(int id)
-        {
-            House item;
-            _houses.TryGetValue(id, out item);
-            return item;
-        }
-
-
-        public void Update(House home)
-        {
-            _houses[home.Id] = home;
         }
     }
 }
