@@ -1,30 +1,33 @@
 ﻿@{
     ViewBag.Title = "Подстанция";
 }
-<h2>@ViewBag.Title.</h2>
+<div class="toolbar">
+    <h4>
+        @ViewBag.Title
+    </h4>
+</div>
 
 
 <div id="reactor-page">
     <arduino-panel url="@ViewBag.ArduinoUrl"></arduino-panel>
-    <div class="Use_Reactor">
+    <div class="Use_Reactor atom-container col-md-5">
         <p>Управление Подстанцией:</p>
         <label>Состояние реле:</label> {{labelReleState}}
         <br />
         <label>Сирена: </label> {{labelSirenState}}
         <br />
-        <label>Мощность: </label> {{power}} 
+        <label>Мощность: </label> {{power}}
         <br />
-        <button class="btn" v-on:click="OnRele">
-            <span class="glyphicon glyphicon-arrow-down"></span>Включить реле
+        <button class="btn  btn-info" v-on:click="OnRele">
+            <span class="glyphicon glyphicon-arrow-down"></span> Включить реле
         </button>
-        <button class="btn" v-on:click="OffRele">
-            <span class="glyphicon glyphicon-arrow-up"></span>Выключить реле
+        <button class="btn  btn-info" v-on:click="OffRele">
+            <span class="glyphicon glyphicon-arrow-up"></span> Выключить реле
         </button>
-    </div>
-    <br />
-    <div>
         <button class="btn btn-primary" v-on:click="UpdateData">Обновить данные</button>
     </div>
+    <br />
+  
 </div>
 
 <script>
