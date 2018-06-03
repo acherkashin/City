@@ -2,7 +2,7 @@
 
 namespace CyberCity.Controllers
 {
-    public class MunicipalicyController : BaseController
+    public class MunicipalityController : BaseController
     {
         public ActionResult Index()
         {
