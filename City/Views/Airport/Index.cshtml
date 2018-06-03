@@ -12,6 +12,7 @@
 <h4>Список пассажиров</h4>
 <ul id="passangers"></ul>
 <div id="log"></div>
+<a href="~/Views/Airport/Index.cshtml">~/Views/Airport/Index.cshtml</a>
 
 <script>
       function getFlight() {
@@ -71,7 +72,7 @@
 
             },
             onStateChanged: (state) => {
-                //TODO: обновлять UI, для вызова метода необходимо вызвать метод bus.SendStateChanged на сервере
+                getFlight();
             }
         })
     })

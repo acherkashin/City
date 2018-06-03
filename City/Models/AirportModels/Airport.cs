@@ -1,4 +1,5 @@
-﻿using CyberCity.Models.Core;
+﻿using CyberCity.Models.BankModel;
+using CyberCity.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace CyberCity.Models.AirportModels
 {
     public class Airport : CityObject
     {
-        //TODO Черкашин: Описать все поля
+
+
         /// <summary>
         /// Запрос разрешения на полет
         /// </summary>
@@ -23,8 +25,21 @@ namespace CyberCity.Models.AirportModels
         /// </summary>
         public const string AirportInvoiceMethod = "AirportInvoice";
 
+        public Random rand = new Random();
+        /// <summary>
+        /// люди из базы данных
+        /// </summary>
+        List<Resident> ClientsOfBank = new List<Resident>();
+
         public Airport(DataBus bus) : base(bus)
         {
+            var clients = _context.Residents;
+            
+            foreach (var person in clients)
+            {
+                ClientsOfBank.Add(person);
+            }
+
             Passengers = new List<Passenger> {
                 new Passenger{ Id=1,Name = "Петров И.И" },
                 new Passenger{ Id=2,Name = "Иванов И.И" },
@@ -57,16 +72,22 @@ namespace CyberCity.Models.AirportModels
                         Params = Newtonsoft.Json.JsonConvert.SerializeObject(null),//TODO : заменить null на информацию о пассажирах
                     });
                     flightState = FlightStates.FlewAway;
+                    _bus.SendStateChanged(Subject.Airport, null);
                 }
                 else flightState = FlightStates.NotSend;
+                _bus.SendStateChanged(Subject.Airport, null);
             }
             else if (package.Method == CanLandMethod)
             {
                 var canLand = Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
                 if (canLand) flightState = FlightStates.FlewIn;
                 else flightState = FlightStates.NotLand;
+                _bus.SendStateChanged(Subject.Airport, null);
             }
         }
+
+
+        
         /// <summary>
         /// Состояние полета
         /// </summary>
@@ -79,13 +100,21 @@ namespace CyberCity.Models.AirportModels
         /// <summary>
         /// Пассажиры, отправленные в полет
         /// </summary>
-        public virtual ICollection<Passenger> Passengers { get; set; }
+        public virtual List<Passenger> Passengers { get; set; }
         /// <summary>
         /// отправить самолет
         /// </summary>
         public void SendPlane()
         {
-            //    //1.Рандомно набрать в Airport.Passangers 3 человека(перед этим очистить список)
+            int count = ClientsOfBank.Count();
+            Passengers.Clear();
+            for (var i = 0; i<3; i++)
+            {
+                int id = rand.Next(count);
+                Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
+                Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname+res.Name+ res.Patronymic });
+            }
+
             _bus.Send(new Package()
             {
                 From = Subject.Airport,
@@ -112,6 +141,9 @@ namespace CyberCity.Models.AirportModels
         {
             lightState = LightStates.TurnedOn;
             //передать ардуино, чтобы включился свет
+            string url = $"{GetUser().ArduinoUrl}/method?";
+            _bus.SendToArduino(url);
+
         }
         /// <summary>
         /// выключить свет
@@ -120,6 +152,9 @@ namespace CyberCity.Models.AirportModels
         {
             lightState = LightStates.TurnedOff;
             //передать ардуино, чтобы выключился свет
+            string url = $"{GetUser().ArduinoUrl}/method?";
+            _bus.SendToArduino(url);
+
         }
 
        
@@ -150,5 +185,8 @@ namespace CyberCity.Models.AirportModels
         {
             IsTime(dateTime.Hours);
         }
+
+
+
     }
 }
