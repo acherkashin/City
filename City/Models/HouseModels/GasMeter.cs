@@ -9,18 +9,12 @@ namespace CyberCity.Models.HouseModels
     {
         public GasMeter()
         {
-            CurrentVolume = Generator.GenerateValue(0, 100);
-            Tarif = Generator.GenerateValue(10, 50);
+            CurrentVolume = 0;
         }
         /// <summary>
         /// Потраченно воды за день в куб м
         /// </summary>
         public float CurrentVolume { get; set; }
-
-        /// <summary>
-        /// Тарифный коэффициент, обозначающий сколько стоит 1 куб м воды в рублях
-        /// </summary>
-        public float Tarif { get; set; }
 
         public void UpdateMeters()
         {

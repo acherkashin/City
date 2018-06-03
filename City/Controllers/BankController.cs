@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
 using CyberCity.Models;
 using CyberCity.Models.BankModel;
 using CyberCity.Utils;
@@ -14,46 +11,12 @@ namespace CyberCity.Controllers
     [Authorize(Roles = "Bank")]
     public class BankController : BaseController
     {
-        public BankController(ApplicationContext context)
+        private readonly City _city;
+
+        public BankController(ApplicationContext context, City city)
         {
             _context = context;
-        }
-
-        /// <summary>
-        /// Получения курса валют
-        /// </summary>
-        public double GetCourse()
-        {
-            var day = DateTime.Now.ToString("dd");
-            var month = DateTime.Now.ToString("MM");
-
-            string slka = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + day + "." + month + "." + DateTime.Now.Year;
-
-            WebRequest request = WebRequest.Create(slka);
-            WebResponse response = request.GetResponse();
-            string needToWork = "";
-            var answer = string.Empty;
-            using (var stream = response.GetResponseStream())
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    string line = "";
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        needToWork = needToWork + line;
-                    }
-                    answer = reader.ReadToEnd();
-                }
-            }
-            response.Close();
-            needToWork = needToWork.Substring(1722);
-            int length = needToWork.Length - 5;
-
-            // Чтобы корректно распарсить число заменяет "," на "."
-            //https://stackoverflow.com/questions/11560465/parse-strings-to-double-with-comma-and-point
-            needToWork = needToWork.Substring(0, needToWork.Length - length).Replace(',', '.');
-            double course = double.Parse(needToWork, CultureInfo.InvariantCulture);
-            return course;
+            _city = city;
         }
 
         public bool MakeNeedOperation()
@@ -119,16 +82,10 @@ namespace CyberCity.Controllers
         {
             ViewBag.Title = "Вход";
             MakeNeedOperation();
-            double Course = GetCourse();
-            TempData["CourseSel"] = Course;
 
-            Random rnd = new Random();
-
-            int difference = rnd.Next(0, 5);
-            int mn = rnd.Next(0, 9);
-
+            TempData["CourseSel"] = _city.Bank.CourseSell;
+            TempData["CourseBuy"] = _city.Bank.CourseBuy;
             TempData["Month"] = DateUtils.GetMonth(DateTime.Now.Month);
-            TempData["CourseBuy"] = Course - Convert.ToDouble(difference) - Convert.ToDouble((0.12) * mn);
 
             TempData.Keep();
 
@@ -181,6 +138,7 @@ namespace CyberCity.Controllers
         {
             var clients = _context.Residents;
             MakeNeedOperation();
+
             foreach (var person in clients)
             {
                 if ((person.Login == resident.Login) && (person.Password == resident.Password))
@@ -228,13 +186,17 @@ namespace CyberCity.Controllers
         public ActionResult ClientPage()
         {
             MakeNeedOperation();
-            //            ViewBag.Title = "Личный кабинет";
+
             if (TempData["Possible"] != null)
             {
                 ViewBag.Possible = TempData["Possible"];
                 TempData["Possible"] = ViewBag.Possible;
             }
-            else TempData["Possible"] = "";
+            else
+            {
+                TempData["Possible"] = "";
+            }
+
             ViewBag.Id = TempData["Id"];
             var clients = _context.Residents;
             double courseSel = Convert.ToDouble(TempData["CourseSel"]);
@@ -354,29 +316,39 @@ namespace CyberCity.Controllers
                     currentResident = person;
                 }
             }
+
             if (moneyContribution.Summa == 0)
                 return "Сумма вклада не может соствлять 0 рублей";
+
             if (moneyContribution.Summa > currentResident.Money)
                 return "Вы не располагаете такой суммой";
+
             if (moneyContribution.Duration > 31)
                 return "Вы указали слишком большой срок вклада";
+
+
             double summaForGetClient = Math.Round(moneyContribution.Summa + moneyContribution.Summa * moneyContribution.Duration * 7 / 36500, 2);
+
             if (summaForGetClient == moneyContribution.Summa)
                 return "Данная операция не имеет смысла - Вы получите менее 1 копейки";
+
             _context.MoneyContributions.Add(moneyContribution);
             currentResident.Money = currentResident.Money - moneyContribution.Summa;
             bank.Money = bank.Money + moneyContribution.Summa;
+
             NeedOperation newOperation = new NeedOperation();
             newOperation.Id = 0;
             newOperation.Sender = 1;
             newOperation.Recipient = currentResident.Id;
             newOperation.Money = summaForGetClient;
+
             int currentTime = moneyContribution.Duration * 24;
             int currentHours = currentTime / 60;
             int currentMinutes = currentTime - currentHours * 60;
             newOperation.Time = DateTime.Now.AddHours(currentHours).AddMinutes(currentMinutes);
             _context.NeedOprerations.Add(newOperation);
             _context.SaveChanges();
+
             return "Ваш вклад составил " + moneyContribution.Summa + " рублей. Через " + moneyContribution.Duration + " дней Вы получите " + Convert.ToString(summaForGetClient) + " рублей.";
         }
 
@@ -410,7 +382,6 @@ namespace CyberCity.Controllers
             }
             return View();
         }
-
 
         [HttpPost]
         public String Credit(Credit credit)
@@ -622,16 +593,20 @@ namespace CyberCity.Controllers
                     currentResident = person;
                 }
             }
+
             if (sumOfValute == 0)
                 return "Сумма валюты для продажи не может соствлять 0 единиц";
+
             if (sumOfValute > currentResident.Money)
                 return "Вы не располагаете такой суммой";
+
             double getRubles = Math.Round(sumOfValute * courseBuy, 2);
             currentResident.MoneyInCourse = currentResident.MoneyInCourse - sumOfValute;
             bank.MoneyInCourse = bank.MoneyInCourse + sumOfValute;
             currentResident.Money = currentResident.Money + getRubles;
             bank.Money = bank.Money - getRubles;
             _context.SaveChanges();
+
             return "Операция успешно выполнена! Вы продали " + Convert.ToString(sumOfValute) + " долларов за " + Convert.ToString(getRubles) + " рублей.";
         }
 
@@ -719,147 +694,23 @@ namespace CyberCity.Controllers
                 }
             }
             if (sumOfValute == 0)
+            {
                 return "Сумма покупки валюты не может соствлять 0 единиц";
+            }
+
             if (sumOfValute > (currentResident.Money / courseSel))
+            {
                 return "Вы не располагаете такой суммой";
+            }
+
             double spendRubles = Math.Round(sumOfValute * courseSel, 2);
             currentResident.MoneyInCourse = currentResident.MoneyInCourse + sumOfValute;
             bank.MoneyInCourse = bank.MoneyInCourse - sumOfValute;
             currentResident.Money = currentResident.Money - spendRubles;
             bank.Money = bank.Money + spendRubles;
             _context.SaveChanges();
+
             return "Операция успешно выполнена! Вы купили " + Convert.ToString(sumOfValute) + " долларов за " + Convert.ToString(spendRubles) + " рублей.";
-        }
-
-        public Resident GetResidentByFIO(Resident getResident)
-        {
-            Resident findResident = new Resident();
-            var resident = _context.Residents;
-            foreach (var person in resident)
-            {
-                if ((person.Name == getResident.Name) && (person.Surname == getResident.Surname) && (person.Patronymic == getResident.Patronymic))
-                    findResident = person;
-            }
-            return null;
-        }
-
-        public bool MakeTransferForGetPackageByMunitsupalitet(Resident sender, Resident recipient, double summa)
-        {
-            sender.Money = sender.Money - summa;  // счёт отправителя (муниципалитета) уменьшается на сумму заработной платы работника
-            _context.SaveChanges();
-
-            if (recipient.Debt > 0)  // если у получателя есть задолженность
-            {
-                if (recipient.Debt < summa)  // если задолженность меньше перечисляемой зарплаты
-                {
-                    summa = summa - recipient.Debt;   // зарплата уменьшается на сумму задолженности
-                    recipient.Debt = 0;   // задолженность списывается
-                    recipient.Money = recipient.Money + summa;   // оставшаяся сумма перечисляется на рублёвый счёт клиента
-                    _context.SaveChanges();
-                }
-                else    // если задолженность больше или равна зарплате
-                {
-                    recipient.Debt = recipient.Debt - summa;
-                    _context.SaveChanges();
-                }
-            }
-            else   // если у получателя нет задолженности
-            {
-                recipient.Money = recipient.Money + summa;
-                _context.SaveChanges();
-            }
-            return true;
-        }
-
-        public bool MakeTransferForGetPackage(Resident sender, Resident recipient, double summa, double courseBuy)
-        {
-            //    recipient.Money = recipient.Money + summa;  // счёт получателя увеличивается на сумму операции
-
-            if (sender.Money >= summa)    //  если у отправителя хватает суммы в рублях
-            {
-                sender.Money = sender.Money - summa;    // счёт в рублях уменьшается на сумму операции
-                recipient.Money = recipient.Money + summa;   // счёт получателя увеличивается на сумму операции
-                _context.SaveChanges();
-            }
-            else    // если у отправителя не хватает денег в рублях для данной операции
-            {
-                if (sender.Money > 0) // если у пользователя есть какая-то сумма в рублях
-                {
-                    recipient.Money = recipient.Money + sender.Money;   // получатель на свой счёт в раблях получает всю сумму с рублёвого счёта отправителя
-                    summa = summa - sender.Money;   // сумма операции уменьшается на сумму, уже отправленную получателю
-                    sender.Money = 0;     // все деньги в рублях на счету отправителя списываются
-                    _context.SaveChanges();
-                }
-                if (Math.Round(sender.MoneyInCourse * courseBuy) >= 0)  // если у отправителя имеется сумма в валюте 
-                {
-                    sender.MoneyInCourse = sender.MoneyInCourse - Math.Round(summa / courseBuy);    // сумма валюты на счету отправителя уменьшается на сумма операции (оставшаяся) в рублях / курс валюты;
-                    recipient.MoneyInCourse = recipient.MoneyInCourse + Math.Round(summa / courseBuy);  // сумма валюты на счету получателя увеличивается на сумма операции (оставшаяся) в рублях / курс валюты;
-                    summa = summa - Math.Round(summa / courseBuy); // сумма операции уменьшается на сумму переведённую в валюте
-                    _context.SaveChanges();
-                }
-                sender.Debt = sender.Debt + summa; // оставшаяся сумма операции записывается в долг отправителя
-                recipient.Money = recipient.Money + summa; // на  счёт получателя начисляется оставшаяся сумма в рублях
-                _context.SaveChanges();
-            }
-            return true;
-        }
-
-        public bool MakeTransfer(EnterPackage needTransfer)
-        {
-            double Course = GetCourse();
-            Random rnd = new Random();
-            int difference = rnd.Next(0, 5);
-            int mn = rnd.Next(0, 9);
-            double courseSel = Course;
-            double courseBuy = Course - Convert.ToDouble(difference) - Convert.ToDouble((0.12) * mn);
-            TempData["CourseSel"] = courseSel;
-            TempData["CourseBuy"] = courseBuy;
-            TempData.Keep();
-            string month = Convert.ToString(TempData["Month"]);
-            TempData["Month"] = month;
-
-            TempData.Keep();
-            if (needTransfer.Sender.Surname == "Муниципалитет")    // если деньги идут от муниципалитета (значит перечисляют зарплату)
-            {
-                Resident sender = new Resident();
-                sender = GetResidentByFIO(needTransfer.Sender);   // отправитель денег муниципалитет
-                Resident recipient = new Resident();
-                recipient = GetResidentByFIO(needTransfer.Recipient);   // получатель денег
-
-                MakeTransferForGetPackageByMunitsupalitet(sender, recipient, needTransfer.Summa);
-                return true;
-            }
-            if (needTransfer.Recipient.Surname == "ЖКХ")  // если получатель денег ЖКХ (значит необходимо перечислить деньги за ком. услуги)
-            {
-                int numberOfHouse = needTransfer.Sender.Home;
-                List<Resident> ResidentForPay = new List<Resident>();
-                var allResident = _context.Residents;
-                Resident jhk = new Resident();
-                foreach (var person in allResident)   // среди всех зарегистрированных клиентов ищем жителей необходимого дома
-                {
-                    if (person.Home == numberOfHouse)
-                        ResidentForPay.Add(person);
-                    if (person.Surname == "ЖКХ")
-                        jhk = person;
-                }
-                int countOfResidentForPay = ResidentForPay.Count;   // находим количество жителей данного дома
-                double summaForPay = needTransfer.Summa / countOfResidentForPay;   // сумма платежа ЖКХ делится на  всех жителей дома
-
-                foreach (var person in ResidentForPay)    // с каждого жителя списываем необходимую сумму
-                    MakeTransferForGetPackage(person, jhk, summaForPay, courseBuy);
-                return true;
-            }
-            else   // если этот пакет не для перечисления з/п и уплаты ком. услуг 
-            {
-                Resident sender = new Resident();
-                sender = GetResidentByFIO(needTransfer.Sender);   // определяем отправителя денег 
-                Resident recipient = new Resident();
-                recipient = GetResidentByFIO(needTransfer.Recipient);   // определяетм получателя денег
-
-                MakeTransferForGetPackage(sender, recipient, needTransfer.Summa, courseBuy); // выполняем перевод
-            }
-
-            return true;
         }
     }
 }

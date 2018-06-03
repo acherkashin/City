@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using CyberCity.Models.Core;
+using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using System.Net;
 
 namespace CyberCity.Models
 {
@@ -12,12 +12,12 @@ namespace CyberCity.Models
     public class DataBus
     {
         private object lockObj = new object();
-        private readonly ApplicationContext _context;
+
+        public static ApplicationContext Context => ContextFactory.GetContext();
         private readonly IHubContext<NetHub, INetHub> _hubContext;
 
-        public DataBus(ApplicationContext context, IHubContext<NetHub, INetHub> hubContext)
+        public DataBus(IHubContext<NetHub, INetHub> hubContext)
         {
-            _context = context;
             _hubContext = hubContext;
         }
 
@@ -25,8 +25,8 @@ namespace CyberCity.Models
         {
             lock (lockObj)
             {
-                _context.Add(package);
-                _context.SaveChanges();
+                Context.Add(package);
+                Context.SaveChanges();
 
                 var encrepted = package.CreateEncreted();
 
@@ -46,6 +46,36 @@ namespace CyberCity.Models
             }
             catch (Exception ex)
             {
+            }
+        }
+
+        public string SendToArduino(string url)
+        {
+            try
+            {
+                var retuest = WebRequest.Create(url);
+
+                retuest.Method = "POST";
+                retuest.ContentType = "application/x-www-urlencoded";
+                retuest.Timeout = 5000;
+
+                WebResponse deviceResponse = retuest.GetResponse();
+
+                var deviceAnswer = string.Empty;
+
+                using (var stream = deviceResponse.GetResponseStream())
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        deviceAnswer = reader.ReadToEnd();
+                    }
+                }
+
+                return deviceAnswer;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }

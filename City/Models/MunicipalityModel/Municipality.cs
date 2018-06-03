@@ -12,7 +12,7 @@ namespace CyberCity.Models.MunicipalityModel
         public const string UpdateTarifMethod = "UpdateTarif";
         public const string PaySalaryMethod = "PaySalary";
 
-        public Municipality(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Municipality(DataBus bus) : base(bus)
         {
         }
 
@@ -29,7 +29,7 @@ namespace CyberCity.Models.MunicipalityModel
                     {
                         Electric = Generator.GenerateValue(1, 10),
                         Gas = Generator.GenerateValue(1, 10),
-                        Watter = Generator.GenerateValue(1, 10),
+                        Water = Generator.GenerateValue(1, 10),
                     })
                 });
 

@@ -33,7 +33,7 @@ namespace CyberCity.Models.WeatherStantionModel
         /// </summary>
         /// <param name="context"> Контекст данных.</param>
         /// <param name="bus"> Шина передачи пакетов.</param>
-        public WeatherStantion(ApplicationContext context, DataBus bus) : base(context, bus) { }
+        public WeatherStantion(DataBus bus) : base(bus) { }
 
         /// <summary>
         /// Установить режим работы.
@@ -41,7 +41,7 @@ namespace CyberCity.Models.WeatherStantionModel
         /// <param name="mode"> Режим работы.</param>
         public void SetPowerMode(bool mode)
         {
-            City.GetInstance().WeatherStantion.IsOn = mode;
+            IsOn = mode;
             _bus.SendStateChanged(Subject.WeatherStation, GetState());
         }
 

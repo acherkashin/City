@@ -1,4 +1,5 @@
 ﻿using CyberCity.Models.AccountModel;
+using CyberCity.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace CyberCity.Models
         /// <summary>
         /// Контекст данных.
         /// </summary>
-        protected ApplicationContext _context;
+        protected ApplicationContext _context => ContextFactory.GetContext();
 
         /// <summary>
         /// Шина передачи пакетов
@@ -28,9 +29,8 @@ namespace CyberCity.Models
         /// </summary>
         /// <param name="context"> Контекст данных.</param>
         /// <param name="bus"> Шина передачи пакетов.</param>
-        protected CityObject(ApplicationContext context, DataBus bus)
+        protected CityObject(DataBus bus)
         {
-            _context = context;
             _bus = bus;
         }
 

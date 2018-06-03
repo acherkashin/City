@@ -10,32 +10,42 @@ namespace CyberCity.Models.ReactorModel
     /// </summary>
     public class NuclearStation : CityObject
     {
+        #region Названия методов для Arduino
+        /// <summary>
+        /// Название метода на Arduino для включения дыма, белого цвета лампы и отключения вентилятора(турбины)
+        /// </summary>
+        public const string ArduinoBlastMethod = "NuclearBlast";
+        /// <summary>
+        /// Название метода на Arduino для изменения цвета подсветки
+        /// </summary>
+        public const string ArduinoLampColorMethod = "ChangeColorLamp";
+        #endregion
+
         public override void ProcessPackage(Package package)
         {
             throw new NotImplementedException();
         }
 
-        private Object lockObj = new Object();
-        Reactor reactor = new Reactor();
-        Turbine turbine = new Turbine();
+        private readonly Reactor _reactor = new Reactor();
+        private readonly Turbine _turbine = new Turbine();
 
-        public NuclearStation(ApplicationContext context, DataBus bus) : base(context, bus)
-        {
-            reactor.IsOnReactor = true;
+        public NuclearStation(DataBus bus) : base(bus)
+        {   
+            _reactor.IsOnReactor = true;
         }
 
         public void ChangeRodState(bool flag)
         {
-            reactor.IsUpRod = flag;
+            _reactor.IsUpRod = flag;
         }
 
         public void Work(CityTime time)
         {
-            if (!reactor.NuclearBlast)
+            if (!_reactor.NuclearBlast)
             {
                 ChangeTemperatue();
                 _bus.SendStateChanged(Subject.NuclearStation, GetState());
-                /// Тут происходит отправка данных на Электрическую подстанцию
+                // Тут происходит отправка данных на Электрическую подстанцию
                 SendEnergyForSubStation();
             }
         }
@@ -52,78 +62,89 @@ namespace CyberCity.Models.ReactorModel
         /// </remarks>
         private void ChangeTemperatue()
         {
-            if (reactor.IsUpRod)
+            if (_reactor.IsUpRod)
             {
-                reactor.currentTemperature = reactor.currentTemperature - reactor.dlt;
+                _reactor.currentTemperature = _reactor.currentTemperature - _reactor.dlt;
             }
             else
             {
-                reactor.currentTemperature = reactor.currentTemperature + reactor.dlt;
+                _reactor.currentTemperature = _reactor.currentTemperature + _reactor.dlt;
             }
-            ///<summary>
-            ///Тут происходит отправка данных на Arduino Атомной станции для изменения цвета лампочек
-            /// </summary>
-            reactor.SendToArduino(Reactor.ArduinoLampColorMethod, Convert.ToString(reactor.currentTemperature));
-            if (turbine.IsOnTurbine == false)
+            
+            //Тут происходит отправка данных на Arduino Атомной станции для изменения цвета лампочек
+            SendToArduino(ArduinoLampColorMethod, Convert.ToString(_reactor.currentTemperature));
+
+            if (_turbine.IsOnTurbine == false)
             {
-                reactor.ChangeDlt(15);
+                _reactor.ChangeDlt(15);
             }
             else
             {
-                reactor.ChangeDlt(5);
+                _reactor.ChangeDlt(5);
             }
-            /// <summary>
-            /// Если температура >= температуры взрыва, то происходит взрыв(логично...)
-            /// </summary> 
-            if (reactor.currentTemperature > reactor.BlastTemperature)
+            // Если температура >= температуры взрыва, то происходит взрыв(логично...)
+            if (_reactor.currentTemperature > _reactor.BlastTemperature)
             {
-                reactor.IsOnReactor = false;
-                turbine.IsOnTurbine = false;
-                turbine.Stop();
+                _reactor.IsOnReactor = false;
+                _turbine.IsOnTurbine = false;
+                _turbine.Stop();
                 OnSiren();
-                reactor.BlastReactor();
+                _reactor.BlastReactor();
+
+                SendToArduino(ArduinoBlastMethod, "");
             }
             else
             {
-                /// <summary>
-                /// Если температура меньше или равна 0, то текущая температра = 0
-                /// </summary>
-                if (reactor.currentTemperature <= 0)
+                // Если температура меньше или равна 0, то текущая температра = 0
+                if (_reactor.currentTemperature <= 0)
                 {
-                    reactor.currentTemperature = 0;
+                    _reactor.currentTemperature = 0;
 
                 }
                 else
                 {
-                    ///<summary>
-                    ///При рабочей температуре(от 180) начинают работать турбины
-                    /// </summary>
-                    if (reactor.currentTemperature >= reactor.MinTemperature)
+                    //При рабочей температуре(от 180) начинают работать турбины
+                    if (_reactor.currentTemperature >= _reactor.MinTemperature)
                     {
-                        if (turbine.currentRPM == 0 && turbine.IsBroken != true)
+                        if (_turbine.currentRPM == 0 && _turbine.IsBroken != true)
                         {
-                            turbine.Start();
+                            _turbine.Start();
                         }
-                        if (turbine.IsOnTurbine == true)
+                        if (_turbine.IsOnTurbine == true)
                         {
                             ChangeRPM();
                         }
                     }
                     else
                     {
-                        if (turbine.currentRPM < 10)
+                        if (_turbine.currentRPM < 10)
                         {
-                            turbine.currentRPM = 0;
-                            reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
+                            _turbine.currentRPM = 0;
+                            _reactor.energy = (_turbine.currentRPM / _turbine.MaxRPM) * 100;
                         }
                         else
                         {
-                            turbine.currentRPM = turbine.currentRPM / 2;
-                            reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
+                            _turbine.currentRPM = _turbine.currentRPM / 2;
+                            _reactor.energy = (_turbine.currentRPM / _turbine.MaxRPM) * 100;
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Отправка данных на Arduino
+        /// </summary>
+        /// <param name="Method">Название метода</param>
+        /// <param name="p">Параметр</param>
+
+        private void SendToArduino(string method, string p)
+        {
+            if (GetUser() == null)
+                return;
+
+            string url = $"{GetUser().ArduinoUrl}/method?p={p}";
+            _bus.SendToArduino(url);
         }
 
         /// <summary>
@@ -132,74 +153,67 @@ namespace CyberCity.Models.ReactorModel
         private void ChangeRPM()
         {
             Random randomValue = new Random();
-            if (turbine.currentRPM < (turbine.MaxRPM - 200) && reactor.IsUpRod == false)
+            if (_turbine.currentRPM < (_turbine.MaxRPM - 200) && _reactor.IsUpRod == false)
             {
-                turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
+                _turbine.currentRPM = (_reactor.currentTemperature) * 0.05 + _turbine.currentRPM * 1.5;
             }
             else
             {
-                if (turbine.currentRPM < (turbine.MaxRPM - 200) && reactor.IsUpRod == true)
+                if (_turbine.currentRPM < (_turbine.MaxRPM - 200) && _reactor.IsUpRod == true)
                 {
-                    turbine.currentRPM = (reactor.currentTemperature) * 0.05 + turbine.currentRPM * 1.5;
+                    _turbine.currentRPM = (_reactor.currentTemperature) * 0.05 + _turbine.currentRPM * 1.5;
                 }
-                ///<remarks>
-                /// При достижении "рабочих" оборотов в 3000 ед. обороты начинают изменяться в диапазоне [3000;3050]
-                /// Поломка возможна только в случае перехвата и изменения пакетов, где обороты будут больше 3200 ед.
-                /// </remarks>
+                // При достижении "рабочих" оборотов в 3000 ед. обороты начинают изменяться в диапазоне [3000;3050]
+                // Поломка возможна только в случае перехвата и изменения пакетов, где обороты будут больше 3200 ед.
                 else
                 {
-                    turbine.currentRPM = (turbine.MaxRPM - 200) + randomValue.Next(0, 51);
+                    _turbine.currentRPM = (_turbine.MaxRPM - 200) + randomValue.Next(0, 51);
                 }
             }
-            ///<summary>
-            ///Если текущие обороты меньше "рабочих", то энергия будет находиться в диапазоне 0-100%
-            /// </summary>
-            if (turbine.currentRPM < turbine.MinRPM)
+            //Если текущие обороты меньше "рабочих", то энергия будет находиться в диапазоне 0-100%
+            if (_turbine.currentRPM < _turbine.MinRPM)
             {
-                reactor.energy = (turbine.currentRPM / turbine.MaxRPM) * 100;
+                _reactor.energy = (_turbine.currentRPM / _turbine.MaxRPM) * 100;
             }
             else
             {
-                ///<summary>
-                ///Если обороты больше максимальных, то начинает расти вибрация
-                /// </summary>
-                if (turbine.currentRPM > turbine.MaxRPM)
+                //Если обороты больше максимальных, то начинает расти вибрация
+                if (_turbine.currentRPM > _turbine.MaxRPM)
                 {
                     ChangeVibration();
-                    reactor.energy = 100;
+                    _reactor.energy = 100;
                 }
                 else
                 {
-                    reactor.energy = 100;
+                    _reactor.energy = 100;
                 }
             }
-            ///<summary>
-            ///Если вибрация достигает предела(300 ед.), то происходит поломка
-            /// </summary>
-            if (turbine.currentVibration > turbine.MaxVibration)
+            //Если вибрация достигает предела(300 ед.), то происходит поломка
+            if (_turbine.currentVibration > _turbine.MaxVibration)
             {
-                turbine.Stop();
-                reactor.SendToArduino(Turbine.ArduinoOnOffTurbineMethod, "0");
+                _turbine.Stop();
+
+                SendToArduino(Turbine.ArduinoOnOffTurbineMethod, "0");
+
                 OnSiren();
-                reactor.energy = 0;
+                _reactor.energy = 0;
             }
         }
 
         /// <summary>
         /// Изменение уровня вибрации
-        /// </summary>
-        /// <remarks>
         /// Если турбина поломана, вибрация =0
-        /// </remarks>
+        /// </summary>
+
         private void ChangeVibration()
         {
-            if (turbine.IsBroken != true)
+            if (_turbine.IsBroken != true)
             {
-                turbine.currentVibration += 100;
+                _turbine.currentVibration += 100;
             }
             else
             {
-                turbine.currentVibration = 0;
+                _turbine.currentVibration = 0;
             }
         }
 
@@ -213,7 +227,7 @@ namespace CyberCity.Models.ReactorModel
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
                 Method = SubStation.OnSirenMethod,
-                Params = Newtonsoft.Json.JsonConvert.SerializeObject(turbine.IsOnSiren),
+                Params = Newtonsoft.Json.JsonConvert.SerializeObject(_turbine.IsOnSiren),
             });
         }
 
@@ -227,7 +241,7 @@ namespace CyberCity.Models.ReactorModel
                 From = Subject.NuclearStation,
                 To = Subject.Substation,
                 Method = SubStation.GetPowerMethod,
-                Params = Newtonsoft.Json.JsonConvert.SerializeObject(reactor.energy),
+                Params = Newtonsoft.Json.JsonConvert.SerializeObject(_reactor.energy),
             });
         }
 
@@ -238,13 +252,13 @@ namespace CyberCity.Models.ReactorModel
         {
             return new ReactorData()
             {
-                Temperature = reactor.currentTemperature,
-                Energy = reactor.energy,
-                RPM = turbine.currentRPM,
-                Vibration = turbine.currentVibration,
-                StReactor = reactor.IsOnReactor,
-                StRod = reactor.IsUpRod,
-                StTurbine = turbine.IsOnTurbine,
+                Temperature = _reactor.currentTemperature,
+                Energy = _reactor.energy,
+                RPM = _turbine.currentRPM,
+                Vibration = _turbine.currentVibration,
+                StReactor = _reactor.IsOnReactor,
+                StRod = _reactor.IsUpRod,
+                StTurbine = _turbine.IsOnTurbine,
             };
         }
     }

@@ -16,16 +16,6 @@ namespace CyberCity.Models
         private static City _instance;
 
         /// <summary>
-        /// Флаг - идет ли время в городе.
-        /// </summary>
-        public bool IsTimeRunning;
-
-        /// <summary>
-        /// Текущий час.
-        /// </summary>
-        public int Hour;
-
-        /// <summary>
         /// Метод для получения экземпляра города(синглтона). Необходим для того чтобы иметь возможность использовать город в любом месте программы
         /// и не ограничиваться возможностями внедрения через констрктор asp.net core.
         /// </summary>
@@ -35,7 +25,6 @@ namespace CyberCity.Models
         }
 
         private DataBus _databus;
-        private ApplicationContext _context;
 
         public readonly SubStation SubStation;
         public readonly NuclearStation NuclearStation;
@@ -48,23 +37,21 @@ namespace CyberCity.Models
         private readonly CitySheduler _cityTime = new CitySheduler();
 
 
-        public City(ApplicationContext context, DataBus databus)
+        public City(DataBus databus)
         {
             _databus = databus;
-            _context = context;
 
-            SubStation = new SubStation(_context, _databus);
-            NuclearStation = new NuclearStation(_context, _databus);
-            WeatherStantion = new WeatherStantion(_context, _databus);
-            Municipality = new Municipality(_context, _databus);
-            Bank = new Bank(_context, _databus);
-            Houses = new Houses(_context, _databus);
-            Airport = new Airport(_context, _databus);
+            SubStation = new SubStation(_databus);
+            NuclearStation = new NuclearStation(_databus);
+            WeatherStantion = new WeatherStantion(_databus);
+            Municipality = new Municipality(_databus);
+            Bank = new Bank(_databus);
+            Houses = new Houses(_databus);
+            Airport = new Airport(_databus);
 
             Start();
 
             _instance = this;
-            IsTimeRunning = true;
         }
 
         public void Start()
