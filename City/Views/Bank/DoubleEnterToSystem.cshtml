@@ -3,31 +3,33 @@
 }
 
 <div id="editBlock">
+    <div class="brand-panel">
+        <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+        <h3>Банк Города / Вход в личный в кабинет</h3>
+    </div>
+    <div class="alert alert-danger">
+        <center>Такой пользователь не зарегистрирован в системе! Проверьте правильность введённых данных</center>
+    </div>
     <form method="post">
         <ul class="pager" style="text-align: left;">
             <li class="btn btn-lg"><a href="/Bank/Enter">Назад</a></li>
         </ul>
-
-        <center><b></b>ВХОД В ЛИЧНЫЙ КАБИНЕТ</b></center>
-        <center>Такой пользователь не зарегистрирован в системе! Проверьте правильность введённых данных</center>
         <hr />
+    </form>
+    <form method="post" class="col-md-4 col-md-offset-4" >
         <input type="hidden" value="-" name="PersonId" />
         <input type="hidden" value="-" name="Surname" />
         <input type="hidden" value="-" name="Name" />
         <input type="hidden" value="-" name="Patronymic" />
         <input type="hidden" value="-" name="Money" />
-        <center>
-            <p>
-                Введите логин
-                <input id="Text1" type="text" name="Login" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите пароль
-                <input id="Password1" type="password" name="password" required />
-            </p>
-        </center><br>
+        <div class="form-group">
+            <label >Введите логин</label>
+            <input class="form-control"  id="Text1" type="text" name="Login" required />
+        </div>
+        <div class="form-group">
+            <label>Введите пароль</label>
+            <input class="form-control"  id="Password1" type="password" name="password" required />
+        </div>
         <center> <p><input id="Submit2" type="submit" value="Войти" /></p></center><br>
     </form>
 </div>

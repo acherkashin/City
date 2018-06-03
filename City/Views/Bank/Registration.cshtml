@@ -2,56 +2,45 @@
 @{
     ViewBag.Title = "Регистрация";
 }
+<div class="brand-panel">
+    <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Банк Города / Регистрация в системе</h3>
+</div>
 
 <div id="editBlock">
     <form method="get">
         <ul class="pager" style="text-align: left;">
             <li class="btn btn-lg"><a href="/Bank/Enter">Назад</a></li>
         </ul>
-
-        <center><b>Регистрация в системе</b></center>
     </form>
-    <hr />
-    <form method="post">
+    <div class="col-md-4"></div>
+    <form method="post" class="control-panel col-md-4">
         <input type="hidden" value="@ViewBag.PersonId" name="PersonId" />
-        <center>
-            <p>
-                Введите фамилию
-                <input id="Text1" type="text" name="Surname" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите имя
-                <input id="Text2" type="text" name="Name" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите отчество
-                <input id="Text3" type="text" name="Patronymic" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите номер дома, в котором Вы проживаете
-                <input id="Text4" type="number" name="Home" min="1" max="4" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите логин
-                <input id="Text5" type="text" name="Login" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Введите пароль
-                <input id="Password1" type="password" name="Password" required />
-            </p>
-        </center><br>
-
-        <center> <p><input id="Submit1" type="submit" value="Зарегистрироваться" /></p></center>
+        <div class="form-group">
+            <label>Введите фамилию </label>
+            <input id="Text1" type="text" name="Surname" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label>Введите имя</label>
+            <input id="Text2" type="text" name="Name" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label>Введите отчество</label>
+            <input id="Text3" type="text" class="form-control" name="Patronymic" required />
+        </div>
+        <div class="form-group">
+            <label>Введите номер дома, в котором Вы проживаете</label>
+            <input id="Text4" type="number" name="Home" min="1" max="4" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label>Введите логин</label>
+            <input id="Text5" type="text" name="Login" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label>Введите пароль</label>
+            <input id="Password1" type="password" name="Password" class="form-control" required />
+        </div>
+        <center> <p><input id="Submit1" type="submit" class="btn btn-success" value="Зарегистрироваться" /></p></center>
     </form>
 
     <input type="hidden" value=0 name="Money" />

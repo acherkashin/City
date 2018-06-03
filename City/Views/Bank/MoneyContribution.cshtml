@@ -2,30 +2,29 @@
 @{
     ViewBag.Title = "Внести вклад";
 }
+
+<div class="brand-panel">
+    <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Банк Города / Внести вклад</h3>
+</div>
+
 <div id="editBlock">
     <ul class="pager" style="text-align: left;">
         <li class="btn btn-lg"><a href="/Bank/ClientPage">Назад</a></li>
     </ul>
-
-    <center><b>СДЕЛАТЬ ВКЛАД</b></center>
     <hr />
-
-    <form method="post">
+    <form method="post" class="col-md-4 col-md-offset-4" >
         <input type="hidden" value="@ViewBag.Id" name="Id" />
         <input type="hidden" value="@((Int32)TempData["Id"])" name="Client" />
-        <center>
-            <p>
-                Укажите сумму вклада:
-                <input id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["Money"])" required />
-            </p>
-        </center><br>
-        <center>
-            <p>
-                Укажите срок вклада в днях:
-                <input id="Text2" type="number" name="Duration" min="1" max="31" required />
-            </p>
-        </center><br>
-        <center> <p><input id="Submit2" type="submit" value="Сделать вклад" /></p></center>
+        <div class="form-group">
+            <label>Укажите сумму вклада:</label>
+            <input class="form-control" id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["Money"])" required />
+        </div>
+        <div class="form-group">
+            <label>Укажите срок вклада в днях:</label>
+            <input class="form-control" id="Text2" type="number" name="Duration" min="1" max="31" required />
+        </div>
+        <center> <p><input class="btn btn-primary" id="Submit2" type="submit" value="Сделать вклад" /></p></center>
     </form><br>
     <footer>
         <p align="right">&copy; @DateTime.Now.Year : @DateTime.Now.Month : @DateTime.Now.Day    @DateTime.Now.Hour : @DateTime.Now.Minute : @DateTime.Now.Second</p>

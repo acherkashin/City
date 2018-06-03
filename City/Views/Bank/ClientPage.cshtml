@@ -4,29 +4,39 @@
 }
 
 <div id="editBlock">
-    <center><b>Здравствуйте, @((String)TempData["Name"])  @((String)TempData["Patronymic"])!</b></center>
+    <div class="brand-panel">
+        <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+        <h3>Банк Города / Личный кабинет</h3>
+    </div>
     <ul class="pager" style="text-align: right;">
         <li class="btn btn-lg"><a href="/Bank/Index">Выход</a></li>
     </ul>
-
-    <center>@((String)TempData["Possible"])</center>
+    <div class="alert alert-warning">
+        <center><b>Здравствуйте, @((String)TempData["Name"])  @((String)TempData["Patronymic"])!</b></center>
+    </div>
+    <div class="alert alert-danger">
+        <center>@((String)TempData["Possible"])</center>
+    </div>
     <hr />
     <form method="get">
+        <div class="control-panel ">
+            <center>
+                <center>КУРС АМЕРИКАНСКОГО ДОЛЛАРА НА @DateTime.Now.Day @((String)TempData["Month"]) @DateTime.Now.Year ГОДА</center><br />
+                <center>Курс продажи: @((Double)TempData["CourseSel"]) руб./ дол.</center>
+                <center>Курс покупки: @((Double)TempData["CourseBuy"]) руб./ дол.</center>
+            </center>
+        </div>
         <center>
-            <a href="/Bank/PersonalData" class="btn btn-primary btn-lg">Персональные данные</a>
+            <a href="/Bank/PersonalData" class="btn btn-success btn-lg">Персональные данные</a>
             <a href="/Bank/MoneyContribution" class="btn btn-primary btn-lg">Сделать вклад</a>
-            <a href="/Bank/Credit" class="btn btn-primary btn-lg">Взять кредит</a>
-            <a href="/Bank/MoneyTransfer" class="btn btn-primary btn-lg">Выполнить перевод</a>
+            <a href="/Bank/Credit" class="btn btn-info btn-lg">Взять кредит</a>
+            <a href="/Bank/MoneyTransfer" class="btn btn-warning btn-lg">Выполнить перевод</a>
         </center>
         <br>
         <center>
-            <a href="/Bank/BuyValute" class="btn btn-primary btn-lg">Купить валюту</a>
-            <a href="/Bank/SellValute" class="btn btn-primary btn-lg">Продать валюту</a>
+            <a href="/Bank/BuyValute" class="btn btn-default btn-lg">Купить валюту</a>
+            <a href="/Bank/SellValute" class="btn btn-danger btn-lg">Продать валюту</a>
         </center><br><br><br><br><br>
-        <center>
-            <center>КУРС АМЕРИКАНСКОГО ДОЛЛАРА НА @DateTime.Now.Day @((String)TempData["Month"]) @DateTime.Now.Year ГОДА</center><br />
-            <center>Курс продажи: @((Double)TempData["CourseSel"]) руб./ дол.</center>
-            <center>Курс покупки: @((Double)TempData["CourseBuy"]) руб./ дол.</center>
-        </center>
+
     </form>
 </div>
