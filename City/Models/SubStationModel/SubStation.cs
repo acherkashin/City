@@ -1,11 +1,4 @@
 ﻿using CyberCity.Models.Core;
-using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CyberCity.Models.SubStationModel
 {
@@ -24,7 +17,7 @@ namespace CyberCity.Models.SubStationModel
         /// </summary>
         public const string PowerInHousesMethod = "PowerInHouses";
 
-        public SubStation(ApplicationContext context, DataBus bus) : base(context, bus) { }
+        public SubStation(DataBus bus) : base(bus) { }
 
         public double Power { get; set; } = 0;
         public bool IsOnRele { get; set; } = false;
@@ -60,16 +53,9 @@ namespace CyberCity.Models.SubStationModel
         {
             // IsOnSiren необходимо передавать на Arduino для включения сирены
             // Конвертация из True в "1" и из False в "0" необходима по просьбе программистов Arduino
-            string isSiren;
-            if (IsOnSiren)
-            {
-                isSiren = "1";
-            }
-            else
-            {
-                isSiren = "0";
-            }
-            SendDataToArduino("NameMethodOfSiren", isSiren);
+            string isSiren = IsOnSiren ? "1": "0";
+
+            SendToArduino("NameMethodOfSiren", isSiren);
             _bus.SendStateChanged(Subject.Substation, GetState());
         }
 
@@ -122,23 +108,15 @@ namespace CyberCity.Models.SubStationModel
         /// <summary>
         /// Отправка данных на Arduino
         /// </summary>
-        /// <param name="Method">Название метода</param>
+        /// <param name="method">Название метода</param>
         /// <param name="p">Параметр</param>
-        public void SendDataToArduino(String Method, string p)
+        private void SendToArduino(string method, string p)
         {
-            try
-            {
-                String URL = GetUser().ArduinoUrl + Method + "?p=" + p;
-                WebRequest request = WebRequest.Create(URL);
-                request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
-                WebResponse response = request.GetResponse();
-                response.Close();
-            }
-            catch (Exception ex)
-            {
-                
-            }
+            if (GetUser() == null)
+                return;
+
+            string url = $"{GetUser().ArduinoUrl}/method?p={p}";
+            _bus.SendToArduino(url);
         }
     }
 }

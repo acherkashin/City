@@ -17,7 +17,7 @@ namespace CyberCity.Models.AirportModels
         /// </summary>
         public const string AirportInvoiceMethod = "AirportInvoice";
 
-        public Airport(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Airport(DataBus bus) : base(bus)
         {
             Passengers = new List<Passenger> {
                 new Passenger{ Id=1,Name = "Петров И.И" },
@@ -112,7 +112,7 @@ namespace CyberCity.Models.AirportModels
             //else throw new Exception();
         }
 
-       
+
         /// <summary>
         /// Проверяет, пришло ли время отправлять или приземлять самолет.
         /// </summary>

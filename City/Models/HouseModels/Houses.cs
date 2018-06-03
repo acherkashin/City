@@ -2,9 +2,7 @@
 using CyberCity.Models.SubStationModel;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +29,7 @@ namespace CyberCity.Models.HouseModels
         /// </summary>
         public float CityPower { get; set; }
 
-        public Houses(ApplicationContext context, DataBus bus) : base(context, bus)
+        public Houses(DataBus bus) : base(bus)
         {
             Homes = new List<House>();
             Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
@@ -54,7 +52,7 @@ namespace CyberCity.Models.HouseModels
                     From = Subject.Houses,
                     To = Subject.Bank,
                     Method = SendMetricsMethod,
-                    Params = Newtonsoft.Json.JsonConvert.SerializeObject(metrics), 
+                    Params = JsonConvert.SerializeObject(metrics), 
                 });
                 Thread.Sleep(1000);
             }).Start();
@@ -163,6 +161,9 @@ namespace CyberCity.Models.HouseModels
         /// </summary>
         public void SwitchLightOnArduino()
         {
+            if (GetUser() == null)
+                return;
+
             try
             {
                 //TODO Лукина: уточнить, как получить ip для каждого жилого комплекса
@@ -177,6 +178,8 @@ namespace CyberCity.Models.HouseModels
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
                 }
+
+                //TODO: Использовать _bus.SendToArduino
             }
             catch (Exception ex)
             {
