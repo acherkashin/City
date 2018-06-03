@@ -21,9 +21,11 @@ body {
 }
 
 .login-form, .register-form {
+    background: #9bd3c8;
+    color: #fdfdfd;
     width: 350px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
 .bottom-panel {
@@ -83,10 +85,31 @@ body {
 
 .toolbar {
     padding: 10px;
-    background: #eee;
+    background: #cbe3b5;
     border: 1px solid #ddd;
+    color: #fdfdfd;
+    margin: 10px 0px;
 }
 
 #remove-packages {
     float: right;
+}
+
+.city-panel {
+    background-color: #9bd3c8;
+    border-color: #fdfdfd;
+}
+
+.navbar-brand {
+    color: #fdfdfd;
+}
+
+.home-table{
+    margin:10px;
+}
+
+.atom-container {
+    padding:5px;
+    margin:10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
