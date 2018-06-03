@@ -10,10 +10,16 @@ namespace CyberCity.Models.AirportModels
     public class Airport : CityObject
     {
         //TODO Черкашин: Описать все поля
+        /// <summary>
+        /// Запрос разрешения на полет
+        /// </summary>
         public const string CanFlyMethod = "CanFly";
+        /// <summary>
+        /// Запрос на приземление
+        /// </summary>
         public const string CanLandMethod = "CanLand";
         /// <summary>
-        /// Отправитьданны о пассажирах в банк
+        /// Отправить данные о пассажирах в банк
         /// </summary>
         public const string AirportInvoiceMethod = "AirportInvoice";
 
@@ -25,9 +31,15 @@ namespace CyberCity.Models.AirportModels
                 new Passenger{ Id=3,Name = "Соколов И.И" }
             };
 
-            flightStates = FlightStates.NotSend;
-            lightStates = LightStates.TurnedOff;
+            flightState = FlightStates.NotSend;
+            lightState = LightStates.TurnedOff;
         }
+
+
+        /// <summary>
+        /// обработка пакетов
+        /// </summary>
+        /// <param name="package"></param>
 
         public override void ProcessPackage(Package package)
         {
@@ -44,26 +56,36 @@ namespace CyberCity.Models.AirportModels
                         Method = AirportInvoiceMethod,
                         Params = Newtonsoft.Json.JsonConvert.SerializeObject(null),//TODO : заменить null на информацию о пассажирах
                     });
+                    flightState = FlightStates.FlewAway;
                 }
+                else flightState = FlightStates.NotSend;
             }
             else if (package.Method == CanLandMethod)
             {
-                //TODO: Добавить обработку посадки
+                var canLand = Newtonsoft.Json.JsonConvert.DeserializeObject<bool>(package.Params);
+                if (canLand) flightState = FlightStates.FlewIn;
+                else flightState = FlightStates.NotLand;
             }
         }
-
-
-        public FlightStates flightStates { get; set; }
-        public LightStates lightStates { get; set; }
+        /// <summary>
+        /// Состояние полета
+        /// </summary>
+        public FlightStates flightState { get; set; }
+        /// <summary>
+        /// Состояние света на взлетной полосе
+        /// </summary>
+        public LightStates lightState { get; set; }
 
         /// <summary>
         /// Пассажиры, отправленные в полет
         /// </summary>
         public virtual ICollection<Passenger> Passengers { get; set; }
-
-        // отправить самолет
+        /// <summary>
+        /// отправить самолет
+        /// </summary>
         public void SendPlane()
         {
+            //    //1.Рандомно набрать в Airport.Passangers 3 человека(перед этим очистить список)
             _bus.Send(new Package()
             {
                 From = Subject.Airport,
@@ -71,8 +93,9 @@ namespace CyberCity.Models.AirportModels
                 Method = CanFlyMethod,
             });
         }
-
-        // посадить самолет
+        /// <summary>
+        /// посадить самолет
+        /// </summary>
         public void LandPlane()
         {
             _bus.Send(new Package()
@@ -82,39 +105,26 @@ namespace CyberCity.Models.AirportModels
                 Method = CanLandMethod,
             });
         }
-
-        //включить свет
+        /// <summary>
+        /// включить свет
+        /// </summary>
         public void TurnOnLight()
         {
-            lightStates = LightStates.TurnedOn;
+            lightState = LightStates.TurnedOn;
             //передать ардуино, чтобы включился свет
         }
-
-        //выключить свет
+        /// <summary>
+        /// выключить свет
+        /// </summary>
         public void TurnOffLight()
         {
-            lightStates = LightStates.TurnedOff;
+            lightState = LightStates.TurnedOff;
             //передать ардуино, чтобы выключился свет
-        }
-
-        // прием разрешения на вылет/прилет
-        public void AllowFlight(bool resolution)
-        {
-            //if (resolution && Send)
-            //{
-            //    //1.Рандомно набрать в Airport.Passangers 3 человека(перед этим очистить список)
-            //    //2.Отправить запрос в банк на оплату билетов
-            //    flightStates = FlightStates.FlewAway;
-            //}
-            //else if (resolution && Land) flightStates = FlightStates.FlewIn;
-            //else if (!resolution && Send) flightStates = FlightStates.NotSend;
-            //else if (!resolution && Land) flightStates = FlightStates.NotLand;
-            //else throw new Exception();
         }
 
        
         /// <summary>
-        /// Проверяет, пришло ли время отправлять или приземлять самолет.
+        /// Проверяет, пришло ли время отправлять или приземлять самолет, включать свет
         /// </summary>
         /// <param name="Time"> Время в часах.</param>
         public void IsTime(int Time)

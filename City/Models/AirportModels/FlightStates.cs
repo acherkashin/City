@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CyberCity.Models.AirportModels
 {
+    /// <summary>
+    /// Состояние полета
+    /// </summary>
     public enum FlightStates
     {
         [Display(Name = "Улетел")]

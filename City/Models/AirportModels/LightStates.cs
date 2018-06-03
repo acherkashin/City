@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.AirportModels
 {
+    /// <summary>
+    /// Состояние света в аэропорте
+    /// </summary>
     public enum LightStates
     {
         [Display(Name = "Включен")]
