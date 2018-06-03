@@ -3,90 +3,97 @@
     ViewBag.Title = "Метеостанция";
 }
 
-<div id="app" class="col-lg-12">
-    <div class="row">
-        <div v-if="admin">
-            <input type="checkbox" id="powerMode" v-on:click="changePowerMode" v-model:value="power" />Включена
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label> Выберите город </label>
-        <select v-model="selectedCity" class="form-control glyphicon-search">
-            <option v-for="city in cities" :value="city.key"> {{city.name}}</option>
-        </select>
-    </div>
-    <br />
-    <div class="row">
-        <button class="col-md-2 btn btn-primary" style="margin-left:auto" v-on:click="getData">Получить данные</button>
-    </div>
 
-    <br />
-
-    <div v-if="dataReceived">
-
-        <table>
-            <tr>
-                <th>
-                    Температура:
-                </th>
-                <td>
-                    {{weather.tempreture}} C°
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Давление:
-                </th>
-                <td>
-                    {{weather.pressure}} ммРт
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Скорость ветра:
-                </th>
-                <td>
-                    {{weather.windSpeed}} м/с
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Влажность
-                </th>
-                <td>
-                    {{weather.humidity}}
-                </td>
-            </tr>
-        </table>
-
-        <div v-if="day">
-            <img v-if="sun" src="~/images/01d.png" />
-            <img v-if="sunCloud" src="~/images/02d.png" />
-            <img v-if="cloud" src="~/images/03d.png" />
-            <img v-if="darkCloud" src="~/images/04d.png" />
-            <img v-if="rain" src="~/images/09d.png" />
-            <img v-if="rainSun" src="~/images/10d.png" />
-            <img v-if="thund" src="~/images/11d.png" />
-            <img v-if="snow" src="~/images/13d.png" />
-            <img v-if="wind" src="~/images/50d.png" />
-        </div>
-        <div v-else="day">
-            <img v-if="sun" src="~/images/01n.png" />
-            <img v-if="sunCloud" src="~/images/02n.png" />
-            <img v-if="cloud" src="~/images/03n.png" />
-            <img v-if="darkCloud" src="~/images/04n.png" />
-            <img v-if="rain" src="~/images/09n.png" />
-            <img v-if="rainSun" src="~/images/10n.png" />
-            <img v-if="thund" src="~/images/11n.png" />
-            <img v-if="snow" src="~/images/13n.png" />
-            <img v-if="wind" src="~/images/50n.png" />
-        </div>
-    </div>
+<div class="brand-panel">
+    <img src="~/images/svg-icon/weather.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Метеостанция</h3>
 </div>
 
-<hr />
+<div>
+    <div id="app" class="col-md-4 control-panel">
+        <div class="row">
+            <div v-if="admin">
+                <input type="checkbox" id="powerMode" v-on:click="changePowerMode" v-model:value="power" />Включена
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label> Выберите город </label>
+            <select v-model="selectedCity" class="form-control glyphicon-search">
+                <option v-for="city in cities" :value="city.key"> {{city.name}}</option>
+            </select>
+        </div>
+        <br />
+        <div class="row">
+            <button class="btn btn-primary" style="margin-left:auto" v-on:click="getData">Получить данные</button>
+        </div>
 
-<div class="row" id="log"></div>
+        <br />
+
+        <div v-if="dataReceived">
+
+            <table>
+                <tr>
+                    <th>
+                        Температура:
+                    </th>
+                    <td>
+                        {{weather.tempreture}} C°
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Давление:
+                    </th>
+                    <td>
+                        {{weather.pressure}} ммРт
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Скорость ветра:
+                    </th>
+                    <td>
+                        {{weather.windSpeed}} м/с
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Влажность
+                    </th>
+                    <td>
+                        {{weather.humidity}}
+                    </td>
+                </tr>
+            </table>
+
+            <div v-if="day">
+                <img v-if="sun" src="~/images/01d.png" />
+                <img v-if="sunCloud" src="~/images/02d.png" />
+                <img v-if="cloud" src="~/images/03d.png" />
+                <img v-if="darkCloud" src="~/images/04d.png" />
+                <img v-if="rain" src="~/images/09d.png" />
+                <img v-if="rainSun" src="~/images/10d.png" />
+                <img v-if="thund" src="~/images/11d.png" />
+                <img v-if="snow" src="~/images/13d.png" />
+                <img v-if="wind" src="~/images/50d.png" />
+            </div>
+            <div v-else="day">
+                <img v-if="sun" src="~/images/01n.png" />
+                <img v-if="sunCloud" src="~/images/02n.png" />
+                <img v-if="cloud" src="~/images/03n.png" />
+                <img v-if="darkCloud" src="~/images/04n.png" />
+                <img v-if="rain" src="~/images/09n.png" />
+                <img v-if="rainSun" src="~/images/10n.png" />
+                <img v-if="thund" src="~/images/11n.png" />
+                <img v-if="snow" src="~/images/13n.png" />
+                <img v-if="wind" src="~/images/50n.png" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div id="log"></div>
+    </div>
+</div>
 <script>
     var v = new Vue({
         el: '#app',

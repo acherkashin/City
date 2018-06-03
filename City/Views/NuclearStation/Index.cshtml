@@ -1,47 +1,43 @@
-﻿@{
-    ViewBag.Title = "Атомная станция";
-}
-<h2>@ViewBag.Title.</h2>
+﻿
+<div class="brand-panel">
+    <img src="~/images/svg-icon/atom.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Атомная станция</h3>
+</div>
 
-
-<div id="app">
-    <div class="Use_Reactor">
+<div id="app" class="col-md-5">
+    <div class="Use_Reactor control-panel">
         <p>Управление реактором:</p>
         <label>Состояние реактора:</label> {{labelReactorState}}
         @*<textarea v-model="stateReactor" rows="1" cols="30"></textarea>*@
         <br />
         <label>Температура реактора:</label>
-        <input type="text" v-model="temperature" rows="1" cols="30"/>
+        <input type="text" v-model="temperature" rows="1" cols="30" />
         <br />
         <label>Состояние урановых стержней:</label> {{labelRodState}}
         @*<textarea v-model="stateRod" id="stateRodID" rows="1" cols="30"></textarea>*@
         <br />
-        <button class="btn" v-on:click="Down">
-            <span class="glyphicon glyphicon-arrow-down"></span>Опустить урановые стержни
+        <button class="btn btn-info" v-on:click="Down">
+            <span class="glyphicon glyphicon-arrow-down"></span> Опустить урановые стержни
         </button>
-        <button class="btn" v-on:click="Up">
-            <span class="glyphicon glyphicon-arrow-up"></span>Поднять урановые стержни
+        <button class="btn btn-info" v-on:click="Up">
+            <span class="glyphicon glyphicon-arrow-up"></span> Поднять урановые стержни
         </button>
     </div>
-    <br />
-    <br />
-    <div class="Tourbine">
+    <div class="Tourbine control-panel">
         <p>Турбина:</p>
         <label>Состояние турбины:</label> {{labelTurbineState}}
         @*<textarea v-model="stateTurbine" rows="1" cols="30"></textarea>*@
         <br />
         <label>Скорость оборотов турбины:</label>
-        <input type="text" v-model="rpm" id="rpmID" rows="1" cols="30"/>
+        <input type="text" v-model="rpm" id="rpmID" rows="1" cols="30" />
         <br />
         <label>Вибрация турбины:</label>
-        <input type="text" v-model="vibration" rows="1" cols="50"/>
+        <input type="text" v-model="vibration" rows="1" cols="50" />
     </div>
-    <br />
-    <br />
-    <div class="Station">
+    <div class="Station control-panel">
         <p>Подстанция:</p>
         <label>Выработанная энергия:</label>
-        <input type="text" v-model="energy" rows="1" cols="50"/>
+        <input type="text" v-model="energy" rows="1" cols="50" />
     </div>
     <br />
     <div>

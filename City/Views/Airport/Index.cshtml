@@ -3,16 +3,27 @@
     ViewData["Title"] = "Аэропорт";
 }
 
+<div class="brand-panel">
+    <img src="~/images/svg-icon/air.svg" alt="Alternate Text" width="50" height="50"/>
+    <h3>Аэропорт</h3>
+</div>
 
-<img src="~/images/TravelAirplane.png" width="200px" />
-<h4>Состояние самолета:</h4>
-<div id="state"></div>
-<h4>Свет на взлетной полосе:</h4>
-<div id="lightState"></div>
-<h4>Список пассажиров</h4>
-<ul id="passangers"></ul>
-<div id="log"></div>
-<a href="~/Views/Airport/Index.cshtml">~/Views/Airport/Index.cshtml</a>
+<div>
+    <div class="control-panel col-md-3">
+        <h4>Состояние самолета:</h4>
+        <div id="state"></div>
+        <h4>Свет на взлетной полосе:</h4>
+        <div id="lightState"></div>
+        <h4>Список пассажиров</h4>
+        <ul id="passangers"></ul>
+        <img src="~/images/TravelAirplane.png" width="200px" />
+    </div>
+    <div class="col-md-8">
+        <div id="log"></div>
+    </div>
+
+</div>
+
 
 <script>
       function getFlight() {

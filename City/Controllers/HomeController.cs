@@ -22,8 +22,15 @@ namespace CyberCity.Controllers
             if (User.IsInRole("Admin"))
                 return Redirect("/Account/Admin");
 
+
             if (User.IsInRole(Subject.Hacker.ToString()))
                 return View("Views/Hacker/Index.cshtml");
+
+            if (User.IsInRole(Subject.Airport.ToString()))
+                return Redirect("Airport");
+
+            if (User.IsInRole(Subject.Municipality.ToString()))
+                return Redirect("Municipalicy");
 
             if (User.IsInRole(Subject.Bank.ToString()))
                 return Redirect("Bank");
@@ -37,7 +44,7 @@ namespace CyberCity.Controllers
             if (User.IsInRole(Subject.WeatherStation.ToString()))
                 return Redirect("Weather");
 
-            else if (User.IsInRole(Subject.NuclearStation.ToString()))
+            if (User.IsInRole(Subject.NuclearStation.ToString()))
                 return Redirect("NuclearStation");
 
             ViewBag.ArduinoUrl = GetCurrentUser().ArduinoUrl;
