@@ -1,11 +1,16 @@
-﻿<div id="hacker-page">
-    <div class="form-group">
+﻿<div class="brand-panel">
+    <img src="~/images/svg-icon/hacker.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Хакер</h3>
+</div>
+
+<div id="hacker-page">
+    <div class="form-group control-panel col-md-5">
         <label for="package">Пакет данных</label>
         <textarea class="form-control" rows="5" id="package"></textarea>
         <button id="send-package" class="btn btn-primary">Отправить</button>
     </div>
-    <div id="log">
-
+    <div class="col-md-5">
+        <div id="log"></div>
     </div>
 </div>
 <script>

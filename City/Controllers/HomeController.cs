@@ -30,7 +30,7 @@ namespace CyberCity.Controllers
                 return Redirect("Airport");
 
             if (User.IsInRole(Subject.Municipality.ToString()))
-                return Redirect("Municipality");
+                return Redirect("Municipalicy");
 
             if (User.IsInRole(Subject.Bank.ToString()))
                 return Redirect("Bank");

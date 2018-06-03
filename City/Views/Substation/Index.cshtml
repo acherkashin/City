@@ -1,16 +1,15 @@
 ﻿@{
     ViewBag.Title = "Подстанция";
 }
-<div class="toolbar">
-    <h4>
-        @ViewBag.Title
-    </h4>
+<div class="brand-panel">
+    <img src="~/images/svg-icon/substation.svg" alt="Alternate Text" width="50" height="50"/>
+    <h3>Подстанция</h3>
 </div>
 
 
 <div id="reactor-page">
     <arduino-panel url="@ViewBag.ArduinoUrl"></arduino-panel>
-    <div class="Use_Reactor atom-container col-md-5">
+    <div class="Use_Reactor control-panel col-md-5">
         <p>Управление Подстанцией:</p>
         <label>Состояние реле:</label> {{labelReleState}}
         <br />

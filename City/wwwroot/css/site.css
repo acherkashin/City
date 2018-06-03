@@ -108,8 +108,30 @@ body {
     margin:10px;
 }
 
-.atom-container {
+.control-panel{
     padding:5px;
     margin:10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.svg-icon{
+    color:white;
+}
+
+.brand-panel {
+    padding: 10px;
+    background: #cbe3b5;
+    border: 1px solid #ddd;
+    color: #fdfdfd;
+    margin: 10px 0px;
+    display:flex;
+    flex-direction: row;
+}
+
+.brand-panel img{
+    margin-right:10px;
+}
+
+.brand-panel h3 {
+    font-weight:bold;
 }
