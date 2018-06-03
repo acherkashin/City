@@ -14,8 +14,8 @@
 </style>
 
 <div>
-    <div class="alert alert-success" role="alert">
-        <h1 class="alert-heading">Сведения о жилых домах</h1>
+    <div class="toolbar">
+        <h4>Сведения о жилых домах</h4>
     </div>
 
     <div class="text-center">
@@ -176,12 +176,10 @@
 
     </g></g></g>
     </svg>*@
-
     </div>
-   
-    @*<div class="row">*@
-        <div id="homesState" class="col-md-4" row>
-            <table class="table">
+       
+    <div id="homesState" class="col-md-4 home-table" row>
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
@@ -195,8 +193,9 @@
                 <tbody> </tbody>
             </table>
         </div>
-        <div id="log" class="col-md-6"></div>
-    @*</div>*@
+        <div class="col-md-6">
+            <div id="log"></div>
+        </div>
 
 </div>
 
