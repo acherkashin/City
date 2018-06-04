@@ -85,8 +85,6 @@ namespace CyberCity.Models.AirportModels
                 _bus.SendStateChanged(Subject.Airport, null);
             }
         }
-
-
         
         /// <summary>
         /// Состояние полета

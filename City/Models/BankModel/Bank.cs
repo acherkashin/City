@@ -57,6 +57,10 @@ namespace CyberCity.Models.BankModel
                 }
                 
             }
+            else if(package.Method == Airport.CanFlyMethod)
+            {
+
+            }
             else if (package.Method == Airport.AirportInvoiceMethod)
             {
 
