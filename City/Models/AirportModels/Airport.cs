@@ -34,7 +34,7 @@ namespace CyberCity.Models.AirportModels
         public Airport(DataBus bus) : base(bus)
         {
             var clients = _context.Residents;
-            
+
             foreach (var person in clients)
             {
                 ClientsOfBank.Add(person);
@@ -85,7 +85,7 @@ namespace CyberCity.Models.AirportModels
                 _bus.SendStateChanged(Subject.Airport, null);
             }
         }
-        
+
         /// <summary>
         /// Состояние полета
         /// </summary>
@@ -107,7 +107,7 @@ namespace CyberCity.Models.AirportModels
         {
             int count = ClientsOfBank.Count();
             Passengers.Clear();
-            for (var i = 0; i<3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 try
                 {
@@ -118,7 +118,7 @@ namespace CyberCity.Models.AirportModels
                 catch (Exception e)
                 {
                 }
-               
+
             }
 
             _bus.Send(new Package()
@@ -148,6 +148,7 @@ namespace CyberCity.Models.AirportModels
         public void TurnOnLight()
         {
             lightState = LightStates.TurnedOn;
+            
             //передать ардуино, чтобы включился свет
             if (GetUser() != null)
             {
@@ -161,9 +162,10 @@ namespace CyberCity.Models.AirportModels
         /// </summary>
         public void TurnOffLight()
         {
+            lightState = LightStates.TurnedOff;
+
             if (GetUser() != null)
             {
-                lightState = LightStates.TurnedOff;
                 //передать ардуино, чтобы выключился свет
                 string url = $"{GetUser().ArduinoUrl}/method?";
                 _bus.SendToArduino(url);

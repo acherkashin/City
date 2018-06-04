@@ -7,6 +7,11 @@ namespace CyberCity.Models
 {
     public class Package
     {
+        public Package()
+        {
+            DateTime = DateTime.Now;
+        }
+
         public int Id { get; set; }
         public Subject From { get; set; }
         public Subject To { get; set; }
@@ -19,6 +24,8 @@ namespace CyberCity.Models
         /// Необходимо сериализовать все пакеты в строку, для дальнейшего сохранения их в базу
         /// </remarks>
         public string Params { get; set; } = "";
+
+        public DateTime DateTime { get; set; }
 
         public Package CreateEncreted()
         {
