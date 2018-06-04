@@ -42,11 +42,14 @@ namespace CyberCity.Models.BankModel
                     {
                         Recipient = new Resident
                         {
-                           Home = houseMeters.IdHome
+                           Home = houseMeters.IdHome,
                         },
                         Sender = new Resident
                         {
-                            Surname = "ЖКХ"
+                            Surname = "ЖКХ",
+                            Name = "-",
+                            Patronymic = "-",
+
                         },
                         Summa = houseMeters.Summa
                     };
