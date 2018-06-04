@@ -1,4 +1,11 @@
-﻿<div class="brand-panel">
+﻿<style>
+    .body-content {
+        background: #000;
+        color: #127801;
+    }
+</style>
+
+<div class="brand-panel hacker-theme">
     <img src="~/images/svg-icon/hacker.svg" alt="Alternate Text" width="50" height="50" />
     <h3>Хакер</h3>
 </div>
@@ -6,8 +13,8 @@
 <div id="hacker-page">
     <div class="form-group control-panel col-md-5">
         <label for="package">Пакет данных</label>
-        <textarea class="form-control" rows="5" id="package"></textarea>
-        <button id="send-package" class="btn btn-primary">Отправить</button>
+        <textarea class="form-control hacker-theme" rows="5" id="package"></textarea>
+        <button id="send-package" class="btn hacker-theme">Отправить</button>
     </div>
     <div class="col-md-5">
         <div id="log"></div>

@@ -70,7 +70,7 @@ namespace CyberCity.Models.HouseModels
                 float meters = home.GasMeter.CurrentVolume * Tarifs.Gas +
                                home.ElectricMeter.SpentPower * Tarifs.Electric +
                                home.WaterMeter.CurrentVolume * Tarifs.Water;
-                homeMeters.Add(new HouseMeter { IdHome = home.Id, Meters = meters });
+                homeMeters.Add(new HouseMeter { IdHome = home.Id, Summa = meters });
             }
             return homeMeters;
         }

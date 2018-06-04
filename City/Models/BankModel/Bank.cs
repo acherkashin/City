@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace CyberCity.Models.BankModel
 {
@@ -33,7 +34,25 @@ namespace CyberCity.Models.BankModel
         {
             if (package.Method == Houses.SendMetricsMethod)
             {
-                //TODO Черкашин: добавить обработку
+                List<HouseMeter> housesMeters = JsonConvert.DeserializeObject<List<HouseMeter>>(package.Params);
+
+                foreach (var houseMeters in housesMeters)
+                {
+                    EnterPackage enterPackage = new EnterPackage
+                    {
+                        Recipient = new Resident
+                        {
+                           Home = houseMeters.IdHome
+                        },
+                        Sender = new Resident
+                        {
+                            Surname = "ЖКХ"
+                        },
+                        Summa = houseMeters.Summa
+                    };
+                    MakeTransfer(enterPackage);
+                }
+                
             }
             else if (package.Method == Airport.AirportInvoiceMethod)
             {

@@ -8,6 +8,6 @@ namespace CyberCity.Models.HouseModels
     public class HouseMeter
     {
         public int IdHome { get; set; }
-        public float Meters { get; set; }
+        public float Summa { get; set; }
     }
 }

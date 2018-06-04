@@ -85,8 +85,6 @@ body {
 
 .toolbar {
     padding: 10px;
-    background: #cbe3b5;
-    border: 1px solid #ddd;
     color: #fdfdfd;
     margin: 10px 0px;
 }
@@ -135,3 +133,11 @@ body {
 .brand-panel h3 {
     font-weight:bold;
 }
+
+.hacker-theme {
+    background: #127801;
+    color: #000;
+    border: 1px solid #127801;
+    font-weight: bold;
+}
+
