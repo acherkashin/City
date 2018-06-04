@@ -11,6 +11,15 @@
     .light {
         fill: gold;
     }
+    .red {
+        fill: red;
+    }
+    .blue {
+        fill: blue;
+    }
+    .green {
+        fill: green;
+    }
 </style>
 
 <div>
@@ -243,16 +252,46 @@
            " <option value='2'>Красный</option>"+
            " <option value='3'>Зеленый</option>"+
             " <option value='4'>Синий</option>" +
-            " <option value='5'>Дискотека</option>"+
+           // " <option value='5'>Дискотека</option>"+
            " </select>"+
             "</div>";
     }
 
-    function switchLight(id,isOnLight) {
+
+
+    function switchLight(id, isOnLight) {
+        var colorMode = $('#color-mode' + id).val();
+
         if (isOnLight) {
-            $("#home" + id + " .window").addClass("light");
+            switch (colorMode) {
+                case "1":
+                    $("#home" + id + " .window").addClass("light");
+                    break;
+                case "2":
+                    $("#home" + id + " .window").addClass("red");
+                    break;
+                case "3":
+                    $("#home" + id + " .window").addClass("green");
+                    break;
+                case "4":
+                    $("#home" + id + " .window").addClass("blue");
+                    break;
+            }
         } else {
-            $("#home" + id+" .window").removeClass("light");
+            switch (colorMode) {
+                case "1":
+                    $("#home" + id + " .window").removeClass("light");
+                    break;
+                case "2":
+                    $("#home" + id + " .window").removeClass("red");
+                    break;
+                case "3":
+                    $("#home" + id + " .window").removeClass("green");
+                    break;
+                case "4":
+                    $("#home" + id + " .window").removeClass("blue");
+                    break;
+            }
         }
     }
 
@@ -288,7 +327,8 @@
                     }
 
                 });
-            });
+        });
+
 
 </script>
 
