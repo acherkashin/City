@@ -99,6 +99,7 @@ namespace CyberCity.Models.AirportModels
         /// Пассажиры, отправленные в полет
         /// </summary>
         public virtual List<Passenger> Passengers { get; set; }
+
         /// <summary>
         /// отправить самолет
         /// </summary>
@@ -127,6 +128,7 @@ namespace CyberCity.Models.AirportModels
                 Method = CanFlyMethod,
             });
         }
+
         /// <summary>
         /// посадить самолет
         /// </summary>
@@ -139,6 +141,7 @@ namespace CyberCity.Models.AirportModels
                 Method = CanLandMethod,
             });
         }
+
         /// <summary>
         /// включить свет
         /// </summary>
@@ -146,23 +149,27 @@ namespace CyberCity.Models.AirportModels
         {
             lightState = LightStates.TurnedOn;
             //передать ардуино, чтобы включился свет
-            string url = $"{GetUser().ArduinoUrl}/method?";
-            _bus.SendToArduino(url);
-
+            if (GetUser() != null)
+            {
+                string url = $"{GetUser().ArduinoUrl}/method?";
+                _bus.SendToArduino(url);
+            }
         }
+
         /// <summary>
         /// выключить свет
         /// </summary>
         public void TurnOffLight()
         {
-            lightState = LightStates.TurnedOff;
-            //передать ардуино, чтобы выключился свет
-            string url = $"{GetUser().ArduinoUrl}/method?";
-            _bus.SendToArduino(url);
-
+            if (GetUser() != null)
+            {
+                lightState = LightStates.TurnedOff;
+                //передать ардуино, чтобы выключился свет
+                string url = $"{GetUser().ArduinoUrl}/method?";
+                _bus.SendToArduino(url);
+            }
         }
 
-       
         /// <summary>
         /// Проверяет, пришло ли время отправлять или приземлять самолет, включать свет
         /// </summary>
@@ -190,8 +197,5 @@ namespace CyberCity.Models.AirportModels
         {
             IsTime(dateTime.Hours);
         }
-
-
-
     }
 }
