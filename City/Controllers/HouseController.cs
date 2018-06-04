@@ -52,12 +52,18 @@ namespace CyberCity.Controllers
         }
 
         [HttpPost]
-        public void HandleSwitchLight(int id, bool isOnLight)
+        public IActionResult HandleSwitchLight(int id, bool isOnLight)
         {
+            if (_city.Houses.CityPower < 25 && isOnLight)
+            {
+                return StatusCode(500, Json("Дома обесточены. Не возможно включить свет"));
+            } 
+
             var house = _city.Houses.Homes.Find(x=>x.Id == id);
 
                 house.IsOnLight = isOnLight;
                 _city.Houses.SwitchLightOnArduino();
+            return StatusCode(200);
         }
     }
 }
