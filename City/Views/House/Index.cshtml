@@ -180,7 +180,7 @@
     </svg>*@
     </div>
        
-    <div id="homesState" class="col-md-4 home-table" row>
+    <div id="homesState" class="col-md-5 home-table" row>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -190,12 +190,14 @@
                         <th scope="col">Газ</th>
                         <th scope="col">Вода</th>
                         <th scope="col">Включить свет</th>
+                        <th scope="col">Цвет</th>
+
                     </tr>
                 </thead>
                 <tbody> </tbody>
             </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div id="log"></div>
         </div>
 
@@ -222,13 +224,28 @@
 
     function getRow(home) {
         var checked = home.isOnLight ? "checked" : "";
+
         return "<tr data-rowid='" + home.id + "'>"
             + "<td>" + home.id + "</td>"
             + "<td>" + home.name + "</td>"
             + "<td>" + home.electricMeter.spentPower + "</td>"
             + "<td>" + home.gasMeter.currentVolume + "</td>"
             + "<td>" + home.waterMeter.currentVolume + "</td>" +
-            "<td><input class='switch-light' data-id=" + home.id + " type='checkbox' " + checked+ "></td></tr>";
+            "<td><input class='switch-light' data-id=" + home.id + " type='checkbox' " + checked + "></td>" +
+            "<td>" + getColorModeSelector(home.id) + "</td></tr>";
+    }
+
+    function getColorModeSelector(id)
+    {
+        return "<div class='form-group '>"+
+            "<select class='form-control'  id='color-mode" + id +"' >"+
+           " <option value='1'>Обычный</option>"+
+           " <option value='2'>Красный</option>"+
+           " <option value='3'>Зеленый</option>"+
+            " <option value='4'>Синий</option>" +
+            " <option value='5'>Дискотека</option>"+
+           " </select>"+
+            "</div>";
     }
 
     function switchLight(id,isOnLight) {
@@ -257,9 +274,11 @@
             function () {
                 var id = $(this).data("id");
                 var isOnLight = $(this).is(":checked");
+                var colorMode = $('#color-mode' + id).val();
+                console.log(colorMode);
                 $.ajax({
                     method: "POST",
-                    data: { id: id, isOnLight: isOnLight },
+                    data: { id: id, isOnLight: isOnLight, colorMode: colorMode },
                     url: 'http://@Context.Request.Host/House/HandleSwitchLight',
                     success: function () {
                         switchLight(id, isOnLight);

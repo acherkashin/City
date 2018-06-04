@@ -11,6 +11,7 @@ namespace CyberCity.Models.HouseModels
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsOnLight { get; set; }
+        public ColorModes ColorMode { get; set; }
 
         public GasMeter GasMeter { get; set; }
         public WaterMeter WaterMeter { get; set; }

@@ -214,6 +214,8 @@ namespace CyberCity.Models.BankModel
 
         public bool MakeTransferForGetPackage(Resident sender, Resident recipient, double summa, double courseBuy)
         {
+            if (sender == null || recipient == null) return false;
+
             //    recipient.Money = recipient.Money + summa;  // счёт получателя увеличивается на сумму операции
 
             if (sender.Money >= summa)    //  если у отправителя хватает суммы в рублях

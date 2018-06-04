@@ -110,9 +110,16 @@ namespace CyberCity.Models.AirportModels
             Passengers.Clear();
             for (var i = 0; i<3; i++)
             {
-                int id = rand.Next(count);
-                Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
-                Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname+res.Name+ res.Patronymic });
+                try
+                {
+                    int id = rand.Next(count);
+                    Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
+                    Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname + res.Name + res.Patronymic });
+                }
+                catch (Exception e)
+                {
+                }
+               
             }
 
             _bus.Send(new Package()

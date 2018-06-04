@@ -169,11 +169,41 @@ namespace CyberCity.Models.HouseModels
                 //TODO Лукина: уточнить, как получить ip для каждого жилого комплекса
                 string urlToArduino = GetUser().ArduinoUrl;
 
+                string switchLightCommand = "";
+
                 foreach (var home in Homes)
                 {
-                    string switchLightCommand = home.IsOnLight
-                        ? ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn)
-                        : ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
+                    if (home.IsOnLight)
+                    {
+                        switch (home.ColorMode)
+                        {
+                            case ColorModes.White:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn);
+                                break;
+                            case ColorModes.Blue:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnBlue);
+                                break;
+                            case ColorModes.Green:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnGreen);
+                                break;
+                            case ColorModes.Red:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnRed);
+                                break;
+                            case ColorModes.Random:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnRnd);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switchLightCommand =
+                            ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
+                    }
                     WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
