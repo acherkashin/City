@@ -32,7 +32,7 @@ namespace CyberCity.Models.HouseModels
         public Houses(DataBus bus) : base(bus)
         {
             Homes = new List<House>();
-            Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, IP = "http://192.168.1.1", GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, IP = "http://192.168.1.0", GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
             Homes.Add(new House() { Name = "Жилой комплекс 2", Id = 2, IP = "http://192.168.1.1", GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
 
             Tarifs = new Tarifs() { Gas = 1, Water = 1, Electric = 1 };
@@ -167,7 +167,7 @@ namespace CyberCity.Models.HouseModels
             try
             {
                 //TODO Лукина: уточнить, как получить ip для каждого жилого комплекса
-                string urlToArduino = GetUser().ArduinoUrl;
+                //string urlToArduino = GetUser().ArduinoUrl;
 
                 string switchLightCommand = "";
 
@@ -204,7 +204,8 @@ namespace CyberCity.Models.HouseModels
                         switchLightCommand =
                             ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
                     }
-                    WebRequest request = WebRequest.Create(home.IP + $"${switchLightCommand}");
+                    string url = home.IP + $"/{ switchLightCommand}";
+                    WebRequest request = WebRequest.Create(url);
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
                 }
