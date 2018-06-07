@@ -4,7 +4,7 @@
 @using CyberCity.Utils
 
 @{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Администратор";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 
@@ -16,6 +16,10 @@
 
 
 <div id="admin-page">
+    <div class="brand-panel">
+        <img src="~/images/svg-icon/admin.svg" alt="Alternate Text" width="50" height="50"/>
+        <h3>Администратор</h3>
+    </div>
     <div class="toolbar clearfix">
         <button id="remove-packages" class="btn btn-danger">Удалить все пакеты</button>
     </div>

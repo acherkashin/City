@@ -4,19 +4,24 @@
 }
 <div id="editBlock">
     <form method="get">
-        <center><b>ВХОД В ЛИЧНЫЙ КАБИНЕТ</b></center>
-        <hr />
-
+        <div class="brand-panel">
+            <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+            <h3>Банк Города / вход в личный кабинет</h3>
+        </div>
+        <div class="control-panel ">
+            <center>КУРС АМЕРИКАНСКОГО ДОЛЛАРА НА @DateTime.Now.Day @((String)TempData["Month"]) @DateTime.Now.Year ГОДА</center><br />
+            <center>Курс продажи: @((Double)TempData["CourseSel"]) руб./ дол.</center>
+            <center>Курс покупки: @((Double)TempData["CourseBuy"]) руб./ дол.</center>
+        </div>
+        <br />
         <center>
-            <a class="btn btn-primary btn-lg" href="/Bank/EnterToSystem">Войти</a>
-            <a class="btn btn-primary btn-lg" href="/Bank/Registration">Зарегистрироваться</a>
+            <a class="btn btn-primary " href="/Bank/EnterToSystem">Войти</a>
+            <a class="btn btn-primary " href="/Bank/Registration">Зарегистрироваться</a>
         </center>
 
-        <br><br><br><br><br><br><br>
+        <br><br><br>
 
-        <center>КУРС АМЕРИКАНСКОГО ДОЛЛАРА НА @DateTime.Now.Day @((String)TempData["Month"]) @DateTime.Now.Year ГОДА</center><br />
-        <center>Курс продажи: @((Double)TempData["CourseSel"]) руб./ дол.</center>
-        <center>Курс покупки: @((Double)TempData["CourseBuy"]) руб./ дол.</center>
+
     </form>
 </div>
 

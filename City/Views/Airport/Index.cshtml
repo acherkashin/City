@@ -32,9 +32,8 @@
             type: 'GET',
             contentType: "application/json",
             success: function (data) {
-                console.log(data)
-                var state = getStringState(data.flightStates);
-                var lightState = getStringLightState(data.lightStates);
+                var state = getStringState(data.flightState);
+                var lightState = getStringLightState(data.lightState);
                 $('#state').text(state);
                 $('#lightState').text(lightState)
                 var passangers = "";

@@ -27,7 +27,8 @@
     }
 
     renderList() {
-        (this.options.users || []).map(user => this.$view.find('tbody').empty().append(this.createRow(user)));
+        this.$view.find('tbody').empty();
+        (this.options.users || []).map(user => this.$view.find('tbody').append(this.createRow(user)));
     }
 
     createRow(user) {

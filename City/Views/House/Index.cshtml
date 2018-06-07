@@ -11,12 +11,23 @@
     .light {
         fill: gold;
     }
+    .red {
+        fill: red;
+    }
+    .blue {
+        fill: blue;
+    }
+    .green {
+        fill: green;
+    }
 </style>
 
 <div>
-    <div class="toolbar">
-        <h4> <span class="glyphicon glyphicon-home"></span> Сведения о жилых домах</h4>
+    <div class="brand-panel">
+        <img src="~/images/svg-icon/house.svg" alt="Alternate Text" width="50" height="50"/>
+        <h3>Жилые дома</h3>
     </div>
+
 
     <div class="text-center">
             <svg version="1.1" id="home1" x="0px" y="0px" width="100" height="100" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
@@ -178,7 +189,7 @@
     </svg>*@
     </div>
        
-    <div id="homesState" class="col-md-4 home-table" row>
+    <div id="homesState" class="col-md-6 home-table" row>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -188,12 +199,14 @@
                         <th scope="col">Газ</th>
                         <th scope="col">Вода</th>
                         <th scope="col">Включить свет</th>
+                        <th scope="col">Цвет</th>
+
                     </tr>
                 </thead>
                 <tbody> </tbody>
             </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div id="log"></div>
         </div>
 
@@ -220,20 +233,65 @@
 
     function getRow(home) {
         var checked = home.isOnLight ? "checked" : "";
+
         return "<tr data-rowid='" + home.id + "'>"
             + "<td>" + home.id + "</td>"
             + "<td>" + home.name + "</td>"
             + "<td>" + home.electricMeter.spentPower + "</td>"
             + "<td>" + home.gasMeter.currentVolume + "</td>"
             + "<td>" + home.waterMeter.currentVolume + "</td>" +
-            "<td><input class='switch-light' data-id=" + home.id + " type='checkbox' " + checked+ "></td></tr>";
+            "<td><input class='switch-light' data-id=" + home.id + " type='checkbox' " + checked + "></td>" +
+            "<td>" + getColorModeSelector(home.id) + "</td></tr>";
     }
 
-    function switchLight(id,isOnLight) {
+    function getColorModeSelector(id)
+    {
+        return "<div class='form-group '>"+
+            "<select class='form-control'  id='color-mode" + id +"' >"+
+           " <option value='1'>Обычный</option>"+
+           " <option value='2'>Красный</option>"+
+           " <option value='3'>Зеленый</option>"+
+            " <option value='4'>Синий</option>" +
+           // " <option value='5'>Дискотека</option>"+
+           " </select>"+
+            "</div>";
+    }
+
+
+
+    function switchLight(id, isOnLight) {
+        var colorMode = $('#color-mode' + id).val();
+
         if (isOnLight) {
-            $("#home" + id + " .window").addClass("light");
+            switch (colorMode) {
+                case "1":
+                    $("#home" + id + " .window").addClass("light");
+                    break;
+                case "2":
+                    $("#home" + id + " .window").addClass("red");
+                    break;
+                case "3":
+                    $("#home" + id + " .window").addClass("green");
+                    break;
+                case "4":
+                    $("#home" + id + " .window").addClass("blue");
+                    break;
+            }
         } else {
-            $("#home" + id+" .window").removeClass("light");
+            switch (colorMode) {
+                case "1":
+                    $("#home" + id + " .window").removeClass("light");
+                    break;
+                case "2":
+                    $("#home" + id + " .window").removeClass("red");
+                    break;
+                case "3":
+                    $("#home" + id + " .window").removeClass("green");
+                    break;
+                case "4":
+                    $("#home" + id + " .window").removeClass("blue");
+                    break;
+            }
         }
     }
 
@@ -255,15 +313,22 @@
             function () {
                 var id = $(this).data("id");
                 var isOnLight = $(this).is(":checked");
+                var colorMode = $('#color-mode' + id).val();
+                console.log(colorMode);
                 $.ajax({
                     method: "POST",
-                    data: { id: id, isOnLight: isOnLight },
+                    data: { id: id, isOnLight: isOnLight, colorMode: colorMode },
                     url: 'http://@Context.Request.Host/House/HandleSwitchLight',
                     success: function () {
                         switchLight(id, isOnLight);
+                    },
+                    error: function (data) {
+                        alert(data.responseJSON.value);
                     }
+
                 });
-            });
+        });
+
 
 </script>
 

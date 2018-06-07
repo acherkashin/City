@@ -32,8 +32,8 @@ namespace CyberCity.Models.HouseModels
         public Houses(DataBus bus) : base(bus)
         {
             Homes = new List<House>();
-            Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
-            Homes.Add(new House() { Name = "Жилой комплекс 2", Id = 2, GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Homes.Add(new House() { Name = "Жилой комплекс 1", Id = 1, IP = "http://192.168.1.0", GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
+            Homes.Add(new House() { Name = "Жилой комплекс 2", Id = 2, IP = "http://192.168.1.1", GasMeter = new GasMeter(), ElectricMeter = new ElectricMeter(), WaterMeter = new WaterMeter() });
 
             Tarifs = new Tarifs() { Gas = 1, Water = 1, Electric = 1 };
             CityPower = 100;
@@ -70,7 +70,7 @@ namespace CyberCity.Models.HouseModels
                 float meters = home.GasMeter.CurrentVolume * Tarifs.Gas +
                                home.ElectricMeter.SpentPower * Tarifs.Electric +
                                home.WaterMeter.CurrentVolume * Tarifs.Water;
-                homeMeters.Add(new HouseMeter { IdHome = home.Id, Meters = meters });
+                homeMeters.Add(new HouseMeter { IdHome = home.Id, Summa = meters });
             }
             return homeMeters;
         }
@@ -167,19 +167,48 @@ namespace CyberCity.Models.HouseModels
             try
             {
                 //TODO Лукина: уточнить, как получить ip для каждого жилого комплекса
-                string urlToArduino = GetUser().ArduinoUrl;
+                //string urlToArduino = GetUser().ArduinoUrl;
+
+                string switchLightCommand = "";
 
                 foreach (var home in Homes)
                 {
-                    string switchLightCommand = home.IsOnLight
-                        ? ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn)
-                        : ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
-                    WebRequest request = WebRequest.Create(urlToArduino + $"${switchLightCommand}?id=${home.Id}&${home.IsOnLight}");
+                    if (home.IsOnLight)
+                    {
+                        switch (home.ColorMode)
+                        {
+                            case ColorModes.White:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOn);
+                                break;
+                            case ColorModes.Blue:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnBlue);
+                                break;
+                            case ColorModes.Green:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnGreen);
+                                break;
+                            case ColorModes.Red:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnRed);
+                                break;
+                            case ColorModes.Random:
+                                switchLightCommand =
+                                    ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOnRnd);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switchLightCommand =
+                            ArduinoCommand.CommandDictionary.GetValueOrDefault(ArduinoCommands.LedOff);
+                    }
+                    string url = home.IP + $"/{ switchLightCommand}";
+                    WebRequest request = WebRequest.Create(url);
                     request.Method = "GET";
                     WebResponse response = request.GetResponse();
                 }
-
-                //TODO: Использовать _bus.SendToArduino
             }
             catch (Exception ex)
             {

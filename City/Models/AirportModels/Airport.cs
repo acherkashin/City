@@ -86,8 +86,6 @@ namespace CyberCity.Models.AirportModels
             }
         }
 
-
-
         /// <summary>
         /// Состояние полета
         /// </summary>
@@ -101,6 +99,7 @@ namespace CyberCity.Models.AirportModels
         /// Пассажиры, отправленные в полет
         /// </summary>
         public virtual List<Passenger> Passengers { get; set; }
+
         /// <summary>
         /// отправить самолет
         /// </summary>
@@ -110,9 +109,16 @@ namespace CyberCity.Models.AirportModels
             Passengers.Clear();
             for (var i = 0; i < 3; i++)
             {
-                int id = rand.Next(count);
-                Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
-                Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname + res.Name + res.Patronymic });
+                try
+                {
+                    int id = rand.Next(count);
+                    Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
+                    Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname + res.Name + res.Patronymic });
+                }
+                catch (Exception e)
+                {
+                }
+
             }
 
             _bus.Send(new Package()
@@ -122,6 +128,7 @@ namespace CyberCity.Models.AirportModels
                 Method = CanFlyMethod,
             });
         }
+
         /// <summary>
         /// посадить самолет
         /// </summary>
@@ -134,6 +141,7 @@ namespace CyberCity.Models.AirportModels
                 Method = CanLandMethod,
             });
         }
+
         /// <summary>
         /// включить свет
         /// </summary>
@@ -167,7 +175,6 @@ namespace CyberCity.Models.AirportModels
 
         }
 
-       
         /// <summary>
         /// Проверяет, пришло ли время отправлять или приземлять самолет, включать свет
         /// </summary>
@@ -195,8 +202,5 @@ namespace CyberCity.Models.AirportModels
         {
             IsTime(dateTime.Hours);
         }
-
-
-
     }
 }

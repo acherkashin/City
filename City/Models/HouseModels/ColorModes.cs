@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace CyberCity.Models.HouseModels
 {
-    public class HouseMeter
+    public enum ColorModes
     {
-        public int IdHome { get; set; }
-        public float Summa { get; set; }
+        White = 1,
+        Red,
+        Green,
+        Blue,
+        Random
     }
 }

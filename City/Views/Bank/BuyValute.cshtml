@@ -3,24 +3,25 @@
     ViewBag.Title = "Купить валюту";
 }
 
+<div class="brand-panel">
+    <img src="~/images/svg-icon/bank.svg" alt="Alternate Text" width="50" height="50" />
+    <h3>Банк Города / Купить валюту</h3>
+</div>
+
 <div id="editBlock">
     <ul class="pager" style="text-align: left;">
         <li class="btn btn-lg"><a href="/Bank/ClientPage">Назад</a></li>
     </ul>
-    
-    <center><b>КУПИТЬ ВАЛЮТУ</b></center>
     <hr />
 
-    <form method="post">
+    <form method="post" class="col-md-4 col-md-offset-4">
         <input type="hidden" value="@ViewBag.Id" name="Id" />
         <input type="hidden" value="@((Int32)TempData["Id"])" name="Client" />
-        <center>
-            <p>
-                Укажите сумму валюты, необходимую для покупки:
-                <input id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["MaxToBuy"])" required />
-            </p>
-        </center><br>
-        <center> <p><input id="Submit2" type="submit" value="Купить" /></p></center>
+        <div class="form-group">
+            <label> Укажите сумму валюты, необходимую для покупки:</label>
+            <input class="form-control" id="Text1" type="number" name="Summa" min="0" max="@((Double)TempData["MaxToBuy"])" required />
+        </div>           
+        <center> <p><input class="btn btn-primary" id="Submit2" type="submit" value="Купить" /></p></center>
     </form><br>
     <footer>
         <p align="right">&copy; @DateTime.Now.Day : @DateTime.Now.Month : @DateTime.Now.Year</p><br />

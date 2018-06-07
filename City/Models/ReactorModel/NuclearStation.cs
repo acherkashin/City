@@ -99,7 +99,6 @@ namespace CyberCity.Models.ReactorModel
                 if (_reactor.currentTemperature <= 0)
                 {
                     _reactor.currentTemperature = 0;
-
                 }
                 else
                 {
