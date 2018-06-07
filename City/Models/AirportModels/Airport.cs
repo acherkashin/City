@@ -34,7 +34,7 @@ namespace CyberCity.Models.AirportModels
         public Airport(DataBus bus) : base(bus)
         {
             var clients = _context.Residents;
-            
+
             foreach (var person in clients)
             {
                 ClientsOfBank.Add(person);
@@ -87,7 +87,7 @@ namespace CyberCity.Models.AirportModels
         }
 
 
-        
+
         /// <summary>
         /// Состояние полета
         /// </summary>
@@ -108,11 +108,11 @@ namespace CyberCity.Models.AirportModels
         {
             int count = ClientsOfBank.Count();
             Passengers.Clear();
-            for (var i = 0; i<3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 int id = rand.Next(count);
                 Resident res = ClientsOfBank.Where(t => t.Id == id).Single();
-                Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname+res.Name+ res.Patronymic });
+                Passengers.Add(new Passenger { Id = res.Id, Name = res.Surname + res.Name + res.Patronymic });
             }
 
             _bus.Send(new Package()
@@ -139,21 +139,31 @@ namespace CyberCity.Models.AirportModels
         /// </summary>
         public void TurnOnLight()
         {
-            lightState = LightStates.TurnedOn;
+            try
+            {
+                lightState = LightStates.TurnedOn;
             //передать ардуино, чтобы включился свет
-            string url = $"{GetUser().ArduinoUrl}/method?";
+            string url = $"192.168.4.4/switchOn?";
             _bus.SendToArduino(url);
-
+            }
+            catch  { };
+            
         }
         /// <summary>
         /// выключить свет
         /// </summary>
         public void TurnOffLight()
         {
-            lightState = LightStates.TurnedOff;
-            //передать ардуино, чтобы выключился свет
-            string url = $"{GetUser().ArduinoUrl}/method?";
-            _bus.SendToArduino(url);
+            try
+            {
+                lightState = LightStates.TurnedOff;
+                //передать ардуино, чтобы выключился свет
+                string url = $"192.168.4.4/switchOff?";
+                _bus.SendToArduino(url);
+            }
+            catch  { };
+        
+        
 
         }
 
